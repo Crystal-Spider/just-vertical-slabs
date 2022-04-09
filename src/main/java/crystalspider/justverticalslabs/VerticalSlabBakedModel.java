@@ -7,19 +7,15 @@ import java.util.Random;
 import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.builders.MaterialDefinition;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.material.MaterialRuleList;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.MaterialLibrary;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -31,6 +27,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   private final ModelState modelTransform;
   private final ItemOverrides overrides;
   private final ResourceLocation modelLocation;
+  // TODO: implement cache.
   private final HashMap<VerticalSlabModelKey, List<BakedQuad>> bakedQuadCache = new HashMap<VerticalSlabModelKey, List<BakedQuad>>();
 
   public VerticalSlabBakedModel(Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
@@ -85,6 +82,5 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     ModelResourceLocation modelResourceLocation = BlockModelShaper.stateToModelLocation(referringBlockState);
     BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelResourceLocation);
     return model.getQuads(referringBlockState, side, rand, extraData);
-    // TextureAtlasSprite texture = spriteGetter.apply(ForgeHooksClient.getBlockMaterial());
   }
 }

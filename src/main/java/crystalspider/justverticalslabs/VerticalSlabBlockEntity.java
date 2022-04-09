@@ -39,6 +39,7 @@ public class VerticalSlabBlockEntity extends BlockEntity {
     return saveReferringBlockState(super.getUpdateTag());
   }
 
+  // The default one already calls load, so overriding should be useless.
   // @Override
   // public void handleUpdateTag(CompoundTag tag) {
   //   loadReferringBlockState(tag);
