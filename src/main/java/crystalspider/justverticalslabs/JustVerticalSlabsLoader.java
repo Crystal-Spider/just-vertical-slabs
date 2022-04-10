@@ -31,12 +31,13 @@ public class JustVerticalSlabsLoader {
   
   // TODO: Remove deferred block registring and instead add as many ItemStacks as needed to the creative tab by overriding fillItemCategory in the Item class.
   public static final RegistryObject<VerticalSlabBlock> VERTICAL_SLAB = registerBlock("vertical_slab", () -> new VerticalSlabBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-  public static final RegistryObject<BlockEntityType<VerticalSlabBlockEntity>> VERTICAL_SLAB_BLOCK_ENTITY = BLOCK_ENTITIES.register("vertical_slab", () -> BlockEntityType.Builder.of(VerticalSlabBlockEntity::new, new VerticalSlabBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD))).build(null));
+  public static final RegistryObject<BlockEntityType<VerticalSlabBlockEntity>> VERTICAL_SLAB_BLOCK_ENTITY = BLOCK_ENTITIES.register("vertical_slab", () -> BlockEntityType.Builder.of(VerticalSlabBlockEntity::new, VERTICAL_SLAB.get()).build(null));
 
   public JustVerticalSlabsLoader() {
     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     BLOCKS.register(bus);
     ITEMS.register(bus);
+    BLOCK_ENTITIES.register(bus);
     MinecraftForge.EVENT_BUS.register(this);
   }
 
