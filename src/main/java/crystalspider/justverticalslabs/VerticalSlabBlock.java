@@ -31,7 +31,28 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
   private static final VoxelShape[] SHAPES = makeShapes();
-  private static final int[] SHAPE_BY_STATE = new int[]{0, 1, 2, 3, 5, 4, 6, 7, 5, 6, 7, 5, 9, 8, 10, 11, 9, 10, 11, 9};
+  private static final int[] SHAPE_BY_STATE = new int[]{
+    0,  // 0  Straight    - South
+    1,  // 1  Straight    - West
+    2,  // 2  Straight    - North
+    3,  // 3  Straight    - East
+    6,  // 4  Inner Left  - South
+    4,  // 5  Inner Left  - West
+    5,  // 6  Inner Left  - North
+    7,  // 7  Inner Left  - East
+    4,  // 8  Inner Right - South
+    5,  // 9  Inner Right - West
+    7,  // 10 Inner Right - North
+    6,  // 11 Inner Right - East
+    10, // 12 Outer Left  - South
+    8,  // 13 Outer Left  - West
+    9,  // 14 Outer Left  - North
+    11, // 15 Outer Left  - East
+    8,  // 16 Outer Right - South
+    9,  // 17 Outer Right - West
+    11, // 18 Outer Right - North
+    10  // 19 Outer Right - East
+  };
 
   public VerticalSlabBlock(Properties properties) {
     super(properties);
@@ -45,25 +66,38 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   private static VoxelShape[] makeShapes() {
     // S = 0, W = 1, N = 2, E = 3
     // ST = 0, IL = 1, IR = 2, OL = 3, OR = 4
-    VoxelShape S = verticalBox(0, 2, 1, 2);
-    VoxelShape W = verticalBox(0, 1, 0, 2);
-    VoxelShape N = verticalBox(0, 2, 0, 1);
-    VoxelShape E = verticalBox(1, 2, 0, 2);
+    VoxelShape facingSouthShape = verticalBox(0, 1, 2, 2);
+    VoxelShape facingWestShape = verticalBox(0, 0, 1, 2);
+    VoxelShape facingNorthShape = verticalBox(0, 0, 2, 1);
+    VoxelShape facingEastShape = verticalBox(1, 0, 2, 2);
 
-    VoxelShape ISW = Shapes.or(S, W);
-    VoxelShape INW = Shapes.or(N, W);
-    VoxelShape ISE = Shapes.or(S, E);
-    VoxelShape INE = Shapes.or(N, E);
+    VoxelShape innerLeftBottomShape = Shapes.or(facingSouthShape, facingWestShape);
+    VoxelShape innerLeftTopShape = Shapes.or(facingNorthShape, facingWestShape);
+    VoxelShape innerRightBottomShape = Shapes.or(facingSouthShape, facingEastShape);
+    VoxelShape innerRightTopShape = Shapes.or(facingNorthShape, facingEastShape);
 
-    VoxelShape OSW = verticalBox(0, 1, 1, 2);
-    VoxelShape ONW = verticalBox(0, 1, 0, 1);
-    VoxelShape OSE = verticalBox(1, 2, 1, 2);
-    VoxelShape ONE = verticalBox(1, 2, 0, 1);
+    VoxelShape outerLeftBottomShape = verticalBox(0, 1, 1, 2);
+    VoxelShape outerLeftTopShape = verticalBox(0, 0, 1, 1);
+    VoxelShape outerRightBottomShape = verticalBox(1, 1, 2, 2);
+    VoxelShape outerRightTopShape = verticalBox(1, 0, 2, 1);
 
-    return new VoxelShape[]{S, W, N, E, ISW, ISE, INW, INE, OSW, OSE, ONW, ONE};
+    return new VoxelShape[]{
+      facingSouthShape,       // 0
+      facingWestShape,        // 1
+      facingNorthShape,       // 2
+      facingEastShape,        // 3
+      innerLeftBottomShape,   // 4
+      innerLeftTopShape,      // 5
+      innerRightBottomShape,  // 6
+      innerRightTopShape,     // 7
+      outerLeftBottomShape,   // 8
+      outerLeftTopShape,      // 9
+      outerRightBottomShape,  // 10
+      outerRightTopShape      // 11
+    };
   }
 
-  private static VoxelShape verticalBox(double originX, double x, double originZ, double z) {
+  private static VoxelShape verticalBox(double originX, double originZ, double x, double z) {
     return Block.box(originX * 8, 0.0D, originZ * 8, x * 8, 16.0D, z * 8);
   }
 
@@ -73,10 +107,10 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     if (isVerticalSlab(facingBlockState)) {
       Direction facingBlockDirection = facingBlockState.getValue(FACING);
       if (facingBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter, pos, facingBlockDirection.getOpposite())) {
-        if (facingBlockDirection == direction.getCounterClockWise()) {
-          return StairsShape.OUTER_LEFT;
+        if (facingBlockDirection == direction.getClockWise()) {
+          return StairsShape.OUTER_RIGHT;
         }
-        return StairsShape.OUTER_RIGHT;
+        return StairsShape.OUTER_LEFT;
       }
     }
 
@@ -84,10 +118,10 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     if (isVerticalSlab(oppositeBlockState)) {
       Direction oppositeBlockDirection = oppositeBlockState.getValue(FACING);
       if (oppositeBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter, pos, oppositeBlockDirection)) {
-        if (oppositeBlockDirection == direction.getCounterClockWise()) {
-          return StairsShape.INNER_LEFT;
+        if (oppositeBlockDirection == direction.getClockWise()) {
+          return StairsShape.INNER_RIGHT;
         }
-        return StairsShape.INNER_RIGHT;
+        return StairsShape.INNER_LEFT;
       }
     }
 
@@ -124,24 +158,25 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
   }
 
-  // TODO
-  public BlockState mirror(BlockState p_56919_, Mirror p_56920_) {
-    Direction direction = p_56919_.getValue(FACING);
-    StairsShape stairsshape = p_56919_.getValue(SHAPE);
-    switch(p_56920_) {
+  @Override
+  @SuppressWarnings("deprecation")
+  public BlockState mirror(BlockState state, Mirror mirror) {
+    Direction direction = state.getValue(FACING);
+    StairsShape stairsshape = state.getValue(SHAPE);
+    switch(mirror) {
       case LEFT_RIGHT:
         if (direction.getAxis() == Direction.Axis.Z) {
           switch(stairsshape) {
             case INNER_LEFT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
+              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
             case INNER_RIGHT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
+              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
             case OUTER_LEFT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
+              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
             case OUTER_RIGHT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
+              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
             default:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180);
+              return state.rotate(Rotation.CLOCKWISE_180);
           }
         }
         break;
@@ -149,24 +184,25 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
         if (direction.getAxis() == Direction.Axis.X) {
           switch(stairsshape) {
             case INNER_LEFT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
+              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
             case INNER_RIGHT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
+              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
             case OUTER_LEFT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
+              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
             case OUTER_RIGHT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
+              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
             case STRAIGHT:
-              return p_56919_.rotate(Rotation.CLOCKWISE_180);
+              return state.rotate(Rotation.CLOCKWISE_180);
           }
         }
         break;
       default: break;
     }
-    return super.mirror(p_56919_, p_56920_);
+    return super.mirror(state, mirror);
  }
 
   @Override
+  @SuppressWarnings("deprecation")
   public FluidState getFluidState(BlockState state) {
     return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
   }
@@ -175,20 +211,20 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public boolean useShapeForLightOcclusion(BlockState state) {
     return true;
   }
-
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
-    stateDefinition.add(FACING, SHAPE, WATERLOGGED);
-  }
-
+  
   @Override
   public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType computationType) {
     return false;
   }
-
+  
   @Override
   public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new VerticalSlabBlockEntity(pos, state);
+  }
+  
+  @Override
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
+    stateDefinition.add(FACING, SHAPE, WATERLOGGED);
   }
 
   private int getShapeIndex(BlockState state) {
