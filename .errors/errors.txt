@@ -1,5 +1,0 @@
-java.lang.NullPointerException: Registry Object not present: justverticalslabs:vertical_slab
-Stack trace for the above error: ./npe.txt
-
-com.google.gson.JsonSyntaxException: java.lang.IllegalStateException: Expected BEGIN_OBJECT but was STRING at line 7 column 1 path $
-Stack trace for the above error: ./jse.txt
