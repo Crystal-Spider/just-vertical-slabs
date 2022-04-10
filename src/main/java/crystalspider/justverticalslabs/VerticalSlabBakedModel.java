@@ -10,7 +10,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
@@ -76,11 +78,16 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   @Override
   public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
     BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
-    VoxelShape shape = ((VerticalSlabBlock) state.getBlock()).getShape(state, null, null, null); // Needed?
     ArrayList<BakedQuad> newbakedQuads = new ArrayList<BakedQuad>();
-
     List<BakedQuad> bakedQuads = bakedModel.getQuads(referringBlockState, side, rand, extraData);
-    List<BakedQuad> referringBakedQuads = Minecraft.getInstance().getBlockRenderer().getBlockModel(referringBlockState).getQuads(state, side, rand, extraData);
+    List<BakedQuad> referringBakedQuads;
+
+    BakedModel referringBlockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(referringBlockState);
+    if (referringBlockState.hasBlockEntity()) {
+      referringBakedQuads = referringBlockModel.getQuads(referringBlockState, side, rand, ((EntityBlock) referringBlockState.getBlock()).newBlockEntity(new BlockPos(0, 0, 0), referringBlockState).getModelData()); // I guess position doesn't really matter here.
+    } else {
+      referringBakedQuads = referringBlockModel.getQuads(referringBlockState, side, rand, extraData); // I guess modelData doesn't really matter here.
+    }
     for (BakedQuad bakedQuad : bakedQuads) {
       TextureAtlasSprite sprite = bakedQuad.getSprite(); // TODO: Get sprite from referringBakedQuad
       newbakedQuads.add(new BakedQuad(bakedQuad.getVertices(), bakedQuad.getTintIndex(), bakedQuad.getDirection(), sprite, bakedQuad.isShade()));
