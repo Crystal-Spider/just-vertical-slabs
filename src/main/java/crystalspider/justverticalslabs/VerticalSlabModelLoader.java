@@ -13,11 +13,12 @@ public class VerticalSlabModelLoader implements IModelLoader<VerticalSlabModel> 
 
   @Override
   public void onResourceManagerReload(ResourceManager manager) {
-
+    // TODO
   }
 
   @Override
   public VerticalSlabModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
     return new VerticalSlabModel(deserializationContext.deserialize(modelContents, BlockModel.class));
+    // return new VerticalSlabModel();
   }
 }

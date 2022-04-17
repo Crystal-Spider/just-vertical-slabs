@@ -1,6 +1,7 @@
 package crystalspider.justverticalslabs;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -25,13 +26,19 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
     this.blockModel = blockModel;
   }
 
+  // TODO: remove.
+  public VerticalSlabModel() {
+    this.blockModel = null;
+  }
+
   @Override
   public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
-    return new VerticalSlabBakedModel(blockModel.bake(bakery, blockModel, spriteGetter, modelTransform, modelLocation, false));
+    return new VerticalSlabBakedModel(blockModel.bake(bakery, blockModel, spriteGetter, modelTransform, modelLocation, false), overrides);
   }
 
   @Override
   public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-    return null;
+    // TODO: check what's best to return.
+    return Collections.emptyList();
   }
 }

@@ -1,5 +1,6 @@
 package crystalspider.justverticalslabs;
 
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -11,14 +12,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.mclanguageprovider.MinecraftModContainer;
-import net.minecraftforge.fml.mclanguageprovider.MinecraftModLanguageProvider.MinecraftModTarget;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -53,7 +50,7 @@ public class JustVerticalSlabsLoader {
   private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
     RegistryObject<T> registeredBlock = BLOCKS.register(name, block);
     // TODO: get proper list of block states.
-    ITEMS.register(name, () -> new VerticalSlabBlockItem(registeredBlock.get(), new Item.Properties(), new ArrayList<BlockState>(List.of(Blocks.DARK_OAK_PLANKS.defaultBlockState()))));
+    ITEMS.register(name, () -> new VerticalSlabBlockItem(registeredBlock.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState()))));
     return registeredBlock;
   }
 }
