@@ -87,10 +87,8 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
           // TODO: log warning.
         }
         BakedQuad referringBakedQuad = referringBakedQuads.get(0);
-        for (int c = 0; c < bakedQuads.size(); c++) {
-          BakedQuad bakedQuad = bakedQuads.get(c);
-          TextureAtlasSprite sprite = referringBakedQuad.getSprite();
-          newbakedQuads.add(new BakedQuad(bakedQuad.getVertices(), bakedQuad.getTintIndex(), bakedQuad.getDirection(), sprite, bakedQuad.isShade()));
+        for (BakedQuad bakedQuad : bakedQuads) {
+          newbakedQuads.add(new BakedQuad(bakedQuad.getVertices(), bakedQuad.getTintIndex(), bakedQuad.getDirection(), referringBakedQuad.getSprite(), bakedQuad.isShade()));
         }
       } else {
         // TODO: log warning.
