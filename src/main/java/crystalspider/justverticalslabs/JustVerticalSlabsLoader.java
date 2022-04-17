@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
+
 @Mod(JustVerticalSlabsLoader.MODID)
 public class JustVerticalSlabsLoader {
   public static final String MODID = "justverticalslabs";
@@ -39,18 +41,13 @@ public class JustVerticalSlabsLoader {
     BLOCKS.register(bus);
     ITEMS.register(bus);
     BLOCK_ENTITIES.register(bus);
-    FMLJavaModLoadingContext.get().getModEventBus().register(this);
-  }
-
-  @SubscribeEvent
-  public void onModelRegistryEvent(ModelRegistryEvent event) {
-    ModelLoaderRegistry.registerLoader(VerticalSlabModelLoader.VERTICAL_SLAB_LOADER, new VerticalSlabModelLoader());
+    bus.register(new ModelRegistryEventHandler());
   }
 
   private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
     RegistryObject<T> registeredBlock = BLOCKS.register(name, block);
     // TODO: get proper list of block states.
-    ITEMS.register(name, () -> new VerticalSlabBlockItem(registeredBlock.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState()))));
+    ITEMS.register(name, () -> new VerticalSlabBlockItem(registeredBlock.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.DARK_OAK_PLANKS.defaultBlockState()))));
     return registeredBlock;
   }
 }

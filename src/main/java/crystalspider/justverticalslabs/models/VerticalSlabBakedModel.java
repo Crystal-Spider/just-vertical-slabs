@@ -1,10 +1,11 @@
-package crystalspider.justverticalslabs;
+package crystalspider.justverticalslabs.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import crystalspider.justverticalslabs.VerticalSlabBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -28,16 +29,9 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     this.overrides = overrides;
   }
 
-  // TODO: remove.
-  public VerticalSlabBakedModel(ItemOverrides overrides) {
-    this.bakedModel = null;
-    this.overrides = overrides;
-  }
-
   @Override
   public boolean useAmbientOcclusion() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override
@@ -76,7 +70,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
     if (referringBlockState != null && side != null) {
       System.out.println("Quads Direction: " + side.toString());
-      System.out.println("Quads BlockState: " + extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE).toString());
+      System.out.println("Quads BlockState: " + referringBlockState.toString());
       List<BakedQuad> bakedQuads = bakedModel.getQuads(referringBlockState, side, rand, extraData);
       List<BakedQuad> referringBakedQuads;
       BakedModel referringBlockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(referringBlockState);
@@ -88,10 +82,18 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
       System.out.println("RBQs: " + referringBakedQuads.size());
       System.out.println("BQs: " + bakedQuads.size());
       System.out.println("---------------------------------------------------------------");
-      for (int c = 0; c < bakedQuads.size() && c < referringBakedQuads.size(); c++) {
-        BakedQuad bakedQuad = bakedQuads.get(c), referringBakedQuad = referringBakedQuads.get(c);
-        TextureAtlasSprite sprite = referringBakedQuad.getSprite();
-        newbakedQuads.add(new BakedQuad(bakedQuad.getVertices(), bakedQuad.getTintIndex(), bakedQuad.getDirection(), sprite, bakedQuad.isShade()));
+      if (referringBakedQuads.size() > 0) {
+        if (referringBakedQuads.size() > 1) {
+          // TODO: log warning.
+        }
+        BakedQuad referringBakedQuad = referringBakedQuads.get(0);
+        for (int c = 0; c < bakedQuads.size(); c++) {
+          BakedQuad bakedQuad = bakedQuads.get(c);
+          TextureAtlasSprite sprite = referringBakedQuad.getSprite();
+          newbakedQuads.add(new BakedQuad(bakedQuad.getVertices(), bakedQuad.getTintIndex(), bakedQuad.getDirection(), sprite, bakedQuad.isShade()));
+        }
+      } else {
+        // TODO: log warning.
       }
     }
     return newbakedQuads;

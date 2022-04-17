@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs;
+package crystalspider.justverticalslabs.models;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,11 +24,6 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
 
   public VerticalSlabModel(BlockModel blockModel) {
     this.blockModel = blockModel;
-  }
-
-  // TODO: remove.
-  public VerticalSlabModel() {
-    this.blockModel = null;
   }
 
   @Override
