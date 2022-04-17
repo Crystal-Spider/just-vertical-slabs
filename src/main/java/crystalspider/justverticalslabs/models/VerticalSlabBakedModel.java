@@ -69,8 +69,6 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     ArrayList<BakedQuad> newbakedQuads = new ArrayList<BakedQuad>();
     BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
     if (referringBlockState != null && side != null) {
-      System.out.println("Quads Direction: " + side.toString());
-      System.out.println("Quads BlockState: " + referringBlockState.toString());
       List<BakedQuad> bakedQuads = bakedModel.getQuads(referringBlockState, side, rand, extraData);
       List<BakedQuad> referringBakedQuads;
       BakedModel referringBlockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(referringBlockState);
@@ -79,9 +77,6 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
       } else {
         referringBakedQuads = referringBlockModel.getQuads(referringBlockState, side, rand, extraData);
       }
-      System.out.println("RBQs: " + referringBakedQuads.size());
-      System.out.println("BQs: " + bakedQuads.size());
-      System.out.println("---------------------------------------------------------------");
       if (referringBakedQuads.size() > 0) {
         if (referringBakedQuads.size() > 1) {
           // TODO: log warning.
