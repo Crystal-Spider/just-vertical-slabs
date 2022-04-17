@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/block",
+  "loader": "justverticalslabs:vertical_slab_loader",
   "display": {
     "gui": {
       "rotation": [ 30, 135, 0 ],

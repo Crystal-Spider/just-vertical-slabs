@@ -56,11 +56,11 @@ public class VerticalSlabBlockEntity extends BlockEntity {
   }
 
   private CompoundTag saveReferringBlockState(CompoundTag tag) {
-    tag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
+    tag.put("BlockEntityTag", NbtUtils.writeBlockState(referringBlockState));
     return tag;
   }
 
   private void loadReferringBlockState(CompoundTag tag) {
-    referringBlockState = NbtUtils.readBlockState(tag.getCompound("referringBlockState"));
+    referringBlockState = NbtUtils.readBlockState(tag.getCompound("BlockEntityTag"));
   }
 }

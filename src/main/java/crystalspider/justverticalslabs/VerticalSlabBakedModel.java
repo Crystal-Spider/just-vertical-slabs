@@ -22,19 +22,11 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
 public class VerticalSlabBakedModel implements IDynamicBakedModel {
-  private final Function<Material, TextureAtlasSprite> spriteGetter;
-  private final ModelState modelTransform;
-  private final ItemOverrides overrides;
-  private final ResourceLocation modelLocation;
   private final BakedModel bakedModel;
   // TODO: implement cache.
   private final HashMap<VerticalSlabModelKey, List<BakedQuad>> bakedQuadCache = new HashMap<VerticalSlabModelKey, List<BakedQuad>>();
 
-  public VerticalSlabBakedModel(Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation, BakedModel bakedModel) {
-    this.spriteGetter = spriteGetter;
-    this.modelTransform = modelTransform;
-    this.overrides = overrides;
-    this.modelLocation = modelLocation;
+  public VerticalSlabBakedModel(BakedModel bakedModel) {
     this.bakedModel = bakedModel;
   }
 
@@ -83,10 +75,13 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
 
     BakedModel referringBlockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(referringBlockState);
     if (referringBlockState.hasBlockEntity()) {
-      referringBakedQuads = referringBlockModel.getQuads(referringBlockState, side, rand, ((EntityBlock) referringBlockState.getBlock()).newBlockEntity(new BlockPos(0, 0, 0), referringBlockState).getModelData()); // I guess position doesn't really matter here.
+      referringBakedQuads = referringBlockModel.getQuads(referringBlockState, side, rand, ((EntityBlock) referringBlockState.getBlock()).newBlockEntity(new BlockPos(0, 0, 0), referringBlockState).getModelData());
     } else {
-      referringBakedQuads = referringBlockModel.getQuads(referringBlockState, side, rand, extraData); // I guess modelData doesn't really matter here.
+      referringBakedQuads = referringBlockModel.getQuads(referringBlockState, side, rand, extraData);
     }
+    System.out.println("RBQs: " + referringBakedQuads.size());
+    System.out.println("BQs: " + bakedQuads.size());
+    System.out.println("---------------------------------------------------------------");
     for (BakedQuad bakedQuad : bakedQuads) {
       TextureAtlasSprite sprite = bakedQuad.getSprite(); // TODO: Get sprite from referringBakedQuad
       newbakedQuads.add(new BakedQuad(bakedQuad.getVertices(), bakedQuad.getTintIndex(), bakedQuad.getDirection(), sprite, bakedQuad.isShade()));

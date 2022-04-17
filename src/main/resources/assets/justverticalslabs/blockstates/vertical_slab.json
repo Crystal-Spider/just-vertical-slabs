@@ -1,5 +1,4 @@
 {
-  "loader": "justverticalslabs:vertical_slab_loader",
   "variants": {
     "facing=east,shape=inner_left": {
       "model": "justverticalslabs:block/vertical_slab_inner",

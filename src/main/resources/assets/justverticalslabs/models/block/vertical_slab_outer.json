@@ -1,4 +1,5 @@
 {
+  "loader": "justverticalslabs:vertical_slab_loader",
   "textures": {
     "particle": "#side",
     "side": "minecraft:block/oak_planks",
