@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -24,20 +22,13 @@ import crystalspider.justverticalslabs.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.VerticalSlabItemOverrides;
 
 public class VerticalSlabBakedModel implements IDynamicBakedModel {
-  private BlockState referringBlockState = null;
   private final BakedModel bakedModel;
   private final ItemOverrides overrides;
-  // TODO: implement cache.
-  private final HashMap<VerticalSlabModelKey, List<BakedQuad>> bakedQuadCache = new HashMap<VerticalSlabModelKey, List<BakedQuad>>();
+  private final HashMap<VerticalSlabModelKey, List<BakedQuad>> bakedQuadsCache = new HashMap<VerticalSlabModelKey, List<BakedQuad>>();
 
   public VerticalSlabBakedModel(BakedModel bakedModel) {
     this.bakedModel = bakedModel;
     this.overrides = new VerticalSlabItemOverrides();
-  }
-
-  public VerticalSlabBakedModel(BakedModel bakedModel, BlockState referringBlockState) {
-    this(bakedModel);
-    this.referringBlockState = referringBlockState;
   }
 
   @Override
@@ -87,9 +78,12 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   @Override
   public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
     ArrayList<BakedQuad> newbakedQuads = new ArrayList<BakedQuad>();
-    BlockState referringBlockState = getReferringBlockState(extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE));
+    BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
     if (referringBlockState != null && side != null) {
-      System.out.println(referringBlockState.toString());
+      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState.toString());
+      if (bakedQuadsCache.containsKey(verticalSlabModelKey)) {
+        return bakedQuadsCache.get(verticalSlabModelKey);
+      }
       List<BakedQuad> referringBakedQuads = getReferringBakedModel(referringBlockState).getQuads(referringBlockState, side, rand, getReferringModelData(referringBlockState, extraData));
       if (referringBakedQuads.size() > 0) {
         if (referringBakedQuads.size() > 1) {
@@ -102,12 +96,9 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
       } else {
         // TODO: log warning.
       }
+      bakedQuadsCache.put(verticalSlabModelKey, newbakedQuads);
     }
     return newbakedQuads;
-  }
-
-  private BlockState getReferringBlockState(@Nullable BlockState retrievedBlockState) {
-    return referringBlockState != null ? referringBlockState : retrievedBlockState;
   }
 
   /**
