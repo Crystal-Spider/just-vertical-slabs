@@ -3,11 +3,12 @@ package crystalspider.justverticalslabs.models;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
-import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
+
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 
 public class VerticalSlabModelLoader implements IModelLoader<VerticalSlabModel> {
   public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(JustVerticalSlabsLoader.MODID, "vertical_slab_loader");

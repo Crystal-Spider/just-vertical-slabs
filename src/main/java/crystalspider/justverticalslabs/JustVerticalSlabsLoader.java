@@ -1,5 +1,9 @@
 package crystalspider.justverticalslabs;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -16,10 +20,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 
@@ -44,7 +44,8 @@ public class JustVerticalSlabsLoader {
   private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
     RegistryObject<T> registeredBlock = BLOCKS.register(name, block);
     // TODO: get proper list of block states.
-    ITEMS.register(name, () -> new VerticalSlabBlockItem(registeredBlock.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.DARK_OAK_PLANKS.defaultBlockState()))));
+    ArrayList<BlockState> blockStates = new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.DARK_OAK_PLANKS.defaultBlockState(), Blocks.COBBLESTONE.defaultBlockState()));
+    ITEMS.register(name, () -> new VerticalSlabBlockItem(registeredBlock.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS), blockStates));
     return registeredBlock;
   }
 }

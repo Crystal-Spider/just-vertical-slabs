@@ -28,7 +28,7 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
 
   @Override
   public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
-    return new VerticalSlabBakedModel(blockModel.bake(bakery, blockModel, spriteGetter, modelTransform, modelLocation, false), overrides);
+    return new VerticalSlabBakedModel(blockModel.bake(bakery, blockModel, spriteGetter, modelTransform, modelLocation, false));
   }
 
   @Override

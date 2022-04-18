@@ -3,6 +3,7 @@ package crystalspider.justverticalslabs;
 import java.util.ArrayList;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -29,7 +30,9 @@ public class VerticalSlabBlockItem extends BlockItem {
 
   private ItemStack getItemStackWithState(BlockState referringBlockState) {
     ItemStack itemStack = new ItemStack(this);
-    itemStack.addTagElement("BlockEntityTag", NbtUtils.writeBlockState(referringBlockState));
+    CompoundTag referringBlockTag = new CompoundTag();
+    referringBlockTag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
+    itemStack.addTagElement("BlockEntityTag", referringBlockTag);
     return itemStack;
   }
 }

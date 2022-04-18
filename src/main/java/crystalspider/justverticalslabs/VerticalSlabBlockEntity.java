@@ -3,20 +3,19 @@ package crystalspider.justverticalslabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 
 public class VerticalSlabBlockEntity extends BlockEntity {
   public static final ModelProperty<BlockState> REFERRING_BLOCK_STATE = new ModelProperty<BlockState>();
 
-  private BlockState referringBlockState = Blocks.OAK_PLANKS.defaultBlockState();
+  private BlockState referringBlockState = null;
 
   public VerticalSlabBlockEntity(BlockPos pos, BlockState state) {
     super(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), pos, state);
@@ -56,11 +55,15 @@ public class VerticalSlabBlockEntity extends BlockEntity {
   }
 
   private CompoundTag saveReferringBlockState(CompoundTag tag) {
-    tag.put("BlockEntityTag", NbtUtils.writeBlockState(referringBlockState));
+    if (referringBlockState != null) {
+      tag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
+      System.out.println("Saving tag: " + tag.getAsString());
+    }
     return tag;
   }
 
   private void loadReferringBlockState(CompoundTag tag) {
-    referringBlockState = NbtUtils.readBlockState(tag.getCompound("BlockEntityTag"));
+    System.out.println("Loading tag: " + tag.getAsString());
+    referringBlockState = NbtUtils.readBlockState(tag.getCompound("referringBlockState"));
   }
 }
