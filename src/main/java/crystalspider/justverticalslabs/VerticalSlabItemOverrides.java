@@ -29,51 +29,49 @@ public class VerticalSlabItemOverrides extends ItemOverrides {
       if (blockEntityTag != null) {
         CompoundTag referringBlockStateTag = blockEntityTag.getCompound("referringBlockState");
         if (referringBlockStateTag != null) {
-          BlockState referringBlockState = NbtUtils.readBlockState(referringBlockStateTag);
-          if (referringBlockState != null) {
-            IModelData data = new ModelDataMap.Builder().withInitial(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE, referringBlockState).build();
-            return new IDynamicBakedModel() {
-              @Override
-              public boolean useAmbientOcclusion() {
-                return bakedModel.useAmbientOcclusion();
-              }
-  
-              @Override
-              public boolean isGui3d() {
-                return bakedModel.isGui3d();
-              }
-  
-              @Override
-              public boolean usesBlockLight() {
-                return bakedModel.usesBlockLight();
-              }
-  
-              @Override
-              public boolean isCustomRenderer() {
-                return bakedModel.isCustomRenderer();
-              }
-  
-              @Override
-              public TextureAtlasSprite getParticleIcon() {
-                return bakedModel.getParticleIcon();
-              }
-  
-              @Override
-              public TextureAtlasSprite getParticleIcon(IModelData extraData) {
-                return bakedModel.getParticleIcon(data);
-              }
-  
-              @Override
-              public ItemOverrides getOverrides() {
-                return bakedModel.getOverrides();
-              }
-  
-              @Override
-              public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
-                return bakedModel.getQuads(state, side, rand, data);
-              }
-            };
-          }
+          IModelData data = new ModelDataMap.Builder().withInitial(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE, NbtUtils.readBlockState(referringBlockStateTag)).build();
+          return new IDynamicBakedModel() {
+            @Override
+            public boolean useAmbientOcclusion() {
+              return bakedModel.useAmbientOcclusion();
+            }
+
+            @Override
+            public boolean isGui3d() {
+              return bakedModel.isGui3d();
+            }
+
+            @Override
+            public boolean usesBlockLight() {
+              return bakedModel.usesBlockLight();
+            }
+
+            @Override
+            public boolean isCustomRenderer() {
+              return bakedModel.isCustomRenderer();
+            }
+
+            @Override
+            @SuppressWarnings("deprecation")
+            public TextureAtlasSprite getParticleIcon() {
+              return bakedModel.getParticleIcon();
+            }
+
+            @Override
+            public TextureAtlasSprite getParticleIcon(IModelData extraData) {
+              return bakedModel.getParticleIcon(data);
+            }
+
+            @Override
+            public ItemOverrides getOverrides() {
+              return bakedModel.getOverrides();
+            }
+
+            @Override
+            public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
+              return bakedModel.getQuads(state, side, rand, data);
+            }
+          };
         }
       }
     }
