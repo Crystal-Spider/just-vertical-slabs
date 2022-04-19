@@ -1,10 +1,11 @@
-package crystalspider.justverticalslabs;
+package crystalspider.justverticalslabs.items;
 
 import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -30,51 +31,55 @@ public class VerticalSlabItemOverrides extends ItemOverrides {
         CompoundTag referringBlockStateTag = blockEntityTag.getCompound("referringBlockState");
         if (referringBlockStateTag != null) {
           IModelData data = new ModelDataMap.Builder().withInitial(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE, NbtUtils.readBlockState(referringBlockStateTag)).build();
-          return new IDynamicBakedModel() {
-            @Override
-            public boolean useAmbientOcclusion() {
-              return bakedModel.useAmbientOcclusion();
-            }
-
-            @Override
-            public boolean isGui3d() {
-              return bakedModel.isGui3d();
-            }
-
-            @Override
-            public boolean usesBlockLight() {
-              return bakedModel.usesBlockLight();
-            }
-
-            @Override
-            public boolean isCustomRenderer() {
-              return bakedModel.isCustomRenderer();
-            }
-
-            @Override
-            @SuppressWarnings("deprecation")
-            public TextureAtlasSprite getParticleIcon() {
-              return bakedModel.getParticleIcon();
-            }
-
-            @Override
-            public TextureAtlasSprite getParticleIcon(IModelData extraData) {
-              return bakedModel.getParticleIcon(data);
-            }
-
-            @Override
-            public ItemOverrides getOverrides() {
-              return bakedModel.getOverrides();
-            }
-
-            @Override
-            public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
-              return bakedModel.getQuads(state, side, rand, data);
-            }
-          };
+          return getDynamicBakedModel(bakedModel, data);
         }
       }
     }
     return super.resolve(bakedModel, itemStack, level, entity, integer);
+  }
+
+  private IDynamicBakedModel getDynamicBakedModel(BakedModel bakedModel, IModelData data) {
+    return new IDynamicBakedModel() {
+      @Override
+      public boolean useAmbientOcclusion() {
+        return bakedModel.useAmbientOcclusion();
+      }
+
+      @Override
+      public boolean isGui3d() {
+        return bakedModel.isGui3d();
+      }
+
+      @Override
+      public boolean usesBlockLight() {
+        return bakedModel.usesBlockLight();
+      }
+
+      @Override
+      public boolean isCustomRenderer() {
+        return bakedModel.isCustomRenderer();
+      }
+
+      @Override
+      @SuppressWarnings("deprecation")
+      public TextureAtlasSprite getParticleIcon() {
+        return bakedModel.getParticleIcon();
+      }
+
+      @Override
+      public TextureAtlasSprite getParticleIcon(IModelData extraData) {
+        return bakedModel.getParticleIcon(data);
+      }
+
+      @Override
+      public ItemOverrides getOverrides() {
+        return bakedModel.getOverrides();
+      }
+
+      @Override
+      public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
+        return bakedModel.getQuads(state, side, rand, data);
+      }
+    };
   }
 }

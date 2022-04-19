@@ -1,5 +1,6 @@
-package crystalspider.justverticalslabs;
+package crystalspider.justverticalslabs.blocks;
 
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -8,6 +9,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
@@ -39,13 +41,6 @@ public class VerticalSlabBlockEntity extends BlockEntity {
     return saveReferringBlockState(super.getUpdateTag());
   }
 
-  // The default one already calls load, so overriding should be useless.
-  // @Override
-  // public void handleUpdateTag(CompoundTag tag) {
-  //   loadReferringBlockState(tag);
-  //   super.handleUpdateTag(tag);
-  // }
-
   @Override
   public Packet<ClientGamePacketListener> getUpdatePacket() {
     return ClientboundBlockEntityDataPacket.create(this);
@@ -68,13 +63,17 @@ public class VerticalSlabBlockEntity extends BlockEntity {
   private CompoundTag saveReferringBlockState(CompoundTag tag) {
     if (referringBlockState != null) {
       tag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
-      System.out.println("Saving tag: " + tag.getAsString());
     }
     return tag;
   }
 
   private void loadReferringBlockState(CompoundTag tag) {
-    System.out.println("Loading tag: " + tag.getAsString());
-    referringBlockState = NbtUtils.readBlockState(tag.getCompound("referringBlockState"));
+    CompoundTag referringBlockStateTag = tag.getCompound("referringBlockState");
+    if (referringBlockStateTag != null) {
+      referringBlockState = NbtUtils.readBlockState(referringBlockStateTag);
+    } else {
+      // TODO: log warning.
+      referringBlockState = Blocks.AIR.defaultBlockState();
+    }
   }
 }

@@ -17,9 +17,10 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
-
-import crystalspider.justverticalslabs.VerticalSlabBlockEntity;
-import crystalspider.justverticalslabs.VerticalSlabItemOverrides;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
+import net.minecraftforge.client.model.pipeline.LightUtil;
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.items.VerticalSlabItemOverrides;
 
 public class VerticalSlabBakedModel implements IDynamicBakedModel {
   private final BakedModel bakedModel;
@@ -80,7 +81,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     ArrayList<BakedQuad> newbakedQuads = new ArrayList<BakedQuad>();
     BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
     if (referringBlockState != null && side != null) {
-      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState.toString());
+      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
       if (bakedQuadsCache.containsKey(verticalSlabModelKey)) {
         return bakedQuadsCache.get(verticalSlabModelKey);
       }
@@ -91,7 +92,9 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
         }
         BakedQuad referringBakedQuad = referringBakedQuads.get(0);
         for (BakedQuad bakedQuad : bakedModel.getQuads(referringBlockState, side, rand, extraData)) {
-          newbakedQuads.add(new BakedQuad(bakedQuad.getVertices(), bakedQuad.getTintIndex(), bakedQuad.getDirection(), referringBakedQuad.getSprite(), bakedQuad.isShade()));
+          BakedQuadBuilder quadBuilder = new BakedQuadBuilder(referringBakedQuad.getSprite());
+          LightUtil.putBakedQuad(new VerticalSlabVertexTransformer(quadBuilder, referringBakedQuad), bakedQuad);
+          newbakedQuads.add(quadBuilder.build());
         }
       } else {
         // TODO: log warning.

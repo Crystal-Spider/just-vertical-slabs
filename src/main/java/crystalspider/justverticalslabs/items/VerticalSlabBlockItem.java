@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs;
+package crystalspider.justverticalslabs.items;
 
 import java.util.ArrayList;
 

@@ -1,14 +1,15 @@
 package crystalspider.justverticalslabs.models;
 
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class VerticalSlabModelKey {
   private final Direction side;
-  private final String stateKey;
+  private final BlockState state;
 
-  public VerticalSlabModelKey(Direction side, String stateKey) {
+  public VerticalSlabModelKey(Direction side, BlockState stateKey) {
     this.side = side;
-    this.stateKey = stateKey;
+    this.state = stateKey;
   }
 
   @Override
@@ -23,11 +24,11 @@ public class VerticalSlabModelKey {
     if (side != other.side) {
       return false;
     }
-    if (stateKey == null) {
-      if (other.stateKey != null) {
+    if (state == null) {
+      if (other.state != null) {
         return false;
       }
-    } else if (!stateKey.equals(other.stateKey)) {
+    } else if (!state.equals(other.state)) {
       return false;
     }
     return true;
@@ -38,7 +39,7 @@ public class VerticalSlabModelKey {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((side == null) ? 0 : side.hashCode());
-    result = prime * result + ((stateKey == null) ? 0 : stateKey.hashCode());
+    result = prime * result + ((state == null) ? 0 : state.hashCode());
     return result;
   }
 }
