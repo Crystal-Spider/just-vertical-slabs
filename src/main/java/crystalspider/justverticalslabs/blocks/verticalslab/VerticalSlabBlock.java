@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs.blocks;
+package crystalspider.justverticalslabs.blocks.verticalslab;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

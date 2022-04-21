@@ -1,13 +1,20 @@
-package crystalspider.justverticalslabs.models;
+package crystalspider.justverticalslabs.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -15,26 +22,30 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
-import crystalspider.justverticalslabs.items.VerticalSlabItemOverrides;
+import net.minecraftforge.common.model.TransformationHelper;
+import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
+import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
+import crystalspider.justverticalslabs.model.vertex.VerticalSlabVertexTransformer;
 
 public class VerticalSlabBakedModel implements IDynamicBakedModel {
-  private final BakedModel bakedModel;
+  private final BakedModel jsonBakedModel;
   private final ItemOverrides overrides;
   private final HashMap<VerticalSlabModelKey, List<BakedQuad>> bakedQuadsCache = new HashMap<VerticalSlabModelKey, List<BakedQuad>>();
 
-  public VerticalSlabBakedModel(BakedModel bakedModel) {
-    this.bakedModel = bakedModel;
+  public VerticalSlabBakedModel(BakedModel jsonBakedModel) {
+    this.jsonBakedModel = jsonBakedModel;
     this.overrides = new VerticalSlabItemOverrides();
   }
 
-  @Override
-  public boolean useAmbientOcclusion() {
-    return true;
+  public BakedModel getJsonBakedModel() {
+    return this.jsonBakedModel;
   }
 
   @Override
@@ -45,14 +56,36 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
 
   @Override
   public boolean usesBlockLight() {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public boolean isCustomRenderer() {
-    // TODO Auto-generated method stub
     return false;
+  }
+
+  @Override
+  public boolean useAmbientOcclusion() {
+    return true;
+  }
+
+  @Override
+  public ItemOverrides getOverrides() {
+    return overrides;
+  }
+
+  @Override
+  public boolean doesHandlePerspectives() {
+    return true;
+  }
+
+  @Override
+  public BakedModel handlePerspective(TransformType transformType, PoseStack poseStack) {
+    Transformation transformation = VerticalSlabPerspectiveTransformer.getTransformation(transformType);
+    if (!transformation.isIdentity()) {
+      transformation.push(poseStack);
+    }
+    return this;
   }
 
   @Override
@@ -72,36 +105,33 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   }
 
   @Override
-  public ItemOverrides getOverrides() {
-    return overrides;
-  }
-
-  @Override
   public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
-    ArrayList<BakedQuad> newbakedQuads = new ArrayList<BakedQuad>();
-    BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
-    if (referringBlockState != null && side != null) {
-      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
-      if (bakedQuadsCache.containsKey(verticalSlabModelKey)) {
-        return bakedQuadsCache.get(verticalSlabModelKey);
-      }
-      List<BakedQuad> referringBakedQuads = getReferringBakedModel(referringBlockState).getQuads(referringBlockState, side, rand, getReferringModelData(referringBlockState, extraData));
-      if (referringBakedQuads.size() > 0) {
-        if (referringBakedQuads.size() > 1) {
-          // TODO: log warning.
-        }
-        BakedQuad referringBakedQuad = referringBakedQuads.get(0);
-        for (BakedQuad bakedQuad : bakedModel.getQuads(referringBlockState, side, rand, extraData)) {
-          BakedQuadBuilder quadBuilder = new BakedQuadBuilder(referringBakedQuad.getSprite());
-          LightUtil.putBakedQuad(new VerticalSlabVertexTransformer(quadBuilder, referringBakedQuad), bakedQuad);
-          newbakedQuads.add(quadBuilder.build());
-        }
-      } else {
-        // TODO: log warning.
-      }
-      bakedQuadsCache.put(verticalSlabModelKey, newbakedQuads);
-    }
-    return newbakedQuads;
+    // ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
+    // BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
+    // if (referringBlockState != null && side != null) {
+    //   VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
+    //   if (bakedQuadsCache.containsKey(verticalSlabModelKey)) {
+    //     return bakedQuadsCache.get(verticalSlabModelKey);
+    //   }
+    //   List<BakedQuad> referringBakedQuads = getReferringBakedModel(referringBlockState).getQuads(referringBlockState, side, rand, getReferringModelData(referringBlockState, extraData));
+    //   if (referringBakedQuads.size() > 0) {
+    //     if (referringBakedQuads.size() > 1) {
+    //       // TODO: log warning.
+    //     }
+    //     BakedQuad referringBakedQuad = referringBakedQuads.get(0);
+    //     for (BakedQuad bakedQuad : jsonBakedModel.getQuads(referringBlockState, side, rand, extraData)) {
+    //       BakedQuadBuilder quadBuilder = new BakedQuadBuilder(referringBakedQuad.getSprite());
+    //       LightUtil.putBakedQuad(new VerticalSlabVertexTransformer(quadBuilder, referringBakedQuad), bakedQuad);
+    //       bakedQuads.add(quadBuilder.build());
+    //     }
+    //   } else {
+    //     // TODO: log warning.
+    //   }
+    //   // newbakedQuads.addAll(referringBakedQuads);
+    //   bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
+    // }
+    // return bakedQuads;
+    return jsonBakedModel.getQuads(state, side, rand, extraData);
   }
 
   /**

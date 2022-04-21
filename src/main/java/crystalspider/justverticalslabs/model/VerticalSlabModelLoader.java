@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs.models;
+package crystalspider.justverticalslabs.model;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;

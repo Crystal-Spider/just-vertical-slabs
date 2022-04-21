@@ -1,0 +1,31 @@
+package crystalspider.justverticalslabs.model.perpective;
+
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import static java.util.Map.entry;
+
+import java.util.Map;
+
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraftforge.common.model.TransformationHelper;
+
+public class VerticalSlabPerspectiveTransformer {
+  private static final Map<TransformType, Transformation> TRANSFORMATIONS = Map.ofEntries(
+    entry(TransformType.GUI, getTransformation(new Vector3f(0.1F, -0.05F, 0), new Vector3f(30, 45, 0), new Vector3f(0.625F, 0.625F, 0.625F))),
+    entry(TransformType.GROUND, getTransformation(new Vector3f(0, 0.015F, 0.075F), Vector3f.ZERO, new Vector3f(0.25F, 0.25F, 0.25F))),
+    entry(TransformType.FIXED, getTransformation(Vector3f.ZERO, Vector3f.ZERO, new Vector3f(0.5F, 0.5F, 0.5F))),
+    entry(TransformType.FIRST_PERSON_LEFT_HAND, getTransformation(Vector3f.ZERO, new Vector3f(0, 315, 0), new Vector3f(0.4F, 0.4F, 0.4F))),
+    entry(TransformType.FIRST_PERSON_RIGHT_HAND, getTransformation(Vector3f.ZERO, new Vector3f(0, 135, 0), new Vector3f(0.4F, 0.4F, 0.4F))),
+    entry(TransformType.THIRD_PERSON_LEFT_HAND, getTransformation(new Vector3f(0F, 0.175F, 0), new Vector3f(75, 315, 0), new Vector3f(0.375F, 0.375F, 0.375F))),
+    entry(TransformType.THIRD_PERSON_RIGHT_HAND, getTransformation(new Vector3f(0F, 0.175F, 0), new Vector3f(75, 135, 0), new Vector3f(0.375F, 0.375F, 0.375F))),
+    entry(TransformType.NONE, getTransformation(Vector3f.ZERO, Vector3f.ZERO, new Vector3f(1, 1, 1)))
+  );
+
+  private static Transformation getTransformation(Vector3f translation, Vector3f rotation, Vector3f scale) {
+    return new Transformation(translation, TransformationHelper.quatFromXYZ(rotation, true), scale, null);
+  }
+
+  public static Transformation getTransformation(TransformType transformType) {
+    return TRANSFORMATIONS.getOrDefault(transformType, Transformation.identity());
+  }
+}

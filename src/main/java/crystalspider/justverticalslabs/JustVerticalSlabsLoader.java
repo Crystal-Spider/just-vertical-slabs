@@ -20,8 +20,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
-import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
+import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 

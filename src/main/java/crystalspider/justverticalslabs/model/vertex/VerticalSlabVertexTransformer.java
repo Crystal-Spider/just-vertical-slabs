@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs.models;
+package crystalspider.justverticalslabs.model.vertex;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;

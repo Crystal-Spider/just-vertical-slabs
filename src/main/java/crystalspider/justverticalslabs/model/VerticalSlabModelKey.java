@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs.models;
+package crystalspider.justverticalslabs.model;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;

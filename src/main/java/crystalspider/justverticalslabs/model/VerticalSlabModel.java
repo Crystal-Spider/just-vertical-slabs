@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs.models;
+package crystalspider.justverticalslabs.model;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -20,15 +20,15 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
-  private BlockModel blockModel;
+  private BlockModel jsonBlockModel;
 
-  public VerticalSlabModel(BlockModel blockModel) {
-    this.blockModel = blockModel;
+  public VerticalSlabModel(BlockModel jsonBlockModel) {
+    this.jsonBlockModel = jsonBlockModel;
   }
 
   @Override
   public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
-    return new VerticalSlabBakedModel(blockModel.bake(bakery, blockModel, spriteGetter, modelTransform, modelLocation, false));
+    return new VerticalSlabBakedModel(jsonBlockModel.bake(bakery, jsonBlockModel, spriteGetter, modelTransform, modelLocation, false));
   }
 
   @Override
