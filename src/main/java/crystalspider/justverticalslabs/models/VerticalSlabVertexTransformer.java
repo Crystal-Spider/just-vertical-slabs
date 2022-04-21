@@ -1,5 +1,6 @@
 package crystalspider.justverticalslabs.models;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -19,11 +20,12 @@ public class VerticalSlabVertexTransformer extends VertexTransformer {
 
   @Override
   public void put(int element, float... vertexData) {
-    if (getVertexFormat().getElements().get(element).getUsage() == VertexFormatElement.Usage.UV) {
-      LightUtil.unpack(referringBakedQuad.getVertices(), vertexData, getVertexFormat(), vertices, element);
+    VertexFormat vertexFormat = getVertexFormat();
+    if (vertexFormat.getElements().get(element).getUsage() == VertexFormatElement.Usage.UV) {
+      LightUtil.unpack(referringBakedQuad.getVertices(), vertexData, vertexFormat, vertices, element);
     }
     elements++;
-    if (elements == getVertexFormat().getElements().size()) {
+    if (elements == vertexFormat.getElements().size()) {
       vertices++;
       elements = 0;
     }
