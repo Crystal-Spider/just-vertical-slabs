@@ -50,13 +50,12 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
 
   @Override
   public boolean isGui3d() {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public boolean usesBlockLight() {
-    return false;
+    return true;
   }
 
   @Override
