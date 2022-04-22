@@ -19,7 +19,5 @@ public class VerticalSlabModelLoader implements IModelLoader<VerticalSlabModel> 
   }
 
   @Override
-  public void onResourceManagerReload(ResourceManager p_10758_) {
-    // TODO Auto-generated method stub
-  }
+  public void onResourceManagerReload(ResourceManager resourceManager) {}
 }

@@ -46,7 +46,7 @@ public class JustVerticalSlabsLoader {
   private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
     RegistryObject<T> registeredBlock = BLOCKS.register(name, block);
     // TODO: get proper list of block states.
-    ArrayList<BlockState> blockStates = new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.DARK_OAK_PLANKS.defaultBlockState(), Blocks.COBBLESTONE.defaultBlockState()));
+    ArrayList<BlockState> blockStates = new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.COBBLESTONE.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState()));
     ITEMS.register(name, () -> new VerticalSlabBlockItem(registeredBlock.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS), blockStates));
     return registeredBlock;
   }

@@ -1,5 +1,7 @@
 package crystalspider.justverticalslabs.model;
 
+import java.util.Objects;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -36,10 +38,6 @@ public class VerticalSlabModelKey {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((side == null) ? 0 : side.hashCode());
-    result = prime * result + ((state == null) ? 0 : state.hashCode());
-    return result;
+    return Objects.hash(side, state);
   }
 }

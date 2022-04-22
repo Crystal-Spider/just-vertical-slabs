@@ -9,9 +9,9 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.VertexTransformer;
 
 public class VerticalSlabVertexTransformer extends VertexTransformer {
+  private final BakedQuad referringBakedQuad;
   private int vertices = 0;
   private int elements = 0;
-  private BakedQuad referringBakedQuad;
 
   public VerticalSlabVertexTransformer(BakedQuadBuilder quadBuilder, BakedQuad referringBakedQuad) {
     super(quadBuilder);

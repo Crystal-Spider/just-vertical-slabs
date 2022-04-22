@@ -33,7 +33,6 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
 
   @Override
   public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-    // TODO: check what's best to return.
     return Collections.emptyList();
   }
 }

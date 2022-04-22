@@ -1,34 +1,33 @@
 package crystalspider.justverticalslabs.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.common.model.TransformationHelper;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
 import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
@@ -54,13 +53,13 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   }
 
   @Override
-  public boolean usesBlockLight() {
-    return true;
+  public boolean isCustomRenderer() {
+    return false;
   }
 
   @Override
-  public boolean isCustomRenderer() {
-    return false;
+  public boolean usesBlockLight() {
+    return true;
   }
 
   @Override
@@ -90,8 +89,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   @Override
   @SuppressWarnings("deprecation")
   public TextureAtlasSprite getParticleIcon() {
-    // TODO: make a better choice for default particle icon.
-    return getReferringBakedModel(Blocks.OAK_PLANKS.defaultBlockState()).getParticleIcon();
+    return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MissingTextureAtlasSprite.getLocation());
   }
 
   @Override
@@ -104,34 +102,44 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   }
 
   @Override
-  public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
-    // ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
-    // BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
-    // if (referringBlockState != null && side != null) {
-    //   VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
-    //   if (bakedQuadsCache.containsKey(verticalSlabModelKey)) {
-    //     return bakedQuadsCache.get(verticalSlabModelKey);
-    //   }
-    //   List<BakedQuad> referringBakedQuads = getReferringBakedModel(referringBlockState).getQuads(referringBlockState, side, rand, getReferringModelData(referringBlockState, extraData));
-    //   if (referringBakedQuads.size() > 0) {
-    //     if (referringBakedQuads.size() > 1) {
-    //       // TODO: log warning.
-    //     }
-    //     BakedQuad referringBakedQuad = referringBakedQuads.get(0);
-    //     for (BakedQuad bakedQuad : jsonBakedModel.getQuads(referringBlockState, side, rand, extraData)) {
-    //       BakedQuadBuilder quadBuilder = new BakedQuadBuilder(referringBakedQuad.getSprite());
-    //       LightUtil.putBakedQuad(new VerticalSlabVertexTransformer(quadBuilder, referringBakedQuad), bakedQuad);
-    //       bakedQuads.add(quadBuilder.build());
-    //     }
-    //   } else {
-    //     // TODO: log warning.
-    //   }
-    //   // newbakedQuads.addAll(referringBakedQuads);
-    //   bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
-    // }
-    // return bakedQuads;
-    return jsonBakedModel.getQuads(state, side, rand, extraData);
+  public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData modelData) {
+    BlockState referringBlockState = modelData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
+    if (referringBlockState != null) {
+      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
+      if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
+        System.out.println(bakedQuadsCache.size());
+        // TODO: Fix cache.
+        ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
+        List<BakedQuad> jsonBakedQuads = jsonBakedModel.getQuads(state, side, rand, modelData);
+        if (jsonBakedQuads.size() > 0) {
+          if (side != null) {
+            BakedQuad referringBakedQuad = getReferringBakedQuad(referringBlockState, side, rand, modelData);
+            if (referringBakedQuad != null) {
+              for (BakedQuad jsonBakedQuad : jsonBakedQuads) {
+                BakedQuadBuilder quadBuilder = new BakedQuadBuilder(referringBakedQuad.getSprite());
+                LightUtil.putBakedQuad(new VerticalSlabVertexTransformer(quadBuilder, referringBakedQuad), jsonBakedQuad);
+                bakedQuads.add(quadBuilder.build());
+              }
+            }
+          } else {
+            for (BakedQuad jsonBakedQuad : jsonBakedQuads) {
+              BakedQuad referringBakedQuad = getReferringBakedQuad(referringBlockState, jsonBakedQuad.getDirection(), rand, modelData);
+              if (referringBakedQuad != null) {
+                BakedQuadBuilder quadBuilder = new BakedQuadBuilder(referringBakedQuad.getSprite());
+                LightUtil.putBakedQuad(new VerticalSlabVertexTransformer(quadBuilder, referringBakedQuad), jsonBakedQuad);
+                bakedQuads.add(quadBuilder.build());
+              }
+            }
+          }
+        }
+        bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
+      }
+      return bakedQuadsCache.get(verticalSlabModelKey);
+    }
+    return Collections.emptyList();
   }
+
+
 
   /**
    * Returns the {@link BakedModel} of the given {@link BlockState}.
@@ -152,5 +160,29 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   private IModelData getReferringModelData(BlockState blockState, IModelData defaultData) {
     return blockState.hasBlockEntity() ? ((EntityBlock) blockState.getBlock()).newBlockEntity(new BlockPos(0, 0, 0), blockState).getModelData() : defaultData;
+  }
+
+  /**
+   * Returns the first {@link BakedQuad} for the referred block given {@link Direction side}, {@link Random rand} and {@link IModelData modelData}.
+   * Returns null if no {@link BakedQuad} could be retrieved.
+   * Logs debug warnings when no {@link BakedQuad} can be retrieved or when there are more than 1 {@link BakedQuad} to choose from.
+   * 
+   * @param referringBlockState - {@link BlockState} of the referred block.
+   * @param side - {@link Direction side} of the block being rendered.
+   * @param rand - {@link Random rand} parameter.
+   * @param modelData - {@link IModelData model data} of the block being rendered.
+   * @return the first {@link BakedQuad} for the referred block, or null if none could be retrieved.
+   */
+  @Nullable
+  private BakedQuad getReferringBakedQuad(BlockState referringBlockState, Direction side, Random rand, IModelData modelData) {
+    List<BakedQuad> referringBakedQuads = getReferringBakedModel(referringBlockState).getQuads(referringBlockState, side, rand, getReferringModelData(referringBlockState, modelData));
+    if (referringBakedQuads.size() > 0) {
+      if (referringBakedQuads.size() > 1) {
+        // TODO: log warning.
+      }
+      return referringBakedQuads.get(0);
+    }
+    // TODO: log warning.
+    return null;
   }
 }
