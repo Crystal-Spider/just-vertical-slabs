@@ -1,7 +1,6 @@
 package crystalspider.justverticalslabs.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,10 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 
+import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
+import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
+import crystalspider.justverticalslabs.model.vertex.VerticalSlabVertexTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -28,10 +31,6 @@ import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
-import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
-import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
-import crystalspider.justverticalslabs.model.vertex.VerticalSlabVertexTransformer;
 
 public class VerticalSlabBakedModel implements IDynamicBakedModel {
   private final BakedModel jsonBakedModel;
@@ -41,10 +40,6 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   public VerticalSlabBakedModel(BakedModel jsonBakedModel) {
     this.jsonBakedModel = jsonBakedModel;
     this.overrides = new VerticalSlabItemOverrides();
-  }
-
-  public BakedModel getJsonBakedModel() {
-    return this.jsonBakedModel;
   }
 
   @Override
@@ -107,8 +102,6 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     if (referringBlockState != null) {
       VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
-        System.out.println(bakedQuadsCache.size());
-        // TODO: Fix cache.
         ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
         List<BakedQuad> jsonBakedQuads = jsonBakedModel.getQuads(state, side, rand, modelData);
         if (jsonBakedQuads.size() > 0) {
@@ -138,8 +131,6 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     }
     return Collections.emptyList();
   }
-
-
 
   /**
    * Returns the {@link BakedModel} of the given {@link BlockState}.

@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 
 public class VerticalSlabItemOverrides extends ItemOverrides {
@@ -23,8 +22,7 @@ public class VerticalSlabItemOverrides extends ItemOverrides {
       if (blockEntityTag != null) {
         CompoundTag referringBlockStateTag = blockEntityTag.getCompound("referringBlockState");
         if (referringBlockStateTag != null) {
-          IModelData data = new ModelDataMap.Builder().withInitial(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE, NbtUtils.readBlockState(referringBlockStateTag)).build();
-          return new VerticalSlabItemBakedModel(((VerticalSlabBakedModel) bakedModel).getJsonBakedModel(), data);
+          return new VerticalSlabItemBakedModel((VerticalSlabBakedModel) bakedModel, new ModelDataMap.Builder().withInitial(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE, NbtUtils.readBlockState(referringBlockStateTag)).build());
         }
       }
     }
