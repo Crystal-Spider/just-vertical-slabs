@@ -2,14 +2,27 @@ package crystalspider.justverticalslabs.model;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
+/**
+ * Utility wrapper around the two properties to use as key for BakedQuads cache.
+ */
 public class VerticalSlabModelKey {
-  private final Direction side;
-  private final BlockState state;
+  /**
+   * {@link Direction side} indicating to which culling {@link Direction face} the BakedQuads are associated to.
+   * If null, no culling {@link Direction face} is associated and the BakedQuads will always be rendered.
+   */
+  private final @Nullable Direction side;
+  /**
+   * {@link BlockState} associated to the BakedQuads, indicating which block textures are taken from.
+   */
+  private final @Nonnull BlockState state;
 
-  public VerticalSlabModelKey(Direction side, BlockState stateKey) {
+  public VerticalSlabModelKey(@Nullable Direction side, @Nonnull BlockState stateKey) {
     this.side = side;
     this.state = stateKey;
   }
@@ -26,11 +39,7 @@ public class VerticalSlabModelKey {
     if (side != other.side) {
       return false;
     }
-    if (state == null) {
-      if (other.state != null) {
-        return false;
-      }
-    } else if (!state.equals(other.state)) {
+    if (!state.equals(other.state)) {
       return false;
     }
     return true;

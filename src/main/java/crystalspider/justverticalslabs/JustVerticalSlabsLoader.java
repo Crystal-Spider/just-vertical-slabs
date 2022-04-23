@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
+import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
+import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -20,10 +24,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
-import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
-import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 
 @Mod(JustVerticalSlabsLoader.MODID)
 public class JustVerticalSlabsLoader {

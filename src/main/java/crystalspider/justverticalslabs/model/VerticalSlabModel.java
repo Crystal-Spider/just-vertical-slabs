@@ -19,18 +19,43 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
+/**
+ * Unbaked Vertical Slab Model.
+ */
 public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
+  /**
+   * JSON {@link BlockModel}.
+   */
   private BlockModel jsonBlockModel;
 
   public VerticalSlabModel(BlockModel jsonBlockModel) {
     this.jsonBlockModel = jsonBlockModel;
   }
 
+  /**
+   * Returns a new instance of {@link VerticalSlabBakedModel} ready for rendering.
+   * 
+   * @param owner
+   * @param bakery
+   * @param spriteGetter
+   * @param modelTransform
+   * @param overrides
+   * @param modelLocation
+   * @return new instance of {@link VerticalSlabBakedModel}.
+   */
   @Override
   public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
     return new VerticalSlabBakedModel(jsonBlockModel.bake(bakery, jsonBlockModel, spriteGetter, modelTransform, modelLocation, false));
   }
 
+  /**
+   * {@link Collection} of {@link Material Materials} this model depends on.
+   * 
+   * @param owner
+   * @param modelGetter
+   * @param missingTextureErrors
+   * @return {@link Collections#emptyList()}.
+   */
   @Override
   public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
     return Collections.emptyList();

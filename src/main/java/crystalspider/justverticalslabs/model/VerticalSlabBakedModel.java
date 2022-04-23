@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -32,9 +33,21 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
+/**
+ * Vertical Slab Baked Model ready for rendering.
+ */
 public class VerticalSlabBakedModel implements IDynamicBakedModel {
+  /**
+   * Original {@link BakedModel} read from JSON.
+   */
   private final BakedModel jsonBakedModel;
+  /**
+   * {@link ItemOverrides} to use to render items.
+   */
   private final ItemOverrides overrides;
+  /**
+   * {@link BakedQuad} cache. Needed because {@link #getQuads(BlockState, Direction, Random, IModelData)} is called several times every little interval, thus needs to be as fast as possible.
+   */
   private final HashMap<VerticalSlabModelKey, List<BakedQuad>> bakedQuadsCache = new HashMap<VerticalSlabModelKey, List<BakedQuad>>();
 
   public VerticalSlabBakedModel(BakedModel jsonBakedModel) {
@@ -42,36 +55,62 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     this.overrides = new VerticalSlabItemOverrides();
   }
 
+  /**
+   * See {@link https://mcforge.readthedocs.io/en/1.18.x/rendering/modelloaders/bakedmodel/#isgui3d}.
+   */
   @Override
   public boolean isGui3d() {
     return false;
   }
 
+  /**
+   * See {@link https://mcforge.readthedocs.io/en/1.18.x/rendering/modelloaders/bakedmodel/#iscustomrenderer}.
+   */
   @Override
   public boolean isCustomRenderer() {
     return false;
   }
 
+  /**
+   * Whether to enable lighting in GUI when rendered as an item.
+   */
   @Override
   public boolean usesBlockLight() {
     return true;
   }
 
+  /**
+   * Whether to render the block using ambient occlusion.
+   */
   @Override
   public boolean useAmbientOcclusion() {
     return true;
   }
 
+  /**
+   * {@link ItemOverrides} to use to render items.
+   */
   @Override
   public ItemOverrides getOverrides() {
     return overrides;
   }
 
+  /**
+   * Whether {@link #handlePerspective(TransformType, PoseStack)} will be used.
+   */
   @Override
   public boolean doesHandlePerspectives() {
     return true;
   }
 
+  /**
+   * Handles item model transformations for different {@link TransformType}.
+   * Which {@link Transformation} to use is decided by {@link VerticalSlabPerspectiveTransformer#getTransformation(TransformType)}.
+   * 
+   * @param transformType - {@link TransformType}.
+   * @param poseStack - {@link PoseStack} to render.
+   * @return this model.
+   */
   @Override
   public BakedModel handlePerspective(TransformType transformType, PoseStack poseStack) {
     Transformation transformation = VerticalSlabPerspectiveTransformer.getTransformation(transformType);
@@ -81,12 +120,26 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     return this;
   }
 
+  /**
+   * Returns the default {@link TextureAtlasSprite particle icon} of this model.
+   * 
+   * @return default {@link TextureAtlasSprite particle icon}.
+   */
   @Override
   @SuppressWarnings("deprecation")
   public TextureAtlasSprite getParticleIcon() {
     return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MissingTextureAtlasSprite.getLocation());
   }
 
+  /**
+   * Returns the {@link TextureAtlasSprite particle icon} of this model based on the given {@link IModelData data}.
+   * In details, uses the given {@link IModelData data} to search for the {@link VerticalSlabBlockEntity#REFERRING_BLOCK_STATE referringBlockState} property.
+   * If such property is not null, returns the {@link BakedModel#getParticleIcon(IModelData)} of the {@link #getReferringBakedModel(BlockState) referred BakedModel},
+   * otherwise returns the {@link #getParticleIcon() default particle icon} of this model.
+   * 
+   * @param extraData - {@link IModelData} to use to render.
+   * @return {@link TextureAtlasSprite particle icon} based on the given {@link IModelData data}.
+   */
   @Override
   public TextureAtlasSprite getParticleIcon(IModelData extraData) {
     BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
@@ -96,8 +149,21 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     return getParticleIcon();
   }
 
+  /**
+   * Returns the {@link List} of {@link BakedQuad} to use to render the model based on {@link Direction side} and {@link IModelData modelData}.
+   * Caches as much as possible to speed up computational time of subsequent calls.
+   * {@link IModelData modelData} should contain a {@link VerticalSlabBlockEntity#REFERRING_BLOCK_STATE referringBlockState} property in order to render this model correctly.
+   * If such condition is not met, an {@link Collections#emptyList() empty list} is returned and thus nothing will be rendered.
+   * 
+   * @param state - {@link BlockState} of the block being rendered, null if an item is being rendered.
+   * @param side - indicates to which culling {@link Direction face} the {@link BakedQuad baked quads} are associated to.
+   *               If null, no culling {@link Direction face} is associated and the {@link BakedQuad baked quads} will always be rendered.
+   * @param rand - {@link Random} instance.
+   * @param modelData - {@link IModelData} to use to render.
+   * @return {@link List} of {@link BakedQuad} based on parameters.
+   */
   @Override
-  public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData modelData) {
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
     BlockState referringBlockState = modelData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
     if (referringBlockState != null) {
       VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);

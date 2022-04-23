@@ -1,10 +1,11 @@
 package crystalspider.justverticalslabs.model.perpective;
 
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import static java.util.Map.entry;
 
 import java.util.Map;
+
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraftforge.common.model.TransformationHelper;
