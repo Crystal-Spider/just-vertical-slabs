@@ -26,6 +26,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+/**
+ * TODO:
+ * Set correct block properties from referringBlockState (See {@link net.minecraft.world.level.block.state.BlockBehaviour}).
+ * Set crafting recipes (from block to vertical slab, from vertical slab to block, from vertical slab to slab, from slab to vertical slab).
+ * Correctly pick up block in creative.
+ */
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
