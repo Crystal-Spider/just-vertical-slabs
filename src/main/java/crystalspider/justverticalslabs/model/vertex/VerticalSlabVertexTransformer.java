@@ -8,9 +8,21 @@ import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.VertexTransformer;
 
+/**
+ * 
+ */
 public class VerticalSlabVertexTransformer extends VertexTransformer {
+  /**
+   * 
+   */
   private final BakedQuad referringBakedQuad;
+  /**
+   * 
+   */
   private int vertices = 0;
+  /**
+   * 
+   */
   private int elements = 0;
 
   public VerticalSlabVertexTransformer(BakedQuadBuilder quadBuilder, BakedQuad referringBakedQuad) {
@@ -18,6 +30,12 @@ public class VerticalSlabVertexTransformer extends VertexTransformer {
     this.referringBakedQuad = referringBakedQuad;
   }
 
+  /**
+   * 
+   * 
+   * @param
+   * @param
+   */
   @Override
   public void put(int element, float... vertexData) {
     VertexFormat vertexFormat = getVertexFormat();
