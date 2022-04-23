@@ -12,6 +12,7 @@ import net.minecraftforge.client.model.pipeline.VertexTransformer;
  * TODO:
  * Crop textures rather than stretching them.
  * Emit light if referred block emits light.
+ * Fix breaking progress not being shown.
  */
 public class VerticalSlabVertexTransformer extends VertexTransformer {
   /**
