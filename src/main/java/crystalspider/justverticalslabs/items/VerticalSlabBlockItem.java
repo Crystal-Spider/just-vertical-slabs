@@ -2,6 +2,7 @@ package crystalspider.justverticalslabs.items;
 
 import java.util.ArrayList;
 
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -32,7 +33,7 @@ public class VerticalSlabBlockItem extends BlockItem {
     ItemStack itemStack = new ItemStack(this);
     CompoundTag referringBlockTag = new CompoundTag();
     referringBlockTag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
-    itemStack.addTagElement("BlockEntityTag", referringBlockTag);
+    BlockItem.setBlockEntityData(itemStack, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), referringBlockTag);
     return itemStack;
   }
 }

@@ -2,6 +2,7 @@ package crystalspider.justverticalslabs.blocks.verticalslab;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -34,7 +35,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * TODO:
  * Set correct block properties from referringBlockState (See {@link net.minecraft.world.level.block.state.BlockBehaviour}).
  * Set crafting recipes (from block to vertical slab, from vertical slab to block, from vertical slab to slab, from slab to vertical slab).
- * Correctly pick up block in creative.
+ * Create and set proper Creative Tab.
  */
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -235,6 +236,16 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   @Override
   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
     stateDefinition.add(FACING, SHAPE, WATERLOGGED);
+  }
+
+  @Override
+  public ItemStack getCloneItemStack(BlockGetter getter, BlockPos pos, BlockState state) {
+    BlockEntity blockEntity = getter.getBlockEntity(pos);
+    ItemStack itemStack = new ItemStack(this);
+    if (blockEntity != null && blockEntity instanceof VerticalSlabBlockEntity) {
+      blockEntity.saveToItem(itemStack);
+    }
+    return itemStack;
   }
 
   private int getShapeIndex(BlockState state) {
