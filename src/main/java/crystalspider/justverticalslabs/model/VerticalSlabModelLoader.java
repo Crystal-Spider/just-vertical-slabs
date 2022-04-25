@@ -16,7 +16,7 @@ public class VerticalSlabModelLoader implements IModelLoader<VerticalSlabModel> 
   /**
    * {@link ResourceLocation} of this custom Model Loader used to uniquely identify it.
    */
-  public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(JustVerticalSlabsLoader.MODID, "vertical_slab_loader");
+  public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(JustVerticalSlabsLoader.MODID, JustVerticalSlabsLoader.VERTICAL_SLAB_ID + "_loader");
 
   /**
    * Returns a new {@link VerticalSlabModel} based on the "model" property read from the JSON contents.

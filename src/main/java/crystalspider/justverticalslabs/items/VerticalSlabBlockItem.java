@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -24,13 +25,13 @@ public class VerticalSlabBlockItem extends BlockItem {
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
     if (this.allowdedIn(creativeModeTab)) {
       for(BlockState referringBlockState : referringBlockStates) {
-        itemStacks.add(getItemStackWithState(referringBlockState));
+        itemStacks.add(getItemStackWithState(this, referringBlockState));
       }
     }
   }
 
-  private ItemStack getItemStackWithState(BlockState referringBlockState) {
-    ItemStack itemStack = new ItemStack(this);
+  public static ItemStack getItemStackWithState(ItemLike itemLike, BlockState referringBlockState) {
+    ItemStack itemStack = new ItemStack(itemLike);
     CompoundTag referringBlockTag = new CompoundTag();
     referringBlockTag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
     BlockItem.setBlockEntityData(itemStack, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), referringBlockTag);
