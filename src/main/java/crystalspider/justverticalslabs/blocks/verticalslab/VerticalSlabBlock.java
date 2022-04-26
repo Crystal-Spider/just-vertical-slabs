@@ -1,11 +1,15 @@
 package crystalspider.justverticalslabs.blocks.verticalslab;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -65,7 +69,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   };
 
   public VerticalSlabBlock() {
-    super(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD));
+    super(BlockBehaviour.Properties.of(Material.AIR, MaterialColor.NONE));
     this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)));
   }
 
@@ -246,6 +250,19 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     }
     return itemStack;
   }
+
+  @Override
+  public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
+    BlockEntity blockEntity = level.getBlockEntity(pos);
+    if (blockEntity != null && blockEntity instanceof VerticalSlabBlockEntity) {
+      BlockState referringBlockState = ((VerticalSlabBlockEntity) blockEntity).getReferringBlockState();
+      if (referringBlockState != null) {
+        return referringBlockState.getSoundType(level, pos, entity);
+      }
+    }
+    return super.getSoundType(state, level, pos, entity);
+  }
+
 
   private int getShapeIndex(BlockState state) {
     return state.getValue(SHAPE).ordinal() * 4 + state.getValue(FACING).get2DDataValue();

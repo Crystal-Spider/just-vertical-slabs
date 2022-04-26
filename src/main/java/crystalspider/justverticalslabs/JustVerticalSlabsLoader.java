@@ -38,11 +38,11 @@ public class JustVerticalSlabsLoader {
   /**
    * {@link CreativeModTab} for {@link VerticalSlabBlockItem Vertical Slab Items}.
    */
-  public static final CreativeModeTab TAB_JUST_VERTICAL_SLABS = (new CreativeModeTab("justVerticalSlabs") {
+  public static final CreativeModeTab TAB_JUST_VERTICAL_SLABS = new CreativeModeTab("justVerticalSlabs") {
     public ItemStack makeIcon() {
       return VerticalSlabBlockItem.getItemStackWithState(VERTICAL_SLAB_BLOCK.get(), Blocks.OAK_PLANKS.defaultBlockState());
     }
-  }).setRecipeFolderName(VERTICAL_SLAB_ID);
+  }.setRecipeFolderName(VERTICAL_SLAB_ID);
 
   /**
    * {@link Block Blocks} {@link DeferredRegisterdeferred register}.
@@ -64,7 +64,7 @@ public class JustVerticalSlabsLoader {
   /**
    * {@link RegistryObject} for {@link VerticalSlabBlockItem}.
    */
-  public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.COBBLESTONE.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState(), Blocks.GLOWSTONE.defaultBlockState()))));
+  public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.AMETHYST_BLOCK.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState(), Blocks.GLOWSTONE.defaultBlockState()))));
   /**
    * {@link RegistryObject} for {@link VerticalSlabBlockEntity}.
    */
