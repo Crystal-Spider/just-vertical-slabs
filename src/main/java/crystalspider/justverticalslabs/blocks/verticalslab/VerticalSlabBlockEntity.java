@@ -1,5 +1,7 @@
 package crystalspider.justverticalslabs.blocks.verticalslab;
 
+import javax.annotation.Nullable;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +25,11 @@ public class VerticalSlabBlockEntity extends BlockEntity {
 
   public VerticalSlabBlockEntity(BlockPos pos, BlockState state) {
     super(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), pos, state);
+  }
+
+  @Nullable
+  public BlockState getReferringBlockState() {
+    return referringBlockState;
   }
 
   @Override
