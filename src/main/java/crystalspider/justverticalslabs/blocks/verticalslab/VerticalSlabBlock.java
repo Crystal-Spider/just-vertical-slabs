@@ -40,8 +40,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * TODO:
- * Fix block properties.
- * Set crafting recipes (from block to vertical slab, from vertical slab to block, from vertical slab to slab, from slab to vertical slab).
+ * Fix place sound, jumpFactor and speedFactor.
  */
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -77,7 +76,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       .isValidSpawn((state, getter, pos, entityType) -> false)
       .isRedstoneConductor((state, getter, pos) -> false)
       .isSuffocating((state, getter, pos) -> false)
-      // .requiresCorrectToolForDrops()
     );
     this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)));
   }
