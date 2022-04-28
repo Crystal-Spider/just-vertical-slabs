@@ -40,7 +40,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * TODO:
- * Fix place sound, jumpFactor and speedFactor.
+ * jumpFactor and speedFactor
  */
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;

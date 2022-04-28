@@ -44,6 +44,10 @@ public class VerticalSlabBlockItem extends BlockItem {
     }
   }
 
+  /**
+   * Forces BlockEntity update on client.
+   * Refer to {@link BlockItem#updateCustomBlockEntityTag(Level, Player, BlockPos, ItemStack)} for implementation.
+   */
   @Override
   protected boolean updateCustomBlockEntityTag(BlockPos pos, Level level, @Nullable Player player, ItemStack itemStack, BlockState state) {
     boolean updated = updateCustomBlockEntityTag(level, player, pos, itemStack);
