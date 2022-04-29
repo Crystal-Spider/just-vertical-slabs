@@ -11,13 +11,14 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
 import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
-import crystalspider.justverticalslabs.model.vertex.VerticalSlabVertexTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -30,11 +31,10 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
-import net.minecraftforge.client.model.pipeline.LightUtil;
 
 /**
  * Vertical Slab Baked Model ready for rendering.
+ * TODO: Fix breaking progress not being shown.
  */
 public class VerticalSlabBakedModel implements IDynamicBakedModel {
   /**
@@ -175,18 +175,15 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
             BakedQuad referringBakedQuad = getReferringBakedQuad(referringBlockState, side, rand, modelData);
             if (referringBakedQuad != null) {
               for (BakedQuad jsonBakedQuad : jsonBakedQuads) {
-                BakedQuadBuilder quadBuilder = new BakedQuadBuilder(referringBakedQuad.getSprite());
-                LightUtil.putBakedQuad(new VerticalSlabVertexTransformer(quadBuilder, referringBakedQuad), jsonBakedQuad);
-                bakedQuads.add(quadBuilder.build());
+                bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referringBakedQuad.getSprite(), side));
               }
             }
           } else {
             for (BakedQuad jsonBakedQuad : jsonBakedQuads) {
-              BakedQuad referringBakedQuad = getReferringBakedQuad(referringBlockState, jsonBakedQuad.getDirection(), rand, modelData);
+              Direction orientation = jsonBakedQuad.getDirection();
+              BakedQuad referringBakedQuad = getReferringBakedQuad(referringBlockState, orientation, rand, modelData);
               if (referringBakedQuad != null) {
-                BakedQuadBuilder quadBuilder = new BakedQuadBuilder(referringBakedQuad.getSprite());
-                LightUtil.putBakedQuad(new VerticalSlabVertexTransformer(quadBuilder, referringBakedQuad), jsonBakedQuad);
-                bakedQuads.add(quadBuilder.build());
+                bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referringBakedQuad.getSprite(), orientation));
               }
             }
           }
@@ -241,5 +238,76 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     }
     // TODO: log warning.
     return null;
+  }
+
+  /**
+   * Returns a new {@link BakedQuad} that uses the given sprite and orientation instead of its default ones.
+   * 
+   * @param jsonBakedQuad - original {@link BakedQuad}.
+   * @param referringSprite - new {@link TextureAtlasSprite sprite}.
+   * @param orientation - face this {@link BakedQuad} is associated to (not the culling face).
+   * @return new {@link BakedQuad} using the given sprite and orientation.
+   */
+  private BakedQuad getNewBakedQuad(BakedQuad jsonBakedQuad, TextureAtlasSprite referringSprite, Direction orientation) {
+    return new BakedQuad(updateVertices(jsonBakedQuad.getVertices().clone(), jsonBakedQuad.getSprite(), referringSprite), jsonBakedQuad.getTintIndex(), orientation, referringSprite, jsonBakedQuad.isShade());
+  }
+
+  /**
+   * Updates and returns the given vertices.
+   * Updates only UV vertices to use the new sprite instead of the old one.
+   * 
+   * @param vertices
+   * @param oldSprite
+   * @param newSprite
+   * @return updated vertices.
+   */
+  private int[] updateVertices(int[] vertices, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite) {
+    for (int i = 0; i < 4; i++) {
+      int vertexIndex = i * 8 + 4;
+      vertices[vertexIndex] = changeUVertexSprite(oldSprite, newSprite, vertices[vertexIndex]);
+      vertices[vertexIndex + 1] = changeVVertexSprite(oldSprite, newSprite, vertices[vertexIndex + 1]);
+    }
+    return vertices;
+  }
+
+  /**
+   * Changes the U Vertex value to reference the new sprite.
+   * Uses the same formula as {@link net.minecraft.client.renderer.block.model.FaceBakery#fillVertex(int[], int, Vector3f, TextureAtlasSprite, BlockFaceUV) FaceBakery.fillVertex(int[], int, Vector3f, TextureAtlasSprite, BlockFaceUV)} (index = i + 4),
+   * but gets the double parameter from {@link #getUV(float, float, float)}.
+   * 
+   * @param oldSprite
+   * @param newSprite
+   * @param vertex
+   * @return updated U Vertex.
+   */
+  private int changeUVertexSprite(TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite, int vertex) {
+    return Float.floatToRawIntBits(newSprite.getU(getUV(Float.intBitsToFloat(vertex), oldSprite.getU0(), oldSprite.getU1())));
+  }
+
+  /**
+   * Changes the V Vertex value to reference the new sprite.
+   * Uses the same formula as {@link net.minecraft.client.renderer.block.model.FaceBakery#fillVertex(int[], int, Vector3f, TextureAtlasSprite, BlockFaceUV) FaceBakery.fillVertex(int[], int, Vector3f, TextureAtlasSprite, BlockFaceUV)} (index = i + 5),
+   * but gets the double parameter from {@link #getUV(float, float, float)}.
+   * 
+   * @param oldSprite
+   * @param newSprite
+   * @param vertex
+   * @return updated V Vertex.
+   */
+  private int changeVVertexSprite(TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite, int vertex) {
+    return Float.floatToRawIntBits(newSprite.getV(getUV(Float.intBitsToFloat(vertex), oldSprite.getV0(), oldSprite.getV1())));
+  }
+
+  /**
+   * Inverse formula for {@link TextureAtlasSprite#getU(double)} and {@link TextureAtlasSprite#getV(double)}.
+   * Given the internal values of the sprite, returns the parameter needed to get the given result for either of the above functions.
+   * 
+   * @param uv - {@link TextureAtlasSprite#getU(double)} or {@link TextureAtlasSprite#getV(double)} result.
+   * @param uv0 - {@link TextureAtlasSprite#u0} or {@link TextureAtlasSprite#v0}.
+   * @param uv1 - {@link TextureAtlasSprite#u1} or {@link TextureAtlasSprite#v1}.
+   * @return parameter to get the given result with either {@link TextureAtlasSprite#getU(double)} or {@link TextureAtlasSprite#getV(double)}.
+   */
+  private double getUV(float uv, float uv0, float uv1) {
+    return (double) (uv - uv0) * 16.0F / (uv1 - uv0);
   }
 }
