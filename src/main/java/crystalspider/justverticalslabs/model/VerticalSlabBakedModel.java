@@ -34,7 +34,6 @@ import net.minecraftforge.client.model.data.IModelData;
 
 /**
  * Vertical Slab Baked Model ready for rendering.
- * TODO: Fix breaking progress not being shown.
  */
 public class VerticalSlabBakedModel implements IDynamicBakedModel {
   /**
@@ -192,7 +191,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
       }
       return bakedQuadsCache.get(verticalSlabModelKey);
     }
-    return Collections.emptyList();
+    return jsonBakedModel.getQuads(state, side, rand, modelData);
   }
 
   /**
