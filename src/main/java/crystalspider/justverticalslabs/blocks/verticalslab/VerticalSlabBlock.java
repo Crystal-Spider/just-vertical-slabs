@@ -38,6 +38,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+/**
+ * Vertical Slab Block.
+ * TODO: return jumpFactor and speedFactor based on referringBlockState.
+ */
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
@@ -76,10 +80,21 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)));
   }
 
+  /**
+   * Checks if the given blockState holds a block that's a Vertical Slab.
+   * 
+   * @param blockState
+   * @return
+   */
   public static boolean isVerticalSlab(BlockState blockState) {
     return blockState.getBlock() instanceof VerticalSlabBlock;
   }
 
+  /**
+   * Makes all the possible {@link VoxelShape shapes} a Vertical Slab can have.
+   * 
+   * @return
+   */
   private static VoxelShape[] makeShapes() {
     // S = 0, W = 1, N = 2, E = 3
     // ST = 0, IL = 1, IR = 2, OL = 3, OR = 4
@@ -114,16 +129,34 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     };
   }
 
+  /**
+   * Creates a {@link VoxelShape vertical shaped box}.
+   * 
+   * @param originX
+   * @param originZ
+   * @param x
+   * @param z
+   * @return
+   */
   private static VoxelShape verticalBox(double originX, double originZ, double x, double z) {
     return Block.box(originX * 8, 0.0D, originZ * 8, x * 8, 16.0D, z * 8);
   }
 
+  /**
+   * Returns the appropriate {@link StairsShape} to use for this block depending on the neighbouring blocks.
+   * Logic is the same used for {@link net.minecraft.world.level.block.StairBlock StairBlock}.
+   * 
+   * @param state - {@link BlockState} of the block of which to get the {@link StairsShape}.
+   * @param getter
+   * @param pos - {@link BlockPos position} of the block of which to get the {@link StairsShape}.
+   * @return
+   */
   private static StairsShape getStairsShape(BlockState state, BlockGetter getter, BlockPos pos) {
     Direction direction = state.getValue(FACING);
     BlockState facingBlockState = getter.getBlockState(pos.relative(direction));
     if (isVerticalSlab(facingBlockState)) {
       Direction facingBlockDirection = facingBlockState.getValue(FACING);
-      if (facingBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter, pos, facingBlockDirection.getOpposite())) {
+      if (facingBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter.getBlockState(pos.relative(facingBlockDirection.getOpposite())))) {
         if (facingBlockDirection == direction.getClockWise()) {
           return StairsShape.OUTER_RIGHT;
         }
@@ -134,7 +167,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     BlockState oppositeBlockState = getter.getBlockState(pos.relative(direction.getOpposite()));
     if (isVerticalSlab(oppositeBlockState)) {
       Direction oppositeBlockDirection = oppositeBlockState.getValue(FACING);
-      if (oppositeBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter, pos, oppositeBlockDirection)) {
+      if (oppositeBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter.getBlockState(pos.relative(oppositeBlockDirection)))) {
         if (oppositeBlockDirection == direction.getClockWise()) {
           return StairsShape.INNER_RIGHT;
         }
@@ -145,9 +178,15 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     return StairsShape.STRAIGHT;
   }
 
-  private static boolean canTakeShape(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
-    BlockState blockstate = getter.getBlockState(pos.relative(direction));
-    return !isVerticalSlab(blockstate) || blockstate.getValue(FACING) != state.getValue(FACING);
+  /**
+   * Checks if the block from the first {@link BlockState} can combine its shape with the block from the second {@link BlockState}.
+   * 
+   * @param state
+   * @param blockState
+   * @return
+   */
+  private static boolean canTakeShape(BlockState state, BlockState blockState) {
+    return !isVerticalSlab(blockState) || blockState.getValue(FACING) != state.getValue(FACING);
   }
 
   @Override
