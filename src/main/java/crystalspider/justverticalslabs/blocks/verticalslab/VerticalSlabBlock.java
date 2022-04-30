@@ -1,30 +1,42 @@
-package crystalspider.justverticalslabs;
+package crystalspider.justverticalslabs.blocks.verticalslab;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.StairsShape;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.StairsShape;
 
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -54,8 +66,13 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     10  // 19 Outer Right - East
   };
 
-  public VerticalSlabBlock(Properties properties) {
-    super(properties);
+  public VerticalSlabBlock() {
+    super(
+      BlockBehaviour.Properties.of(Material.AIR)
+      .isValidSpawn((state, getter, pos, entityType) -> false)
+      .isRedstoneConductor((state, getter, pos) -> false)
+      .isSuffocating((state, getter, pos) -> false)
+    );
     this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)));
   }
 
@@ -218,13 +235,195 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   }
   
   @Override
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
+    stateDefinition.add(FACING, SHAPE, WATERLOGGED);
+  }
+
+  @Override
+  public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+    return false;
+  }
+
+  @Override
+  public boolean canBeReplaced(BlockState state, Fluid fluid) {
+    return false;
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public float getDestroyProgress(BlockState state, Player player, BlockGetter getter, BlockPos pos) {
+    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.getDestroyProgress(player, getter, pos);
+    }
+    return super.getDestroyProgress(state, player, getter, pos);
+ }
+
+  @Override
+  public ItemStack getCloneItemStack(BlockGetter getter, BlockPos pos, BlockState state) {
+    VerticalSlabBlockEntity blockEntity = getBlockEntity(getter, pos);
+    ItemStack itemStack = new ItemStack(this);
+    if (blockEntity != null) {
+      blockEntity.saveToItem(itemStack);
+    }
+    return itemStack;
+  }
+
+  @Override
+  public boolean isPossibleToRespawnInThis() {
+    return false;
+  }
+
+  @Override
+  public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float damage) {
+    BlockState referringBlockState = getReferringBlockState(level, pos);
+    if (referringBlockState != null) {
+      referringBlockState.getBlock().fallOn(level, state, pos, entity, damage);
+    } else {
+      super.fallOn(level, state, pos, entity, damage);
+    }
+  }
+
+  @Override
+  public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
+    BlockState referringBlockState = getReferringBlockState(getter, entity.getOnPos());
+    if (referringBlockState != null) {
+      referringBlockState.getBlock().updateEntityAfterFallOn(getter, entity);
+    } else {
+      super.updateEntityAfterFallOn(getter, entity);
+    }
+  }
+
+  @Override
+  public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, net.minecraftforge.common.IPlantable plantable) {
+    return false;
+  }
+
+  @Override
+  public float getFriction(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
+    BlockState referringBlockState = getReferringBlockState(level, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.getFriction(level, pos, entity);
+    }
+    return super.getFriction(state, level, pos, entity);
+  }
+
+  @Override
+  public int getLightEmission(BlockState state, BlockGetter getter, BlockPos pos) {
+    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.getLightEmission(getter, pos);
+    }
+    return super.getLightEmission(state, getter, pos);
+  }
+
+  @Override
+  public boolean canHarvestBlock(BlockState state, BlockGetter getter, BlockPos pos, Player player) {
+    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.canHarvestBlock(getter, pos, player);
+    }
+    return super.canHarvestBlock(state, getter, pos, player);
+  }
+
+  @Override
+  public float getExplosionResistance(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
+    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.getExplosionResistance(getter, pos, explosion);
+    }
+    return super.getExplosionResistance(state, getter, pos, explosion);
+  }
+
+  @Override
+  public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
+    BlockState referringBlockState = getReferringBlockState(level, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.getEnchantPowerBonus(level, pos) / 2;
+    }
+    return super.getEnchantPowerBonus(state, level, pos);
+  }
+
+  @Override
+  public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
+    BlockState referringBlockState = getReferringBlockState(level, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.getSoundType(level, pos, entity);
+    }
+    return super.getSoundType(state, level, pos, entity);
+  }
+
+  @Override
+  public int getFlammability(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
+    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.getFlammability(getter, pos, direction);
+    }
+    return super.getFlammability(state, getter, pos, direction);
+  }
+
+  @Override
+  public int getFireSpreadSpeed(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
+    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.getFireSpreadSpeed(getter, pos, direction);
+    }
+    return super.getFireSpreadSpeed(state, getter, pos, direction);
+  }
+
+  @Override
+  public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction) {
+    BlockState referringBlockState = getReferringBlockState(level, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.isFireSource(level, pos, direction);
+    }
+    return super.isFireSource(state, level, pos, direction);
+  }
+
+  @Override
+  public boolean canEntityDestroy(BlockState state, BlockGetter getter, BlockPos pos, Entity entity) {
+    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.canEntityDestroy(getter, pos, entity);
+    }
+    return super.canEntityDestroy(state, getter, pos, entity);
+  }
+
+  @Override
+  public boolean canDropFromExplosion(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
+    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    if (referringBlockState != null) {
+      return referringBlockState.canDropFromExplosion(getter, pos, explosion);
+    }
+    return super.canDropFromExplosion(state, getter, pos, explosion);
+  }
+
+  @Override
+  public boolean collisionExtendsVertically(BlockState state, BlockGetter level, BlockPos pos, Entity collidingEntity) {
+    return false;
+  }
+
+  @Override
   public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new VerticalSlabBlockEntity(pos, state);
   }
-  
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
-    stateDefinition.add(FACING, SHAPE, WATERLOGGED);
+
+  @Nullable
+  private VerticalSlabBlockEntity getBlockEntity(BlockGetter getter, BlockPos pos) {
+    BlockEntity blockEntity = getter.getBlockEntity(pos);
+    if (blockEntity != null && blockEntity instanceof VerticalSlabBlockEntity) {
+      return (VerticalSlabBlockEntity) blockEntity;
+    }
+    return null;
+  }
+
+  @Nullable
+  private BlockState getReferringBlockState(BlockGetter getter, BlockPos pos) {
+    VerticalSlabBlockEntity blockEntity = getBlockEntity(getter, pos);
+    if (blockEntity != null) {
+      return blockEntity.getReferringBlockState();
+    }
+    return null;
   }
 
   private int getShapeIndex(BlockState state) {

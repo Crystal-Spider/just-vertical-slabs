@@ -1,25 +1,33 @@
-package crystalspider.justverticalslabs;
+package crystalspider.justverticalslabs.blocks.verticalslab;
 
+import javax.annotation.Nullable;
+
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 
 public class VerticalSlabBlockEntity extends BlockEntity {
   public static final ModelProperty<BlockState> REFERRING_BLOCK_STATE = new ModelProperty<BlockState>();
 
-  private BlockState referringBlockState = Blocks.OAK_PLANKS.defaultBlockState();
+  private BlockState referringBlockState = null;
 
   public VerticalSlabBlockEntity(BlockPos pos, BlockState state) {
     super(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), pos, state);
+  }
+
+  @Nullable
+  public BlockState getReferringBlockState() {
+    return referringBlockState;
   }
 
   @Override
@@ -38,17 +46,10 @@ public class VerticalSlabBlockEntity extends BlockEntity {
     return saveReferringBlockState(super.getUpdateTag());
   }
 
-  // The default one already calls load, so overriding should be useless.
-  // @Override
-  // public void handleUpdateTag(CompoundTag tag) {
-  //   loadReferringBlockState(tag);
-  //   super.handleUpdateTag(tag);
-  // }
-
   @Override
   public Packet<ClientGamePacketListener> getUpdatePacket() {
     return ClientboundBlockEntityDataPacket.create(this);
-  } 
+  }
 
   @Override
   public IModelData getModelData() {
@@ -56,11 +57,19 @@ public class VerticalSlabBlockEntity extends BlockEntity {
   }
 
   private CompoundTag saveReferringBlockState(CompoundTag tag) {
-    tag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
+    if (referringBlockState != null) {
+      tag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
+    }
     return tag;
   }
 
   private void loadReferringBlockState(CompoundTag tag) {
-    referringBlockState = NbtUtils.readBlockState(tag.getCompound("referringBlockState"));
+    CompoundTag referringBlockStateTag = tag.getCompound("referringBlockState");
+    if (referringBlockStateTag != null) {
+      referringBlockState = NbtUtils.readBlockState(referringBlockStateTag);
+    } else {
+      // TODO: log warning.
+      referringBlockState = Blocks.AIR.defaultBlockState();
+    }
   }
 }

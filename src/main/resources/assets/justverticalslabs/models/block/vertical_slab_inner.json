@@ -1,33 +1,34 @@
 {
-  "textures": {
-    "particle": "#side",
-    "side": "minecraft:block/oak_planks",
-    "bottom": "minecraft:block/oak_planks",
-    "top": "minecraft:block/oak_planks"
-  },
-  "elements": [
-    {
-      "from": [ 0, 0, 0 ],
-      "to": [ 16, 16, 8 ],
-      "faces": {
-        "up":    { "texture": "#top", "cullface": "up" },
-        "down":  { "texture": "#bottom", "cullface": "down" },
-        "north": { "texture": "#side", "cullface": "north" },
-        "south": { "texture": "#side" },
-        "west":  { "texture": "#side", "cullface": "west" },
-        "east":  { "texture": "#side", "cullface": "east" }
-      }
+  "loader": "justverticalslabs:vertical_slab_loader",
+  "model": {
+    "textures": {
+      "particle": "#all",
+      "all": "minecraft:block/oak_planks"
     },
-    {
-      "from": [ 0, 0, 8 ],
-      "to": [ 8, 16, 16 ],
-      "faces": {
-        "up":    { "texture": "#top", "cullface": "up" },
-        "down":  { "texture": "#bottom", "cullface": "down" },
-        "south": { "texture": "#side", "cullface": "south" },
-        "west":  { "texture": "#side", "cullface": "west" },
-        "east":  { "texture": "#side" }
+    "elements": [
+      {
+        "from": [ 0, 0, 0 ],
+        "to": [ 16, 16, 8 ],
+        "faces": {
+          "up":    { "texture": "#all", "cullface": "up" },
+          "down":  { "texture": "#all", "cullface": "down" },
+          "north": { "texture": "#all", "cullface": "north" },
+          "south": { "texture": "#all" },
+          "west":  { "texture": "#all", "cullface": "west" },
+          "east":  { "texture": "#all", "cullface": "east" }
+        }
+      },
+      {
+        "from": [ 0, 0, 8 ],
+        "to": [ 8, 16, 16 ],
+        "faces": {
+          "up":    { "texture": "#all", "cullface": "up" },
+          "down":  { "texture": "#all", "cullface": "down" },
+          "south": { "texture": "#all", "cullface": "south" },
+          "west":  { "texture": "#all", "cullface": "west" },
+          "east":  { "texture": "#all" }
+        }
       }
-    }
-  ]
+    ]
+  }
 }
