@@ -312,6 +312,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     return super.getFriction(state, level, pos, entity);
   }
 
+  // FIXME: Light is not emitted correctly when placed.
   @Override
   public int getLightEmission(BlockState state, BlockGetter getter, BlockPos pos) {
     BlockState referringBlockState = getReferringBlockState(getter, pos);
