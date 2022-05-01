@@ -7,6 +7,7 @@ import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +41,7 @@ public class JustVerticalSlabsLoader {
    */
   public static final CreativeModeTab TAB_JUST_VERTICAL_SLABS = new CreativeModeTab("justVerticalSlabs") {
     public ItemStack makeIcon() {
-      return VerticalSlabBlockItem.getItemStackWithState(VERTICAL_SLAB_BLOCK.get(), Blocks.OAK_PLANKS.defaultBlockState());
+      return VerticalSlabUtils.getItemStackWithState(VERTICAL_SLAB_BLOCK.get(), Blocks.OAK_PLANKS.defaultBlockState());
     }
   }.setRecipeFolderName(VERTICAL_SLAB_ID);
 
