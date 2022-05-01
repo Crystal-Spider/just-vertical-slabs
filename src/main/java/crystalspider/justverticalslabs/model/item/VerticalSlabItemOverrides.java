@@ -38,7 +38,7 @@ public class VerticalSlabItemOverrides extends ItemOverrides {
     if (itemStackTag != null) {
       CompoundTag blockEntityTag = itemStackTag.getCompound("BlockEntityTag");
       if (blockEntityTag != null) {
-        CompoundTag referringBlockStateTag = blockEntityTag.getCompound("referringBlockState");
+        CompoundTag referringBlockStateTag = blockEntityTag.getCompound(VerticalSlabUtils.NBT_ID);
         if (referringBlockStateTag != null) {
           return new VerticalSlabItemBakedModel((VerticalSlabBakedModel) bakedModel, VerticalSlabUtils.buildModelData(NbtUtils.readBlockState(referringBlockStateTag)));
         }

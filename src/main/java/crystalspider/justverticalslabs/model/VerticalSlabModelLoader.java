@@ -4,6 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -16,7 +17,7 @@ public class VerticalSlabModelLoader implements IModelLoader<VerticalSlabModel> 
   /**
    * {@link ResourceLocation} of this custom Model Loader used to uniquely identify it.
    */
-  public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(JustVerticalSlabsLoader.MODID, JustVerticalSlabsLoader.VERTICAL_SLAB_ID + "_loader");
+  public static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(JustVerticalSlabsLoader.VERTICAL_SLAB_ID + "_loader");
 
   /**
    * Returns a new {@link VerticalSlabModel} based on the "model" property read from the JSON contents.

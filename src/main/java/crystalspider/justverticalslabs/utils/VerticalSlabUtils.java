@@ -4,9 +4,11 @@ import javax.annotation.Nullable;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -21,6 +23,11 @@ import net.minecraftforge.client.model.data.ModelProperty;
  * Utility class for common operations regarding Vertical Slabs.
  */
 public class VerticalSlabUtils {
+  /**
+   * ID to use when creating a new {@link CompoundTag} to store a Vertical Slab referring {@link BlockState}.
+   */
+  public static final String NBT_ID = "referringBlockState";
+
   /**
    * {@link BlockState} {@link ModelProperty} to use when building and reading {@link IModelData} of a Vertical Slab.
    */
@@ -38,6 +45,16 @@ public class VerticalSlabUtils {
   }
 
   /**
+   * Returns a new {@link ResourceLocation} to uniquely identify a resource of this mod.
+   * 
+   * @param id - unique ID for the resource.
+   * @return {@link ResourceLocation}.
+   */
+  public static ResourceLocation getResourceLocation(String id) {
+    return new ResourceLocation(JustVerticalSlabsLoader.MODID, id);
+  }
+
+  /**
    * Returns a Vertical Slab {@link ItemStack} with the specified {@code referringBlockState}.
    * 
    * @param itemLike - {@link ItemLike} instance of a Vertical Slab to use to get a basic {@link ItemStack}.
@@ -46,15 +63,25 @@ public class VerticalSlabUtils {
    */
   public static ItemStack getItemStackWithState(ItemLike itemLike, BlockState referringBlockState) {
     ItemStack itemStack = new ItemStack(itemLike);
-    CompoundTag referringBlockTag = new CompoundTag();
-    referringBlockTag.put("referringBlockState", NbtUtils.writeBlockState(referringBlockState));
+    CompoundTag referringBlockTag = putReferringBlockState(new CompoundTag(), referringBlockState);
     BlockItem.setBlockEntityData(itemStack, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), referringBlockTag);
     return itemStack;
   }
 
   /**
+   * Puts the given {@code referringBlockState} in the given {@link CompoundTag}.
+   * 
+   * @param compoundTag
+   * @param referringBlockState
+   * @return modified {@link CompoundTag}.
+   */
+  public static CompoundTag putReferringBlockState(CompoundTag compoundTag, BlockState referringBlockState) {
+    compoundTag.put(VerticalSlabUtils.NBT_ID, NbtUtils.writeBlockState(referringBlockState));
+    return compoundTag;
+  }
+
+  /**
    * Returns the {@link VerticalSlabBlockEntity} for the given {@link BlockGetter} and {@link BlockPos}.
-   * <br>
    * Returns {@code null} if none could be found.
    * 
    * @param getter
@@ -72,7 +99,6 @@ public class VerticalSlabUtils {
 
   /**
    * Returns the {@link BlockState referringBlockState} for the given {@link BlockGetter} and {@link BlockPos}.
-   * <br>
    * Returns {@code null} if none could be found.
    * 
    * @param getter
@@ -84,6 +110,27 @@ public class VerticalSlabUtils {
     VerticalSlabBlockEntity blockEntity = getVerticalSlabBlockEntity(getter, pos);
     if (blockEntity != null) {
       return blockEntity.getReferringBlockState();
+    }
+    return null;
+  }
+
+  /**
+   * Returns the {@link BlockState referringBlockState} for the given {@link ItemStack}.
+   * Returns {@code null} if none could be found.
+   * 
+   * @param itemStack
+   * @return {@link BlockState referringBlockState} or {@code null}.
+   */
+  @Nullable
+  public static BlockState getReferringBlockState(ItemStack itemStack) {
+    if (itemStack.getItem() instanceof VerticalSlabBlockItem) {
+      CompoundTag compoundTag = itemStack.getTagElement("BlockEntityTag");
+      if (compoundTag != null) {
+        compoundTag = compoundTag.getCompound(VerticalSlabUtils.NBT_ID);
+        if (compoundTag != null) {
+          return NbtUtils.readBlockState(compoundTag);
+        }
+      }
     }
     return null;
   }

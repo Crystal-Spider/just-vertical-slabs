@@ -1,6 +1,7 @@
 package crystalspider.justverticalslabs.recipes;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +11,7 @@ import net.minecraft.world.level.Level;
 
 public class ReferringBlockRecipe extends VerticalSlabRecipe {
   public static final String ID = "referring_block_recipe";
-  private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(JustVerticalSlabsLoader.MODID, ID);
+  private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   private int firstIndex = 0;
 
@@ -40,7 +41,7 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
 
   @Override
   public ItemStack assemble(CraftingContainer craftingContainer) {
-    return getReferringBlockState(craftingContainer.getItem(firstIndex)).getBlock().asItem().getDefaultInstance();
+    return VerticalSlabUtils.getReferringBlockState(craftingContainer.getItem(firstIndex)).getBlock().asItem().getDefaultInstance();
   }
 
   @Override
@@ -60,7 +61,7 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
 
   public static class Serializer extends VerticalSlabRecipe.Serializer<ReferringBlockRecipe> {
     public static final String ID = ReferringBlockRecipe.ID + "_serializer";
-    public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(JustVerticalSlabsLoader.MODID, ID);
+    public static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
     public Serializer() {
       super(ReferringBlockRecipe::new);

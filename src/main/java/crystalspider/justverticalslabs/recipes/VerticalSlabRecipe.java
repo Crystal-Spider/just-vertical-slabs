@@ -1,19 +1,14 @@
 package crystalspider.justverticalslabs.recipes;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Supplier;
 import com.google.gson.JsonObject;
 
-import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public abstract class VerticalSlabRecipe implements CraftingRecipe {
@@ -34,19 +29,7 @@ public abstract class VerticalSlabRecipe implements CraftingRecipe {
   public abstract RecipeSerializer<? extends VerticalSlabRecipe> getSerializer();
 
   protected boolean isVerticalSlab(ItemStack itemStack) {
-    return itemStack.getItem() instanceof VerticalSlabBlockItem && itemStack.getCount() > 0 && getReferringBlockState(itemStack) != null;
-  }
-
-  @Nullable
-  protected BlockState getReferringBlockState(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getTagElement("BlockEntityTag");
-    if (compoundTag != null) {
-      compoundTag = compoundTag.getCompound("referringBlockState");
-      if (compoundTag != null) {
-        return NbtUtils.readBlockState(compoundTag);
-      }
-    }
-    return null;
+    return VerticalSlabUtils.getReferringBlockState(itemStack) != null && itemStack.getCount() > 0;
   }
 
   public static abstract class Serializer<T extends VerticalSlabRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
