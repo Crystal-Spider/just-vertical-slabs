@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ReferringBlockRecipe implements Recipe<CraftingContainer> {
+public class ReferringBlockRecipe implements CraftingRecipe {
   public static final String ID = "referring_block_recipe";
   private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(JustVerticalSlabsLoader.MODID, ID);
   private int firstIndex = 0;
@@ -32,12 +32,14 @@ public class ReferringBlockRecipe implements Recipe<CraftingContainer> {
     int containerWidth = craftingContainer.getWidth();
     for (int w = 0; w < containerWidth - 1; w++) {
       for (int h = 0; h < craftingContainer.getHeight(); h++) {
-        if (isVerticalSlab(craftingContainer.getItem(w + h * containerWidth)) && isVerticalSlab(craftingContainer.getItem(w + h * containerWidth + 1))) {
+        int index = w + h * containerWidth;
+        if (isVerticalSlab(craftingContainer.getItem(index)) && isVerticalSlab(craftingContainer.getItem(index + 1))) {
           if (matchFound) {
             matchFound = false;
             break;
           }
           matchFound = true;
+          firstIndex = index;
         }
       }
     }
@@ -67,11 +69,6 @@ public class ReferringBlockRecipe implements Recipe<CraftingContainer> {
   @Override
   public RecipeSerializer<ReferringBlockRecipe> getSerializer() {
     return JustVerticalSlabsLoader.REFERRING_BLOCK_RECIPE_SERIALIZER.get();
-  }
-
-  @Override
-  public RecipeType<CraftingRecipe> getType() {
-    return RecipeType.CRAFTING;
   }
 
   private boolean isVerticalSlab(ItemStack itemStack) {
