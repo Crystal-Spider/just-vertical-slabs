@@ -1,80 +1,72 @@
 package crystalspider.justverticalslabs.recipes;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Supplier;
+import com.google.gson.JsonObject;
+
+import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
-/**
- * TODO:
- * from block to vertical slab
- * from vertical slab to block
- * from vertical slab to slab
- * from slab to vertical slab
- */
-// public class VerticalSlabRecipe implements CraftingRecipe {
-//   @Override
-//   public boolean matches(CraftingContainer craftingContainer, Level level) {
-//     int itemCount = 0;
-//     ItemStack slab = null;
-//     for (int c = 0; c < craftingContainer.getContainerSize() && itemCount <= 1; c++) {
-//       ItemStack itemStack = craftingContainer.getItem(c);
-//       if (!itemStack.isEmpty()) {
-//         itemCount++;
-//         if (itemStack.is(ItemTags.SLABS)) {
-//           slab = itemStack;
-//         }
-//       }
-//     }
-//     // Could be useful for other recipes (maybe):
-//     // level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING).stream().anyMatch(recipe -> {
-//     //   // more checks
-//     //   return recipe.getResultItem().is(ItemTags.SLABS);
-//     // });
-//     return itemCount == 1 && slab != null;
-//   }
+public abstract class VerticalSlabRecipe implements CraftingRecipe {
+  private final int width;
+  private final int height;
 
-//   @Override
-//   public ItemStack assemble(CraftingContainer craftingContainer) {
-//     int itemCount = 0;
-//     ItemStack slab = null;
-//     for (int c = 0; c < craftingContainer.getContainerSize() && itemCount <= 1; c++) {
-//       ItemStack itemStack = craftingContainer.getItem(c);
-//       if (!itemStack.isEmpty()) {
-//         itemCount++;
-//         if (itemStack.is(ItemTags.SLABS)) {
-//           slab = itemStack;
-//         }
-//       }
-//     }
-//     // return VerticalSlabBlockItem.getItemStackWithState(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get(), referringBlockState);
-//     return slab;
-//   }
+  public VerticalSlabRecipe(int width, int height) {
+    this.width = width;
+    this.height = height;
+  }
 
-//   @Override
-//   public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
-//     // TODO Auto-generated method stub
-//     return false;
-//   }
+  @Override
+  public boolean canCraftInDimensions(int width, int height) {
+    return width >= this.width && height >= this.height;
+  }
 
-//   @Override
-//   public ItemStack getResultItem() {
-//     // TODO Auto-generated method stub
-//     return null;
-//   }
+  @Override
+  public abstract RecipeSerializer<? extends VerticalSlabRecipe> getSerializer();
 
-//   @Override
-//   public ResourceLocation getId() {
-//     // TODO Auto-generated method stub
-//     return null;
-//   }
+  protected boolean isVerticalSlab(ItemStack itemStack) {
+    return itemStack.getItem() instanceof VerticalSlabBlockItem && itemStack.getCount() > 0 && getReferringBlockState(itemStack) != null;
+  }
 
-//   @Override
-//   public RecipeSerializer<?> getSerializer() {
-//     // TODO Auto-generated method stub
-//     return null;
-//   }
-// }
+  @Nullable
+  protected BlockState getReferringBlockState(ItemStack itemStack) {
+    CompoundTag compoundTag = itemStack.getTagElement("BlockEntityTag");
+    if (compoundTag != null) {
+      compoundTag = compoundTag.getCompound("referringBlockState");
+      if (compoundTag != null) {
+        return NbtUtils.readBlockState(compoundTag);
+      }
+    }
+    return null;
+  }
+
+  public static abstract class Serializer<T extends VerticalSlabRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
+    private final Supplier<T> recipeSupplier;
+
+    protected Serializer(Supplier<T> recipeSupplier) {
+      this.recipeSupplier = recipeSupplier;
+    }
+
+    @Override
+    public final T fromJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
+      return recipeSupplier.get();
+    }
+
+    @Override
+    public final T fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
+      return recipeSupplier.get();
+    }
+
+    @Override
+    public final void toNetwork(FriendlyByteBuf friendlyByteBuf, T referringBlockRecipe) {}
+  }
+}
