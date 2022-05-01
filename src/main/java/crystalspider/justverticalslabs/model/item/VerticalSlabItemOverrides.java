@@ -2,8 +2,8 @@ package crystalspider.justverticalslabs.model.item;
 
 import javax.annotation.Nullable;
 
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.model.VerticalSlabBakedModel;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.model.data.ModelDataMap;
 
 /**
  * Vertical Slab Item Overrides, to override default {@link ItemOverrides} and properly render items.
@@ -41,7 +40,7 @@ public class VerticalSlabItemOverrides extends ItemOverrides {
       if (blockEntityTag != null) {
         CompoundTag referringBlockStateTag = blockEntityTag.getCompound("referringBlockState");
         if (referringBlockStateTag != null) {
-          return new VerticalSlabItemBakedModel((VerticalSlabBakedModel) bakedModel, new ModelDataMap.Builder().withInitial(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE, NbtUtils.readBlockState(referringBlockStateTag)).build());
+          return new VerticalSlabItemBakedModel((VerticalSlabBakedModel) bakedModel, VerticalSlabUtils.buildModelData(NbtUtils.readBlockState(referringBlockStateTag)));
         }
       }
     }

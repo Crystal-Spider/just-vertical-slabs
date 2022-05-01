@@ -3,6 +3,7 @@ package crystalspider.justverticalslabs.blocks.verticalslab;
 import javax.annotation.Nullable;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -13,12 +14,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.client.model.data.ModelProperty;
 
 public class VerticalSlabBlockEntity extends BlockEntity {
-  public static final ModelProperty<BlockState> REFERRING_BLOCK_STATE = new ModelProperty<BlockState>();
-
   private BlockState referringBlockState = null;
 
   public VerticalSlabBlockEntity(BlockPos pos, BlockState state) {
@@ -53,7 +50,7 @@ public class VerticalSlabBlockEntity extends BlockEntity {
 
   @Override
   public IModelData getModelData() {
-    return new ModelDataMap.Builder().withInitial(REFERRING_BLOCK_STATE, referringBlockState).build();
+    return VerticalSlabUtils.buildModelData(referringBlockState);
   }
 
   private CompoundTag saveReferringBlockState(CompoundTag tag) {
