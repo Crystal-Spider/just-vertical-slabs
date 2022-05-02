@@ -78,14 +78,25 @@ public class JustVerticalSlabsLoader {
    * {@link RegistryObject} for {@link VerticalSlabBlockItem}.
    */
   public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS)));
-  
+  /**
+   * {@link RegistryObject} for {@link ReferringBlockRecipe} {@link ReferringBlockRecipe.Serializer Serializer}.
+   */
   public static final RegistryObject<ReferringBlockRecipe.Serializer> REFERRING_BLOCK_RECIPE_SERIALIZER = RECIPES.register(ReferringBlockRecipe.Serializer.ID, ReferringBlockRecipe.Serializer::new);
+  /**
+   * {@link RegistryObject} for {@link SlabRecipe} {@link SlabRecipe.Serializer Serializer}.
+   */
   public static final RegistryObject<SlabRecipe.Serializer> SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabRecipe.Serializer.ID, SlabRecipe.Serializer::new);
+  /**
+   * {@link RegistryObject} for {@link SlabVerticalSlabRecipe} {@link SlabVerticalSlabRecipe.Serializer Serializer}.
+   */
   public static final RegistryObject<SlabVerticalSlabRecipe.Serializer> SLAB_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabVerticalSlabRecipe.Serializer.ID, SlabVerticalSlabRecipe.Serializer::new);
+  /**
+   * {@link RegistryObject} for {@link BlockVerticalSlabRecipe} {@link BlockVerticalSlabRecipe.Serializer Serializer}.
+   */
   public static final RegistryObject<BlockVerticalSlabRecipe.Serializer> BLOCK_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(BlockVerticalSlabRecipe.Serializer.ID, BlockVerticalSlabRecipe.Serializer::new);
 
   /**
-   * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item}.
+   * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item Items}.
    */
   public static volatile ImmutableMap<Item, Item> slabMap;
 

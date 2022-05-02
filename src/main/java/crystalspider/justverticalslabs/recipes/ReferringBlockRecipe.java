@@ -68,16 +68,21 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
       for (int w = 0; w < craftingContainer.getHeight() && correctPattern; w++) {
         int index = w + h * containerWidth;
         ItemStack itemStack1 = craftingContainer.getItem(index);
-        if (isVerticalSlab(itemStack1)) {
-          ItemStack itemStack2 = craftingContainer.getItem(index + 1);
-          if (isVerticalSlab(itemStack2)) {
-            if (matchIndex == -1 && verticalSlabsMatch(itemStack1, itemStack2)) {
-              matchIndex = index;
-            } else {
+        if (!itemStack1.isEmpty()) {
+          if (isVerticalSlab(itemStack1)) {
+            ItemStack itemStack2 = craftingContainer.getItem(index + 1);
+            if (isVerticalSlab(itemStack2)) {
+              if (matchIndex == -1 && verticalSlabsMatch(itemStack1, itemStack2)) {
+                matchIndex = index;
+              } else {
+                matchIndex = -1;
+                correctPattern = false;
+              }
+            } else if (matchIndex != index - 1 || index == 0) {
               matchIndex = -1;
               correctPattern = false;
             }
-          } else if (matchIndex != index - 1 || index == 0) {
+          } else {
             matchIndex = -1;
             correctPattern = false;
           }

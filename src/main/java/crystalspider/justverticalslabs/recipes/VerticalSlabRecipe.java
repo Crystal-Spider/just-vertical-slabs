@@ -68,7 +68,7 @@ public abstract class VerticalSlabRecipe implements CraftingRecipe {
    * @return whether the {@link ItemStack} is a Vertical Slab.
    */
   protected boolean isVerticalSlab(ItemStack itemStack) {
-    return VerticalSlabUtils.getReferringBlockState(itemStack) != null && itemStack.getCount() > 0;
+    return !itemStack.isEmpty() && VerticalSlabUtils.getReferringBlockState(itemStack) != null;
   }
 
   /**
