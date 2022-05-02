@@ -99,6 +99,10 @@ public class JustVerticalSlabsLoader {
    * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item Items}.
    */
   public static volatile ImmutableMap<Item, Item> slabMap;
+  /**
+   * {@link ImmutableMap} linking Block {@link Item Items} to their respective Slab {@link Item Items}.
+   */
+  public static volatile ImmutableMap<Item, Item> blockMap;
 
   public JustVerticalSlabsLoader() {
     MinecraftForge.EVENT_BUS.register(new ServerAboutToStartEventHandler());

@@ -1,5 +1,7 @@
 package crystalspider.justverticalslabs.recipes;
 
+import javax.annotation.Nullable;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -25,16 +27,20 @@ public class SlabRecipe extends VerticalSlabRecipe {
     super(1, 1, Items.OAK_SLAB.getDefaultInstance());
   }
 
+  /**
+   * Checks if the given {@link CraftingContainer} contains the correct items in the correct position to craft this recipe.
+   */
   @Override
   public boolean matches(CraftingContainer craftingContainer, Level level) {
-    // TODO Auto-generated method stub
-    return false;
+    return getMatchIndex(craftingContainer) != null;
   }
 
+  /**
+   * Returns the {@link ItemStack} with the result of this recipe from the given {@link CraftingContainer}.
+   */
   @Override
   public ItemStack assemble(CraftingContainer craftingContainer) {
-    // TODO Auto-generated method stub
-    return null;
+    return JustVerticalSlabsLoader.blockMap.getOrDefault(VerticalSlabUtils.getReferringBlockState(craftingContainer.getItem(getMatchIndex(craftingContainer))).getBlock().asItem(), Items.OAK_SLAB).getDefaultInstance();
   }
 
   /**
@@ -49,7 +55,32 @@ public class SlabRecipe extends VerticalSlabRecipe {
   public Serializer getSerializer() {
     return JustVerticalSlabsLoader.SLAB_RECIPE_SERIALIZER.get();
   }
-  
+
+  /**
+   * Returns the index of the Vertical Slab.
+   * Returns null if none could be found.
+   * 
+   * @param craftingContainer
+   * @return index of the Vertical Slab or null.
+   */
+  @Nullable 
+  private Integer getMatchIndex(CraftingContainer craftingContainer) {
+    boolean correctPattern = true;
+    Integer matchIndex = null;
+    for (int i = 0; i < craftingContainer.getContainerSize() && correctPattern; i++) {
+      ItemStack itemStack = craftingContainer.getItem(i);
+      if (!itemStack.isEmpty()) {
+        if (matchIndex == null && isVerticalSlab(itemStack)) {
+          matchIndex = i;
+        } else {
+          matchIndex = null;
+          correctPattern = false;
+        }
+      }
+    }
+    return matchIndex;
+  }
+
   /**
    * Serializer for {@link SlabRecipe}.
    */

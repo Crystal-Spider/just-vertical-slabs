@@ -1,11 +1,14 @@
 package crystalspider.justverticalslabs.recipes;
 
+import javax.annotation.Nullable;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 /**
  * {@link VerticalSlabRecipe} to craft one Slab into its respective Vertical Slab.
@@ -24,16 +27,20 @@ public class SlabVerticalSlabRecipe extends VerticalSlabRecipe {
     super(1, 1, VerticalSlabUtils.getDefaultInstance());
   }
 
+  /**
+   * Checks if the given {@link CraftingContainer} contains the correct items in the correct position to craft this recipe.
+   */
   @Override
   public boolean matches(CraftingContainer craftingContainer, Level level) {
-    // TODO Auto-generated method stub
-    return false;
+    return getMatchIndex(craftingContainer) != null;
   }
 
+  /**
+   * Returns the {@link ItemStack} with the result of this recipe from the given {@link CraftingContainer}.
+   */
   @Override
   public ItemStack assemble(CraftingContainer craftingContainer) {
-    // TODO Auto-generated method stub
-    return null;
+    return VerticalSlabUtils.getVerticalSlabItem(Block.byItem(JustVerticalSlabsLoader.slabMap.getOrDefault(craftingContainer.getItem(getMatchIndex(craftingContainer)).getItem(), VerticalSlabUtils.getDefaultInstance().getItem())).defaultBlockState());
   }
 
   /**
@@ -49,6 +56,31 @@ public class SlabVerticalSlabRecipe extends VerticalSlabRecipe {
     return JustVerticalSlabsLoader.SLAB_VERTICAL_SLAB_RECIPE_SERIALIZER.get();
   }
   
+  /**
+   * Returns the index of the valid Slab.
+   * Returns null if none could be found.
+   * 
+   * @param craftingContainer
+   * @return index of the valid Slab or null.
+   */
+  @Nullable 
+  private Integer getMatchIndex(CraftingContainer craftingContainer) {
+    boolean correctPattern = true;
+    Integer matchIndex = null;
+    for (int i = 0; i < craftingContainer.getContainerSize() && correctPattern; i++) {
+      ItemStack itemStack = craftingContainer.getItem(i);
+      if (!itemStack.isEmpty()) {
+        if (matchIndex == null && JustVerticalSlabsLoader.slabMap.containsKey(itemStack.getItem())) {
+          matchIndex = i;
+        } else {
+          matchIndex = null;
+          correctPattern = false;
+        }
+      }
+    }
+    return matchIndex;
+  }
+
   /**
    * Serializer for {@link SlabVerticalSlabRecipe}.
    */

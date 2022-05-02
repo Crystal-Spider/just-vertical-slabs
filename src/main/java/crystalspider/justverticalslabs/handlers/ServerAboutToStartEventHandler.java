@@ -27,7 +27,7 @@ public class ServerAboutToStartEventHandler {
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onServerAboutToStartEvent(ServerAboutToStartEvent event) {
-    Map<Item, Item> slabMap = new HashMap<Item, Item>();
+    Map<Item, Item> slabMap = new HashMap<Item, Item>(), blockMap = new HashMap<Item, Item>();
     ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS).forEach(slab -> {
       event.getServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING).forEach(recipe -> {
         if (recipe.getResultItem().is(slab)) {
@@ -35,11 +35,13 @@ public class ServerAboutToStartEventHandler {
             ItemStack block = ingredient.getItems()[0];
             if (!block.is(ItemTags.SLABS)) {
               slabMap.put(slab, block.getItem());
+              blockMap.put(block.getItem(), slab);
             }
           });
         }
       });
     });
     JustVerticalSlabsLoader.slabMap = ImmutableMap.copyOf(slabMap);
+    JustVerticalSlabsLoader.blockMap = ImmutableMap.copyOf(blockMap);
   }
 }
