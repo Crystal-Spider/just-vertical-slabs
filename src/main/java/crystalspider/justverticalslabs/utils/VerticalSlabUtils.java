@@ -55,16 +55,31 @@ public class VerticalSlabUtils {
     return new ResourceLocation(JustVerticalSlabsLoader.MODID, id);
   }
 
+  /**
+   * Returns the Vertical Slab {@link ItemStack} default instance.
+   * 
+   * @return Vertical Slab {@link ItemStack} default instance.
+   */
   public static ItemStack getDefaultInstance() {
-    return getItemStackWithState(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get(), Blocks.OAK_PLANKS.defaultBlockState());
+    return getVerticalSlabItem(Blocks.OAK_PLANKS.defaultBlockState());
   }
 
   /**
    * Returns a Vertical Slab {@link ItemStack} with the specified {@code referringBlockState}.
    * 
-   * @param itemLike - {@link ItemLike} instance of a Vertical Slab to use to get a basic {@link ItemStack}.
-   * @param referringBlockState - {@link BlockState} to save in the {@link ItemStack} NBTs.
+   * @param referringBlockState
    * @return Vertical Slab {@link ItemStack}.
+   */
+  public static ItemStack getVerticalSlabItem(BlockState referringBlockState) {
+    return getItemStackWithState(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get(), referringBlockState);
+  }
+
+  /**
+   * Returns a {@link ItemStack} with the specified {@code referringBlockState}.
+   * 
+   * @param itemLike - {@link ItemLike} instance to use to get a basic {@link ItemStack}.
+   * @param referringBlockState - {@link BlockState} to save in the {@link ItemStack} NBTs.
+   * @return {@link ItemStack} with {@code referringBlockState} in its NBTs.
    */
   public static ItemStack getItemStackWithState(ItemLike itemLike, BlockState referringBlockState) {
     ItemStack itemStack = new ItemStack(itemLike);

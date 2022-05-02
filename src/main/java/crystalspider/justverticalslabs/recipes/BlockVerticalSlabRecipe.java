@@ -1,5 +1,7 @@
 package crystalspider.justverticalslabs.recipes;
 
+import javax.annotation.Nullable;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -26,15 +28,22 @@ public class BlockVerticalSlabRecipe extends VerticalSlabRecipe {
     super(1, 3, VerticalSlabUtils.getDefaultInstance());
   }
 
+  /**
+   * Checks if the given {@link CraftingContainer} contains the correct items in the correct position to craft this recipe.
+   */
   @Override
   public boolean matches(CraftingContainer craftingContainer, Level level) {
-    return getMatchIndex(craftingContainer) != -1;
+    return getMatchIndex(craftingContainer) != null;
   }
 
+  /**
+   * Returns the {@link ItemStack} with the result of this recipe from the given {@link CraftingContainer}.
+   */
   @Override
   public ItemStack assemble(CraftingContainer craftingContainer) {
-    ItemStack block = craftingContainer.getItem(getMatchIndex(craftingContainer));
-    return VerticalSlabUtils.getItemStackWithState(block.getItem(), Block.byItem(block.getItem()).defaultBlockState());
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(Block.byItem(craftingContainer.getItem(getMatchIndex(craftingContainer)).getItem()).defaultBlockState());
+    verticalSlab.setCount(6);
+    return verticalSlab;
   }
 
   /**
@@ -52,14 +61,15 @@ public class BlockVerticalSlabRecipe extends VerticalSlabRecipe {
   
   /**
    * Returns the index of the first Block in the column of matching blocks.
-   * Returns -1 if none valid column could be found.
+   * Returns null if none valid column could be found.
    * 
    * @param craftingContainer
-   * @return index of the first Block in the matching column or -1.
+   * @return index of the first Block in the matching column or null.
    */
-  private int getMatchIndex(CraftingContainer craftingContainer) {
+  @Nullable
+  private Integer getMatchIndex(CraftingContainer craftingContainer) {
     boolean correctPattern = true;
-    int matchIndex = -1, containerWidth = craftingContainer.getWidth();
+    Integer matchIndex = null, containerWidth = craftingContainer.getWidth();
     for (int h = 0; h < containerWidth && correctPattern; h++) {
       for (int w = 0; w < craftingContainer.getHeight() && correctPattern; w++) {
         int index = w + h * containerWidth;
@@ -70,18 +80,18 @@ public class BlockVerticalSlabRecipe extends VerticalSlabRecipe {
             ItemStack itemStack2 = craftingContainer.getItem(index + containerWidth);
             ItemStack itemStack3 = craftingContainer.getItem(index + containerWidth * 2);
             if (itemStack2.is(item) && itemStack3.is(item)) {
-              if (matchIndex == -1) {
+              if (matchIndex == null) {
                 matchIndex = index;
               } else {
-                matchIndex = -1;
+                matchIndex = null;
                 correctPattern = false;
               }
-            } else if ((matchIndex != index - containerWidth && matchIndex != index - containerWidth * 2) || index == containerWidth + 1 || index == containerWidth * 2 + 1) {
-              matchIndex = -1;
+            } else if (matchIndex == null || (matchIndex != index - containerWidth && matchIndex != index - containerWidth * 2)) {
+              matchIndex = null;
               correctPattern = false;
             }
           } else {
-            matchIndex = -1;
+            matchIndex = null;
             correctPattern = false;
           }
         }

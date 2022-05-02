@@ -1,5 +1,7 @@
 package crystalspider.justverticalslabs.recipes;
 
+import javax.annotation.Nullable;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +32,7 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
    */
   @Override
   public boolean matches(CraftingContainer craftingContainer, Level level) {
-    return getMatchIndex(craftingContainer) != -1;
+    return getMatchIndex(craftingContainer) != null;
   }
 
   /**
@@ -56,14 +58,15 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
 
   /**
    * Returns the index of the first Vertical Slab in the pair of matching adjacent Vertical Slabs.
-   * Returns -1 if none valid pair could be found.
+   * Returns null if none valid pair could be found.
    * 
    * @param craftingContainer
-   * @return index of the first Vertical Slab in the matching pair or -1.
+   * @return index of the first Vertical Slab in the matching pair or null.
    */
-  private int getMatchIndex(CraftingContainer craftingContainer) {
+  @Nullable 
+  private Integer getMatchIndex(CraftingContainer craftingContainer) {
     boolean correctPattern = true;
-    int matchIndex = -1, containerWidth = craftingContainer.getWidth();
+    Integer matchIndex = null, containerWidth = craftingContainer.getWidth();
     for (int h = 0; h < containerWidth && correctPattern; h++) {
       for (int w = 0; w < craftingContainer.getHeight() && correctPattern; w++) {
         int index = w + h * containerWidth;
@@ -72,18 +75,18 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
           if (isVerticalSlab(itemStack1)) {
             ItemStack itemStack2 = craftingContainer.getItem(index + 1);
             if (isVerticalSlab(itemStack2)) {
-              if (matchIndex == -1 && verticalSlabsMatch(itemStack1, itemStack2)) {
+              if (matchIndex == null && (index + 1) % containerWidth != 0 && verticalSlabsMatch(itemStack1, itemStack2)) {
                 matchIndex = index;
               } else {
-                matchIndex = -1;
+                matchIndex = null;
                 correctPattern = false;
               }
-            } else if (matchIndex != index - 1 || index == 0) {
-              matchIndex = -1;
+            } else if (matchIndex == null || matchIndex != index - 1) {
+              matchIndex = null;
               correctPattern = false;
             }
           } else {
-            matchIndex = -1;
+            matchIndex = null;
             correctPattern = false;
           }
         }
