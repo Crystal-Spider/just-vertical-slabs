@@ -6,57 +6,88 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
+/**
+ * {@link VerticalSlabRecipe} to craft two matching adjacent Vertical Slabs into their referring block.
+ */
 public class ReferringBlockRecipe extends VerticalSlabRecipe {
+  /**
+   * ID of this recipe.
+   */
   public static final String ID = "referring_block_recipe";
+  /**
+     * {@link ResourceLocation} of this recipe used to uniquely identify it.
+     */
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public ReferringBlockRecipe() {
     super(2, 1);
   }
 
+  /**
+   * Checks if the given {@link CraftingContainer} contains the correct items in the correct position to craft this recipe.
+   */
   @Override
   public boolean matches(CraftingContainer craftingContainer, Level level) {
     return getMatchIndex(craftingContainer) != -1;
   }
 
+  /**
+   * Returns the {@link ItemStack} with the result of this recipe from the given {@link CraftingContainer}.
+   */
   @Override
   public ItemStack assemble(CraftingContainer craftingContainer) {
     return VerticalSlabUtils.getReferringBlockState(craftingContainer.getItem(getMatchIndex(craftingContainer))).getBlock().asItem().getDefaultInstance();
   }
 
+  /**
+   * Returns the default {@link ItemStack} for this recipe.
+   * Since {@link VerticalSlabRecipe VerticalSlabRecipes} are highly dependent on input data, this method should never be used.
+   */
   @Override
+  @Deprecated
   public ItemStack getResultItem() {
     return Items.OAK_PLANKS.getDefaultInstance();
   }
 
+  /**
+   * Returns this {@link #RESOURCE_LOCATION ResourceLocation}.
+   */
   @Override
   public ResourceLocation getId() {
     return RESOURCE_LOCATION;
   }
 
   @Override
-  public RecipeSerializer<ReferringBlockRecipe> getSerializer() {
+  public Serializer getSerializer() {
     return JustVerticalSlabsLoader.REFERRING_BLOCK_RECIPE_SERIALIZER.get();
   }
 
+  /**
+   * Returns the index of the first Vertical Slab in the pair of matching adjacent Vertical Slabs.
+   * Returns -1 if none valid pair could be found.
+   * 
+   * @param craftingContainer
+   * @return index of the first Vertical Slab in the matching pair or -1.
+   */
   private int getMatchIndex(CraftingContainer craftingContainer) {
     boolean correctPattern = true;
     int matchIndex = -1, containerWidth = craftingContainer.getWidth();
     for (int h = 0; h < containerWidth && correctPattern; h++) {
       for (int w = 0; w < craftingContainer.getHeight() && correctPattern; w++) {
         int index = w + h * containerWidth;
-        if (isVerticalSlab(craftingContainer.getItem(index))) {
-          if (isVerticalSlab(craftingContainer.getItem(index + 1))) {
-            if (matchIndex == -1) {
+        ItemStack itemStack1 = craftingContainer.getItem(index);
+        if (isVerticalSlab(itemStack1)) {
+          ItemStack itemStack2 = craftingContainer.getItem(index + 1);
+          if (isVerticalSlab(itemStack2)) {
+            if (matchIndex == -1 && verticalSlabsMatch(itemStack1, itemStack2)) {
               matchIndex = index;
             } else {
               matchIndex = -1;
               correctPattern = false;
             }
-          } else if (matchIndex != index - 1) {
+          } else if (matchIndex != index - 1 || index == 0) {
             matchIndex = -1;
             correctPattern = false;
           }
@@ -66,8 +97,17 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
     return matchIndex;
   }
 
+  /**
+   * Serializer for {@link ReferringBlockRecipe}.
+   */
   public static class Serializer extends VerticalSlabRecipe.Serializer<ReferringBlockRecipe> {
+    /**
+     * ID of this {@link Serializer}.
+     */
     public static final String ID = ReferringBlockRecipe.ID + "_serializer";
+    /**
+     * {@link ResourceLocation} of this {@link Serializer} used to uniquely identify it.
+     */
     public static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
     public Serializer() {
