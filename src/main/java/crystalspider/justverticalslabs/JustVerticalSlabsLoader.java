@@ -3,9 +3,12 @@ package crystalspider.justverticalslabs;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableMap;
+
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
+import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.world.item.CreativeModeTab;
@@ -71,11 +74,14 @@ public class JustVerticalSlabsLoader {
    */
   public static final RegistryObject<BlockEntityType<VerticalSlabBlockEntity>> VERTICAL_SLAB_BLOCK_ENTITY = BLOCK_ENTITIES.register(VERTICAL_SLAB_ID, () -> BlockEntityType.Builder.of(VerticalSlabBlockEntity::new, VERTICAL_SLAB_BLOCK.get()).build(null));
 
+  public static ImmutableMap<Block, Block> slabMap;
+
   public JustVerticalSlabsLoader() {
     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     BLOCKS.register(bus);
     ITEMS.register(bus);
     BLOCK_ENTITIES.register(bus);
     bus.register(new ModelRegistryEventHandler());
+    bus.register(new ServerAboutToStartEventHandler());
   }
 }
