@@ -1,9 +1,8 @@
 package crystalspider.justverticalslabs.items;
 
-import java.util.ArrayList;
-
 import javax.annotation.Nullable;
 
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -18,17 +17,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class VerticalSlabBlockItem extends BlockItem {
-  private final ArrayList<BlockState> referringBlockStates = new ArrayList<BlockState>();
 
-  public VerticalSlabBlockItem(Block block, Properties properties, ArrayList<BlockState> referringBlockStates) {
+  public VerticalSlabBlockItem(Block block, Properties properties) {
     super(block, properties);
-    this.referringBlockStates.addAll(referringBlockStates);
   }
 
   @Override
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
-    if (this.allowdedIn(creativeModeTab)) {
-      for(BlockState referringBlockState : referringBlockStates) {
+    if (this.allowdedIn(creativeModeTab) && JustVerticalSlabsLoader.slabMap != null) {
+      for(BlockState referringBlockState : JustVerticalSlabsLoader.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList()) {
         itemStacks.add(VerticalSlabUtils.getItemStackWithState(this, referringBlockState));
       }
     }

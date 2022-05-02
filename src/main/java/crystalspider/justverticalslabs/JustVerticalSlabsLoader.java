@@ -1,11 +1,11 @@
 package crystalspider.justverticalslabs;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.collect.ImmutableMap;
 
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
+import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.recipes.BlockVerticalSlabRecipe;
 import crystalspider.justverticalslabs.recipes.ReferringBlockRecipe;
@@ -17,9 +17,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -78,14 +77,20 @@ public class JustVerticalSlabsLoader {
   /**
    * {@link RegistryObject} for {@link VerticalSlabBlockItem}.
    */
-  public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.AMETHYST_BLOCK.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState(), Blocks.GLOWSTONE.defaultBlockState()))));
-
+  public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS)));
+  
   public static final RegistryObject<ReferringBlockRecipe.Serializer> REFERRING_BLOCK_RECIPE_SERIALIZER = RECIPES.register(ReferringBlockRecipe.Serializer.ID, ReferringBlockRecipe.Serializer::new);
   public static final RegistryObject<SlabRecipe.Serializer> SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabRecipe.Serializer.ID, SlabRecipe.Serializer::new);
   public static final RegistryObject<SlabVerticalSlabRecipe.Serializer> SLAB_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabVerticalSlabRecipe.Serializer.ID, SlabVerticalSlabRecipe.Serializer::new);
   public static final RegistryObject<BlockVerticalSlabRecipe.Serializer> BLOCK_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(BlockVerticalSlabRecipe.Serializer.ID, BlockVerticalSlabRecipe.Serializer::new);
 
+  /**
+   * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item}.
+   */
+  public static volatile ImmutableMap<Item, Item> slabMap;
+
   public JustVerticalSlabsLoader() {
+    MinecraftForge.EVENT_BUS.register(new ServerAboutToStartEventHandler());
     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     BLOCKS.register(bus);
     BLOCK_ENTITIES.register(bus);
