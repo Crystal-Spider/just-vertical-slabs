@@ -71,6 +71,9 @@ public class JustVerticalSlabsLoader {
    */
   public static final RegistryObject<BlockEntityType<VerticalSlabBlockEntity>> VERTICAL_SLAB_BLOCK_ENTITY = BLOCK_ENTITIES.register(VERTICAL_SLAB_ID, () -> BlockEntityType.Builder.of(VerticalSlabBlockEntity::new, VERTICAL_SLAB_BLOCK.get()).build(null));
 
+  /**
+   * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item}.
+   */
   public static volatile ImmutableMap<Item, Item> slabMap;
 
   public JustVerticalSlabsLoader() {

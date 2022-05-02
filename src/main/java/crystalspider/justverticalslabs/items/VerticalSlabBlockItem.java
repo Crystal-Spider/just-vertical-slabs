@@ -24,10 +24,10 @@ public class VerticalSlabBlockItem extends BlockItem {
 
   @Override
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
-    if (this.allowdedIn(creativeModeTab)) {
-      // for(BlockState referringBlockState : JustVerticalSlabsLoader.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList()) {
-      //   itemStacks.add(VerticalSlabUtils.getItemStackWithState(this, referringBlockState));
-      // }
+    if (this.allowdedIn(creativeModeTab) && JustVerticalSlabsLoader.slabMap != null) {
+      for(BlockState referringBlockState : JustVerticalSlabsLoader.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList()) {
+        itemStacks.add(VerticalSlabUtils.getItemStackWithState(this, referringBlockState));
+      }
     }
   }
 

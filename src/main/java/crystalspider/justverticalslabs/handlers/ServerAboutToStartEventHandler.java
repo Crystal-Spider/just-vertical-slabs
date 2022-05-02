@@ -16,13 +16,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * 
+ * Handles the event {@link ServerAboutToStartEvent} to load the map of slabs-blocks.
  */
 public class ServerAboutToStartEventHandler {
   /**
+   * {@link ServerAboutToStartEvent} handler.
+   * Searches through all {@link Item Items} with the {@link ItemTags#SLABS slabs} tag and associates them to the block they're made from.
    * 
-   * 
-   * @param event
+   * @param event - {@link ServerAboutToStartEvent}.
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onServerAboutToStartEvent(ServerAboutToStartEvent event) {
@@ -40,6 +41,5 @@ public class ServerAboutToStartEventHandler {
       });
     });
     JustVerticalSlabsLoader.slabMap = ImmutableMap.copyOf(slabMap);
-    System.out.println(JustVerticalSlabsLoader.slabMap);
   }
 }
