@@ -1,8 +1,5 @@
 package crystalspider.justverticalslabs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.ImmutableMap;
 
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
@@ -16,9 +13,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -69,20 +65,20 @@ public class JustVerticalSlabsLoader {
   /**
    * {@link RegistryObject} for {@link VerticalSlabBlockItem}.
    */
-  public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.AMETHYST_BLOCK.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState(), Blocks.GLOWSTONE.defaultBlockState()))));
+  public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS)));
   /**
    * {@link RegistryObject} for {@link VerticalSlabBlockEntity}.
    */
   public static final RegistryObject<BlockEntityType<VerticalSlabBlockEntity>> VERTICAL_SLAB_BLOCK_ENTITY = BLOCK_ENTITIES.register(VERTICAL_SLAB_ID, () -> BlockEntityType.Builder.of(VerticalSlabBlockEntity::new, VERTICAL_SLAB_BLOCK.get()).build(null));
 
-  public static ImmutableMap<SlabBlock, Block> slabMap;
+  public static volatile ImmutableMap<Item, Item> slabMap;
 
   public JustVerticalSlabsLoader() {
+    MinecraftForge.EVENT_BUS.register(new ServerAboutToStartEventHandler());
     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     BLOCKS.register(bus);
     ITEMS.register(bus);
     BLOCK_ENTITIES.register(bus);
     bus.register(new ModelRegistryEventHandler());
-    bus.register(new ServerAboutToStartEventHandler());
   }
 }
