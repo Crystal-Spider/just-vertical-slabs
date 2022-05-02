@@ -13,6 +13,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
@@ -52,6 +53,10 @@ public class VerticalSlabUtils {
    */
   public static ResourceLocation getResourceLocation(String id) {
     return new ResourceLocation(JustVerticalSlabsLoader.MODID, id);
+  }
+
+  public static ItemStack getDefaultInstance() {
+    return getItemStackWithState(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get(), Blocks.OAK_PLANKS.defaultBlockState());
   }
 
   /**

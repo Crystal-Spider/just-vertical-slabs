@@ -7,7 +7,10 @@ import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
+import crystalspider.justverticalslabs.recipes.BlockVerticalSlabRecipe;
 import crystalspider.justverticalslabs.recipes.ReferringBlockRecipe;
+import crystalspider.justverticalslabs.recipes.SlabRecipe;
+import crystalspider.justverticalslabs.recipes.SlabVerticalSlabRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -43,7 +46,7 @@ public class JustVerticalSlabsLoader {
    */
   public static final CreativeModeTab TAB_JUST_VERTICAL_SLABS = new CreativeModeTab("justVerticalSlabs") {
     public ItemStack makeIcon() {
-      return VerticalSlabUtils.getItemStackWithState(VERTICAL_SLAB_BLOCK.get(), Blocks.OAK_PLANKS.defaultBlockState());
+      return VerticalSlabUtils.getDefaultInstance();
     }
   }.setRecipeFolderName(VERTICAL_SLAB_ID);
 
@@ -67,7 +70,7 @@ public class JustVerticalSlabsLoader {
   /**
    * {@link RegistryObject} for {@link VerticalSlabBlock}.
    */
-  public static final RegistryObject<VerticalSlabBlock> VERTICAL_SLAB_BLOCK = BLOCKS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlock());
+  public static final RegistryObject<VerticalSlabBlock> VERTICAL_SLAB_BLOCK = BLOCKS.register(VERTICAL_SLAB_ID, VerticalSlabBlock::new);
   /**
    * {@link RegistryObject} for {@link VerticalSlabBlockEntity}.
    */
@@ -77,7 +80,10 @@ public class JustVerticalSlabsLoader {
    */
   public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS), new ArrayList<BlockState>(List.of(Blocks.OAK_PLANKS.defaultBlockState(), Blocks.AMETHYST_BLOCK.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState(), Blocks.GLOWSTONE.defaultBlockState()))));
 
-  public static final RegistryObject<ReferringBlockRecipe.Serializer> REFERRING_BLOCK_RECIPE_SERIALIZER = RECIPES.register(ReferringBlockRecipe.Serializer.ID, () -> new ReferringBlockRecipe.Serializer());
+  public static final RegistryObject<ReferringBlockRecipe.Serializer> REFERRING_BLOCK_RECIPE_SERIALIZER = RECIPES.register(ReferringBlockRecipe.Serializer.ID, ReferringBlockRecipe.Serializer::new);
+  public static final RegistryObject<SlabRecipe.Serializer> SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabRecipe.Serializer.ID, SlabRecipe.Serializer::new);
+  public static final RegistryObject<SlabVerticalSlabRecipe.Serializer> SLAB_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabVerticalSlabRecipe.Serializer.ID, SlabVerticalSlabRecipe.Serializer::new);
+  public static final RegistryObject<BlockVerticalSlabRecipe.Serializer> BLOCK_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(BlockVerticalSlabRecipe.Serializer.ID, BlockVerticalSlabRecipe.Serializer::new);
 
   public JustVerticalSlabsLoader() {
     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

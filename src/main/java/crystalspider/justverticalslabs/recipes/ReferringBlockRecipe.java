@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 /**
- * {@link VerticalSlabRecipe} to craft two matching adjacent Vertical Slabs into their referring block.
+ * {@link VerticalSlabRecipe} to craft 2 matching adjacent Vertical Slabs into their referring block.
  */
 public class ReferringBlockRecipe extends VerticalSlabRecipe {
   /**
@@ -22,7 +22,7 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public ReferringBlockRecipe() {
-    super(2, 1);
+    super(2, 1, Items.OAK_PLANKS.getDefaultInstance());
   }
 
   /**
@@ -39,16 +39,6 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
   @Override
   public ItemStack assemble(CraftingContainer craftingContainer) {
     return VerticalSlabUtils.getReferringBlockState(craftingContainer.getItem(getMatchIndex(craftingContainer))).getBlock().asItem().getDefaultInstance();
-  }
-
-  /**
-   * Returns the default {@link ItemStack} for this recipe.
-   * Since {@link VerticalSlabRecipe VerticalSlabRecipes} are highly dependent on input data, this method should never be used.
-   */
-  @Override
-  @Deprecated
-  public ItemStack getResultItem() {
-    return Items.OAK_PLANKS.getDefaultInstance();
   }
 
   /**
