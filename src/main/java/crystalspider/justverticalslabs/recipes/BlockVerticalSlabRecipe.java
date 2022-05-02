@@ -1,14 +1,11 @@
 package crystalspider.justverticalslabs.recipes;
 
-import javax.annotation.Nullable;
-
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -28,20 +25,9 @@ public class BlockVerticalSlabRecipe extends VerticalSlabRecipe {
     super(1, 3, VerticalSlabUtils.getDefaultInstance());
   }
 
-  /**
-   * Checks if the given {@link CraftingContainer} contains the correct items in the correct position to craft this recipe.
-   */
   @Override
-  public boolean matches(CraftingContainer craftingContainer, Level level) {
-    return getMatchIndex(craftingContainer) != null;
-  }
-
-  /**
-   * Returns the {@link ItemStack} with the result of this recipe from the given {@link CraftingContainer}.
-   */
-  @Override
-  public ItemStack assemble(CraftingContainer craftingContainer) {
-    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(Block.byItem(craftingContainer.getItem(getMatchIndex(craftingContainer)).getItem()).defaultBlockState());
+  public ItemStack assemble(ItemStack matchedItem) {
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(Block.byItem(matchedItem.getItem()).defaultBlockState());
     verticalSlab.setCount(6);
     return verticalSlab;
   }
@@ -58,16 +44,9 @@ public class BlockVerticalSlabRecipe extends VerticalSlabRecipe {
   public Serializer getSerializer() {
     return JustVerticalSlabsLoader.BLOCK_VERTICAL_SLAB_RECIPE_SERIALIZER.get();
   }
-  
-  /**
-   * Returns the index of the first Block in the column of matching blocks.
-   * Returns null if none valid column could be found.
-   * 
-   * @param craftingContainer
-   * @return index of the first Block in the matching column or null.
-   */
-  @Nullable
-  private Integer getMatchIndex(CraftingContainer craftingContainer) {
+
+  @Override
+  protected Integer getMatchIndex(CraftingContainer craftingContainer) {
     boolean correctPattern = true;
     Integer matchIndex = null, containerWidth = craftingContainer.getWidth();
     for (int h = 0; h < containerWidth && correctPattern; h++) {

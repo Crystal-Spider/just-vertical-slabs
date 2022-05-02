@@ -1,14 +1,11 @@
 package crystalspider.justverticalslabs.recipes;
 
-import javax.annotation.Nullable;
-
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 
 /**
  * {@link VerticalSlabRecipe} to craft 2 matching adjacent Vertical Slabs into their referring block.
@@ -27,20 +24,9 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
     super(2, 1, Items.OAK_PLANKS.getDefaultInstance());
   }
 
-  /**
-   * Checks if the given {@link CraftingContainer} contains the correct items in the correct position to craft this recipe.
-   */
   @Override
-  public boolean matches(CraftingContainer craftingContainer, Level level) {
-    return getMatchIndex(craftingContainer) != null;
-  }
-
-  /**
-   * Returns the {@link ItemStack} with the result of this recipe from the given {@link CraftingContainer}.
-   */
-  @Override
-  public ItemStack assemble(CraftingContainer craftingContainer) {
-    return VerticalSlabUtils.getReferringBlockState(craftingContainer.getItem(getMatchIndex(craftingContainer))).getBlock().asItem().getDefaultInstance();
+  public ItemStack assemble(ItemStack matchedItem) {
+    return VerticalSlabUtils.getReferringBlockState(matchedItem).getBlock().asItem().getDefaultInstance();
   }
 
   /**
@@ -56,15 +42,8 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
     return JustVerticalSlabsLoader.REFERRING_BLOCK_RECIPE_SERIALIZER.get();
   }
 
-  /**
-   * Returns the index of the first Vertical Slab in the pair of matching adjacent Vertical Slabs.
-   * Returns null if none valid pair could be found.
-   * 
-   * @param craftingContainer
-   * @return index of the first Vertical Slab in the matching pair or null.
-   */
-  @Nullable 
-  private Integer getMatchIndex(CraftingContainer craftingContainer) {
+  @Override 
+  protected Integer getMatchIndex(CraftingContainer craftingContainer) {
     boolean correctPattern = true;
     Integer matchIndex = null, containerWidth = craftingContainer.getWidth();
     for (int h = 0; h < containerWidth && correctPattern; h++) {

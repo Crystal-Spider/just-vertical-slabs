@@ -1,14 +1,19 @@
 package crystalspider.justverticalslabs.recipes;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.base.Supplier;
 import com.google.gson.JsonObject;
 
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -38,14 +43,6 @@ public abstract class VerticalSlabRecipe implements CraftingRecipe {
   }
 
   /**
-   * Checks if the given {@code width} and {@code height} allow the recipe.
-   */
-  @Override
-  public boolean canCraftInDimensions(int width, int height) {
-    return width >= this.width && height >= this.height;
-  }
-
-  /**
    * Returns the default result item for this recipe.
    * Since {@link VerticalSlabRecipe VerticalSlabRecipes} are highly dependent on input data, this method should never be used.
    */
@@ -56,10 +53,51 @@ public abstract class VerticalSlabRecipe implements CraftingRecipe {
   }
 
   /**
+   * Returns the {@link ItemStack} with the result of this recipe from the given {@link CraftingContainer}.
+   */
+  @Override
+  public ItemStack assemble(CraftingContainer craftingContainer) {
+    return assemble(craftingContainer.getItem(getMatchIndex(craftingContainer)));
+  }
+
+  /**
+   * Checks if the given {@link CraftingContainer} contains the correct items in the correct position to craft this recipe.
+   */
+  @Override
+  public boolean matches(CraftingContainer craftingContainer, Level level) {
+    return getMatchIndex(craftingContainer) != null;
+  }
+
+  /**
+   * Checks if the given {@code width} and {@code height} allow the recipe.
+   */
+  @Override
+  public boolean canCraftInDimensions(int width, int height) {
+    return width >= this.width && height >= this.height;
+  }
+
+  /**
    * Returns the recipe serializer.
    */
   @Override
   public abstract Serializer<? extends VerticalSlabRecipe> getSerializer();
+
+  /**
+   * Returns the {@link ItemStack} with the result of this recipe from the given {@code matchedItem}.
+   * {@code matchedItem} value depends on the value from {@link #getMatchIndex(CraftingContainer)}.
+   */
+  @Nonnull
+  protected abstract ItemStack assemble(@Nonnull ItemStack matchedItem);
+
+  /**
+   * Returns the index of the first item in the valid pattern.
+   * Returns null if none could be found.
+   * 
+   * @param craftingContainer
+   * @return index of the valid item or null.
+   */
+  @Nullable
+  protected abstract Integer getMatchIndex(CraftingContainer craftingContainer);
 
   /**
    * Checks if the given {@link ItemStack} represents a valid Vertical Slab.
