@@ -16,6 +16,7 @@ import com.mojang.math.Vector3f;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
 import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockFaceUV;
@@ -141,7 +142,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   @Override
   public TextureAtlasSprite getParticleIcon(IModelData extraData) {
-    BlockState referringBlockState = extraData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
+    BlockState referringBlockState = extraData.getData(VerticalSlabUtils.REFERRING_BLOCK_STATE);
     if (referringBlockState != null) {
       return getReferringBakedModel(referringBlockState).getParticleIcon(getReferringModelData(referringBlockState, extraData));
     }
@@ -163,7 +164,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   @Override
   public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
-    BlockState referringBlockState = modelData.getData(VerticalSlabBlockEntity.REFERRING_BLOCK_STATE);
+    BlockState referringBlockState = modelData.getData(VerticalSlabUtils.REFERRING_BLOCK_STATE);
     if (referringBlockState != null) {
       VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {

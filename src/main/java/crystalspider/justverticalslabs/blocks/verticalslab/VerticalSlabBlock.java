@@ -2,6 +2,7 @@ package crystalspider.justverticalslabs.blocks.verticalslab;
 
 import javax.annotation.Nullable;
 
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -38,6 +39,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+/**
+ * Vertical Slab Block.
+ * TODO: return jumpFactor and speedFactor based on referringBlockState.
+ */
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
@@ -76,10 +81,21 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)));
   }
 
+  /**
+   * Checks if the given blockState holds a block that's a Vertical Slab.
+   * 
+   * @param blockState
+   * @return
+   */
   public static boolean isVerticalSlab(BlockState blockState) {
     return blockState.getBlock() instanceof VerticalSlabBlock;
   }
 
+  /**
+   * Makes all the possible {@link VoxelShape shapes} a Vertical Slab can have.
+   * 
+   * @return
+   */
   private static VoxelShape[] makeShapes() {
     // S = 0, W = 1, N = 2, E = 3
     // ST = 0, IL = 1, IR = 2, OL = 3, OR = 4
@@ -114,16 +130,34 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     };
   }
 
+  /**
+   * Creates a {@link VoxelShape vertical shaped box}.
+   * 
+   * @param originX
+   * @param originZ
+   * @param x
+   * @param z
+   * @return
+   */
   private static VoxelShape verticalBox(double originX, double originZ, double x, double z) {
     return Block.box(originX * 8, 0.0D, originZ * 8, x * 8, 16.0D, z * 8);
   }
 
+  /**
+   * Returns the appropriate {@link StairsShape} to use for this block depending on the neighbouring blocks.
+   * Logic is the same used for {@link net.minecraft.world.level.block.StairBlock StairBlock}.
+   * 
+   * @param state - {@link BlockState} of the block of which to get the {@link StairsShape}.
+   * @param getter
+   * @param pos - {@link BlockPos position} of the block of which to get the {@link StairsShape}.
+   * @return
+   */
   private static StairsShape getStairsShape(BlockState state, BlockGetter getter, BlockPos pos) {
     Direction direction = state.getValue(FACING);
     BlockState facingBlockState = getter.getBlockState(pos.relative(direction));
     if (isVerticalSlab(facingBlockState)) {
       Direction facingBlockDirection = facingBlockState.getValue(FACING);
-      if (facingBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter, pos, facingBlockDirection.getOpposite())) {
+      if (facingBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter.getBlockState(pos.relative(facingBlockDirection.getOpposite())))) {
         if (facingBlockDirection == direction.getClockWise()) {
           return StairsShape.OUTER_RIGHT;
         }
@@ -134,7 +168,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     BlockState oppositeBlockState = getter.getBlockState(pos.relative(direction.getOpposite()));
     if (isVerticalSlab(oppositeBlockState)) {
       Direction oppositeBlockDirection = oppositeBlockState.getValue(FACING);
-      if (oppositeBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter, pos, oppositeBlockDirection)) {
+      if (oppositeBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter.getBlockState(pos.relative(oppositeBlockDirection)))) {
         if (oppositeBlockDirection == direction.getClockWise()) {
           return StairsShape.INNER_RIGHT;
         }
@@ -145,9 +179,15 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     return StairsShape.STRAIGHT;
   }
 
-  private static boolean canTakeShape(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
-    BlockState blockstate = getter.getBlockState(pos.relative(direction));
-    return !isVerticalSlab(blockstate) || blockstate.getValue(FACING) != state.getValue(FACING);
+  /**
+   * Checks if the block from the first {@link BlockState} can combine its shape with the block from the second {@link BlockState}.
+   * 
+   * @param state
+   * @param blockState
+   * @return
+   */
+  private static boolean canTakeShape(BlockState state, BlockState blockState) {
+    return !isVerticalSlab(blockState) || blockState.getValue(FACING) != state.getValue(FACING);
   }
 
   @Override
@@ -252,7 +292,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   @Override
   @SuppressWarnings("deprecation")
   public float getDestroyProgress(BlockState state, Player player, BlockGetter getter, BlockPos pos) {
-    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
       return referringBlockState.getDestroyProgress(player, getter, pos);
     }
@@ -261,7 +301,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public ItemStack getCloneItemStack(BlockGetter getter, BlockPos pos, BlockState state) {
-    VerticalSlabBlockEntity blockEntity = getBlockEntity(getter, pos);
+    VerticalSlabBlockEntity blockEntity = VerticalSlabUtils.getVerticalSlabBlockEntity(getter, pos);
     ItemStack itemStack = new ItemStack(this);
     if (blockEntity != null) {
       blockEntity.saveToItem(itemStack);
@@ -276,7 +316,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float damage) {
-    BlockState referringBlockState = getReferringBlockState(level, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
       referringBlockState.getBlock().fallOn(level, state, pos, entity, damage);
     } else {
@@ -286,7 +326,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
-    BlockState referringBlockState = getReferringBlockState(getter, entity.getOnPos());
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, entity.getOnPos());
     if (referringBlockState != null) {
       referringBlockState.getBlock().updateEntityAfterFallOn(getter, entity);
     } else {
@@ -301,16 +341,17 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public float getFriction(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
-    BlockState referringBlockState = getReferringBlockState(level, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
       return referringBlockState.getFriction(level, pos, entity);
     }
     return super.getFriction(state, level, pos, entity);
   }
 
+  // FIXME: Light is not emitted correctly when placed.
   @Override
   public int getLightEmission(BlockState state, BlockGetter getter, BlockPos pos) {
-    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
       return referringBlockState.getLightEmission(getter, pos);
     }
@@ -319,7 +360,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public boolean canHarvestBlock(BlockState state, BlockGetter getter, BlockPos pos, Player player) {
-    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
       return referringBlockState.canHarvestBlock(getter, pos, player);
     }
@@ -328,7 +369,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public float getExplosionResistance(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
-    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
       return referringBlockState.getExplosionResistance(getter, pos, explosion);
     }
@@ -337,7 +378,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
-    BlockState referringBlockState = getReferringBlockState(level, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
       return referringBlockState.getEnchantPowerBonus(level, pos) / 2;
     }
@@ -346,7 +387,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
-    BlockState referringBlockState = getReferringBlockState(level, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
       return referringBlockState.getSoundType(level, pos, entity);
     }
@@ -355,7 +396,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public int getFlammability(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
-    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
       return referringBlockState.getFlammability(getter, pos, direction);
     }
@@ -364,7 +405,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public int getFireSpreadSpeed(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
-    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
       return referringBlockState.getFireSpreadSpeed(getter, pos, direction);
     }
@@ -373,7 +414,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction) {
-    BlockState referringBlockState = getReferringBlockState(level, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
       return referringBlockState.isFireSource(level, pos, direction);
     }
@@ -382,7 +423,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public boolean canEntityDestroy(BlockState state, BlockGetter getter, BlockPos pos, Entity entity) {
-    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
       return referringBlockState.canEntityDestroy(getter, pos, entity);
     }
@@ -391,7 +432,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public boolean canDropFromExplosion(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
-    BlockState referringBlockState = getReferringBlockState(getter, pos);
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
       return referringBlockState.canDropFromExplosion(getter, pos, explosion);
     }
@@ -406,24 +447,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   @Override
   public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new VerticalSlabBlockEntity(pos, state);
-  }
-
-  @Nullable
-  private VerticalSlabBlockEntity getBlockEntity(BlockGetter getter, BlockPos pos) {
-    BlockEntity blockEntity = getter.getBlockEntity(pos);
-    if (blockEntity != null && blockEntity instanceof VerticalSlabBlockEntity) {
-      return (VerticalSlabBlockEntity) blockEntity;
-    }
-    return null;
-  }
-
-  @Nullable
-  private BlockState getReferringBlockState(BlockGetter getter, BlockPos pos) {
-    VerticalSlabBlockEntity blockEntity = getBlockEntity(getter, pos);
-    if (blockEntity != null) {
-      return blockEntity.getReferringBlockState();
-    }
-    return null;
   }
 
   private int getShapeIndex(BlockState state) {
