@@ -44,11 +44,17 @@ public class VerticalSlabBlockItem extends BlockItem {
     }
   }
 
+  /**
+   * Returns a Vertical Slab {@link ItemStack} {@link VerticalSlabUtils#getDefaultInstance() default instance}.
+   */
   @Override
   public ItemStack getDefaultInstance() {
     return VerticalSlabUtils.getDefaultInstance();
   }
 
+  /**
+   * Returns the correct burn time for the given Vertical Slab {@link ItemStack}.
+   */
   @Override
   public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(itemStack);
@@ -56,6 +62,19 @@ public class VerticalSlabBlockItem extends BlockItem {
       return ForgeHooks.getBurnTime(JustVerticalSlabsLoader.blockMap.get(referringBlockState.getBlock().asItem()).getDefaultInstance(), recipeType);
     }
     return super.getBurnTime(itemStack, recipeType);
+  }
+
+  /**
+   * Returns the correct name {@link Component} for the given Vertical Slab {@link ItemStack}.
+   */
+  @Override
+  public Component getName(ItemStack itemStack) {
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(itemStack);
+    if (referringBlockState != null) {
+      Item referringSlab = JustVerticalSlabsLoader.blockMap.get(referringBlockState.getBlock().asItem());
+      return referringSlab.getName(referringSlab.getDefaultInstance());
+    }
+    return super.getName(itemStack);
   }
 
   /**
