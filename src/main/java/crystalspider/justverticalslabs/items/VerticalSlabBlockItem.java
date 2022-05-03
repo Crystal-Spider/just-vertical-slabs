@@ -1,5 +1,8 @@
 package crystalspider.justverticalslabs.items;
 
+import java.util.Comparator;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
@@ -38,7 +41,9 @@ public class VerticalSlabBlockItem extends BlockItem {
   @Override
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
     if (this.allowdedIn(creativeModeTab) && JustVerticalSlabsLoader.slabMap != null) {
-      for(BlockState referringBlockState : JustVerticalSlabsLoader.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList()) {
+      List<BlockState> referringBlockStates = JustVerticalSlabsLoader.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList();
+      referringBlockStates.sort(new BlockStateComparator());
+      for(BlockState referringBlockState : referringBlockStates) {
         itemStacks.add(VerticalSlabUtils.getItemStackWithState(this, referringBlockState));
       }
     }
@@ -112,5 +117,12 @@ public class VerticalSlabBlockItem extends BlockItem {
       return false;
     }
     return updated;
+  }
+
+  private static class BlockStateComparator implements Comparator<BlockState> {
+    @Override
+    public int compare(BlockState blockState1, BlockState blockState2) {
+      return blockState1.toString().compareTo(blockState2.toString());
+    }
   }
 }
