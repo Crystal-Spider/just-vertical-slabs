@@ -26,7 +26,7 @@ public class SlabVerticalSlabRecipe extends VerticalSlabRecipe {
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    return VerticalSlabUtils.getVerticalSlabItem(Block.byItem(JustVerticalSlabsLoader.slabMap.getOrDefault(matchedItem.getItem(), VerticalSlabUtils.getDefaultInstance().getItem())).defaultBlockState());
+    return VerticalSlabUtils.getVerticalSlabItem(Block.byItem(JustVerticalSlabsLoader.slabMap.get(matchedItem.getItem())).defaultBlockState());
   }
 
   /**
