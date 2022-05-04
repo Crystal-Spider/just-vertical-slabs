@@ -26,7 +26,7 @@ public class SlabVerticalSlabRecipe extends VerticalSlabRecipe {
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    return VerticalSlabUtils.getVerticalSlabItem(Block.byItem(JustVerticalSlabsLoader.slabMap.get(matchedItem.getItem())).defaultBlockState());
+    return VerticalSlabUtils.getVerticalSlabItem(Block.byItem(VerticalSlabUtils.slabMap.get(matchedItem.getItem())).defaultBlockState());
   }
 
   /**
@@ -49,7 +49,7 @@ public class SlabVerticalSlabRecipe extends VerticalSlabRecipe {
     for (int i = 0; i < craftingContainer.getContainerSize() && correctPattern; i++) {
       ItemStack itemStack = craftingContainer.getItem(i);
       if (!itemStack.isEmpty()) {
-        if (matchIndex == null && JustVerticalSlabsLoader.slabMap.containsKey(itemStack.getItem())) {
+        if (matchIndex == null && VerticalSlabUtils.slabMap.containsKey(itemStack.getItem())) {
           matchIndex = i;
         } else {
           matchIndex = null;

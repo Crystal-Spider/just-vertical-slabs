@@ -2,6 +2,8 @@ package crystalspider.justverticalslabs.utils;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableMap;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
@@ -10,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
@@ -24,6 +27,17 @@ import net.minecraftforge.client.model.data.ModelProperty;
  * Utility class for common operations regarding Vertical Slabs.
  */
 public class VerticalSlabUtils {
+  /**
+   * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item Items}.
+   */
+  @Nullable
+  public static volatile ImmutableMap<Item, Item> slabMap;
+  /**
+   * {@link ImmutableMap} linking Block {@link Item Items} to their respective Slab {@link Item Items}.
+   */
+  @Nullable
+  public static volatile ImmutableMap<Item, Item> blockMap;
+
   /**
    * ID to use when creating a new {@link CompoundTag} to store a Vertical Slab referring {@link BlockState}.
    */

@@ -1,11 +1,7 @@
 package crystalspider.justverticalslabs.items;
 
-import java.util.Comparator;
-import java.util.List;
-
 import javax.annotation.Nullable;
 
-import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -27,7 +23,6 @@ import net.minecraftforge.common.ForgeHooks;
  * Vertical Slab {@link BlockItem}.
  */
 public class VerticalSlabBlockItem extends BlockItem {
-
   public VerticalSlabBlockItem(Block block, Properties properties) {
     super(block, properties);
   }
@@ -40,10 +35,8 @@ public class VerticalSlabBlockItem extends BlockItem {
    */
   @Override
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
-    if (this.allowdedIn(creativeModeTab) && JustVerticalSlabsLoader.slabMap != null) {
-      List<BlockState> referringBlockStates = JustVerticalSlabsLoader.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList();
-      referringBlockStates.sort(new BlockStateComparator());
-      for(BlockState referringBlockState : referringBlockStates) {
+    if (this.allowdedIn(creativeModeTab) && VerticalSlabUtils.slabMap != null) {
+      for(BlockState referringBlockState : VerticalSlabUtils.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList()) {
         itemStacks.add(VerticalSlabUtils.getItemStackWithState(this, referringBlockState));
       }
     }
@@ -64,7 +57,7 @@ public class VerticalSlabBlockItem extends BlockItem {
   public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(itemStack);
     if (referringBlockState != null) {
-      return ForgeHooks.getBurnTime(JustVerticalSlabsLoader.blockMap.get(referringBlockState.getBlock().asItem()).getDefaultInstance(), recipeType);
+      return ForgeHooks.getBurnTime(VerticalSlabUtils.blockMap.get(referringBlockState.getBlock().asItem()).getDefaultInstance(), recipeType);
     }
     return super.getBurnTime(itemStack, recipeType);
   }
@@ -76,7 +69,7 @@ public class VerticalSlabBlockItem extends BlockItem {
   public Component getName(ItemStack itemStack) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(itemStack);
     if (referringBlockState != null) {
-      Item referringSlab = JustVerticalSlabsLoader.blockMap.get(referringBlockState.getBlock().asItem());
+      Item referringSlab = VerticalSlabUtils.blockMap.get(referringBlockState.getBlock().asItem());
       return referringSlab.getName(referringSlab.getDefaultInstance());
     }
     return super.getName(itemStack);
@@ -117,12 +110,5 @@ public class VerticalSlabBlockItem extends BlockItem {
       return false;
     }
     return updated;
-  }
-
-  private static class BlockStateComparator implements Comparator<BlockState> {
-    @Override
-    public int compare(BlockState blockState1, BlockState blockState2) {
-      return blockState1.toString().compareTo(blockState2.toString());
-    }
   }
 }

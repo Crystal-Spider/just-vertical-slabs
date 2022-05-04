@@ -1,10 +1,9 @@
 package crystalspider.justverticalslabs;
 
-import com.google.common.collect.ImmutableMap;
-
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
+import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
 import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.recipes.BlockVerticalSlabRecipe;
@@ -95,17 +94,9 @@ public class JustVerticalSlabsLoader {
    */
   public static final RegistryObject<BlockVerticalSlabRecipe.Serializer> BLOCK_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(BlockVerticalSlabRecipe.Serializer.ID, BlockVerticalSlabRecipe.Serializer::new);
 
-  /**
-   * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item Items}.
-   */
-  public static volatile ImmutableMap<Item, Item> slabMap;
-  /**
-   * {@link ImmutableMap} linking Block {@link Item Items} to their respective Slab {@link Item Items}.
-   */
-  public static volatile ImmutableMap<Item, Item> blockMap;
-
   public JustVerticalSlabsLoader() {
     MinecraftForge.EVENT_BUS.register(new ServerAboutToStartEventHandler());
+    MinecraftForge.EVENT_BUS.register(new RecipeUpdateEventHandler());
     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     BLOCKS.register(bus);
     BLOCK_ENTITIES.register(bus);

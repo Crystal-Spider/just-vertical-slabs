@@ -2,11 +2,12 @@ package crystalspider.justverticalslabs.handlers;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
@@ -21,22 +22,23 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * Handles the event {@link ServerAboutToStartEvent} to load the map of slabs-blocks.
+ * {@link ServerAboutToStartEvent} handler.
  */
 public class ServerAboutToStartEventHandler {
   /**
-   * {@link ServerAboutToStartEvent} handler.
+   * Handles the event {@link ServerAboutToStartEvent} to load the map of slabs-blocks.
    * Searches through all {@link Item Items} with the {@link ItemTags#SLABS slabs} tag and associates them to the block they're made from.
    * 
    * @param event - {@link ServerAboutToStartEvent}.
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onServerAboutToStartEvent(ServerAboutToStartEvent event) {
-    Map<Item, Item> slabMap = new HashMap<Item, Item>(), blockMap = new HashMap<Item, Item>();
-    ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS).forEach(slab -> {
-      event.getServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING).forEach(recipe -> {
-        if (recipe.getResultItem().is(slab) && isRecipeWithBlocks(recipe) && sameIngredients(recipe.getIngredients())) {
-          recipe.getIngredients().stream().findFirst().ifPresent(ingredient -> {
+    Map<Item, Item> slabMap = new LinkedHashMap<Item, Item>(), blockMap = new HashMap<Item, Item>();
+    for (Item slab : ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS)) {
+      for (CraftingRecipe recipe : event.getServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
+        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+        if (recipe.getResultItem().is(slab) && isRecipeWithBlocks(ingredients) && sameIngredients(ingredients)) {
+          ingredients.stream().findFirst().ifPresent(ingredient -> {
             for (ItemStack itemStack : ingredient.getItems()) {
               if (!(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar"))) {
                 slabMap.put(slab, itemStack.getItem());
@@ -48,10 +50,10 @@ public class ServerAboutToStartEventHandler {
             }
           });
         }
-      });
-    });
-    JustVerticalSlabsLoader.slabMap = ImmutableMap.copyOf(slabMap);
-    JustVerticalSlabsLoader.blockMap = ImmutableMap.copyOf(blockMap);
+      }
+    }
+    VerticalSlabUtils.slabMap = ImmutableMap.copyOf(slabMap);
+    VerticalSlabUtils.blockMap = ImmutableMap.copyOf(blockMap);
   }
 
   /**
@@ -60,8 +62,8 @@ public class ServerAboutToStartEventHandler {
    * @param recipe
    * @return whether the {@code recipe} uses only items that are blocks and not slabs.
    */
-  private boolean isRecipeWithBlocks(CraftingRecipe recipe) {
-    return recipe.getIngredients().stream().allMatch(ingredient -> Arrays.stream(ingredient.getItems()).allMatch(itemStack -> !itemStack.is(ItemTags.SLABS) && itemStack.getItem() instanceof BlockItem));
+  private boolean isRecipeWithBlocks(NonNullList<Ingredient> ingredients) {
+    return ingredients.stream().allMatch(ingredient -> Arrays.stream(ingredient.getItems()).allMatch(itemStack -> !itemStack.is(ItemTags.SLABS) && itemStack.getItem() instanceof BlockItem));
   }
 
   /**
