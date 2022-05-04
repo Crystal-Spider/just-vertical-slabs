@@ -6,11 +6,11 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
- * Handles the event {@link ModelRegistryEvent} to load the custom model loader {@link VerticalSlabModelLoader}.
+ * {@link ModelRegistryEvent} Handler.
  */
 public class ModelRegistryEventHandler {
   /**
-   * {@link ModelRegistryEvent} Handler.
+   * Handles the event {@link ModelRegistryEvent} to load the custom model loader {@link VerticalSlabModelLoader}.
    * 
    * @param event - {@link ModelRegistryEvent}.
    */
