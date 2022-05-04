@@ -97,8 +97,7 @@ public class VerticalSlabUtils {
    */
   public static ItemStack getItemStackWithState(ItemLike itemLike, BlockState referringBlockState) {
     ItemStack itemStack = new ItemStack(itemLike);
-    CompoundTag referringBlockTag = putReferringBlockState(new CompoundTag(), referringBlockState);
-    BlockItem.setBlockEntityData(itemStack, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), referringBlockTag);
+    BlockItem.setBlockEntityData(itemStack, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), putReferringBlockState(new CompoundTag(), referringBlockState));
     return itemStack;
   }
 

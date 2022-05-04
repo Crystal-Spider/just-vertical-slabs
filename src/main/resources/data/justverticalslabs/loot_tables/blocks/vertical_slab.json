@@ -10,11 +10,19 @@
           "functions": [
             {
               "function": "minecraft:copy_nbt",
-              "source": "block_entity",
+              "source": {
+                "type": "context",
+                "target": "block_entity"
+              },
               "ops": [
                 {
                   "source": "referringBlockState",
                   "target": "BlockEntityTag.referringBlockState",
+                  "op": "replace"
+                },
+                {
+                  "source": "id",
+                  "target": "BlockEntityTag.id",
                   "op": "replace"
                 }
               ]
