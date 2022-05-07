@@ -6,10 +6,11 @@ import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
 import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
-import crystalspider.justverticalslabs.recipes.BlockVerticalSlabRecipe;
-import crystalspider.justverticalslabs.recipes.ReferringBlockRecipe;
-import crystalspider.justverticalslabs.recipes.SlabRecipe;
-import crystalspider.justverticalslabs.recipes.SlabVerticalSlabRecipe;
+import crystalspider.justverticalslabs.recipes.crafting.recipes.BlockToVerticalSlabCraftingRecipe;
+import crystalspider.justverticalslabs.recipes.crafting.recipes.SlabToVerticalSlabCraftingRecipe;
+import crystalspider.justverticalslabs.recipes.crafting.recipes.VerticalSlabToBlockCraftingRecipe;
+import crystalspider.justverticalslabs.recipes.crafting.recipes.VerticalSlabToSlabCraftingRecipe;
+import crystalspider.justverticalslabs.recipes.stonecutter.recipes.BlockToVerticalSlabStonecutterRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -78,21 +79,22 @@ public class JustVerticalSlabsLoader {
    */
   public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS)));
   /**
-   * {@link RegistryObject} for {@link ReferringBlockRecipe} {@link ReferringBlockRecipe.Serializer Serializer}.
+   * {@link RegistryObject} for {@link VerticalSlabToBlockCraftingRecipe} {@link VerticalSlabToBlockCraftingRecipe.Serializer Serializer}.
    */
-  public static final RegistryObject<ReferringBlockRecipe.Serializer> REFERRING_BLOCK_RECIPE_SERIALIZER = RECIPES.register(ReferringBlockRecipe.Serializer.ID, ReferringBlockRecipe.Serializer::new);
+  public static final RegistryObject<VerticalSlabToBlockCraftingRecipe.Serializer> REFERRING_BLOCK_RECIPE_SERIALIZER = RECIPES.register(VerticalSlabToBlockCraftingRecipe.Serializer.ID, VerticalSlabToBlockCraftingRecipe.Serializer::new);
   /**
-   * {@link RegistryObject} for {@link SlabRecipe} {@link SlabRecipe.Serializer Serializer}.
+   * {@link RegistryObject} for {@link VerticalSlabToSlabCraftingRecipe} {@link VerticalSlabToSlabCraftingRecipe.Serializer Serializer}.
    */
-  public static final RegistryObject<SlabRecipe.Serializer> SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabRecipe.Serializer.ID, SlabRecipe.Serializer::new);
+  public static final RegistryObject<VerticalSlabToSlabCraftingRecipe.Serializer> SLAB_RECIPE_SERIALIZER = RECIPES.register(VerticalSlabToSlabCraftingRecipe.Serializer.ID, VerticalSlabToSlabCraftingRecipe.Serializer::new);
   /**
-   * {@link RegistryObject} for {@link SlabVerticalSlabRecipe} {@link SlabVerticalSlabRecipe.Serializer Serializer}.
+   * {@link RegistryObject} for {@link SlabToVerticalSlabCraftingRecipe} {@link SlabToVerticalSlabCraftingRecipe.Serializer Serializer}.
    */
-  public static final RegistryObject<SlabVerticalSlabRecipe.Serializer> SLAB_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabVerticalSlabRecipe.Serializer.ID, SlabVerticalSlabRecipe.Serializer::new);
+  public static final RegistryObject<SlabToVerticalSlabCraftingRecipe.Serializer> SLAB_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(SlabToVerticalSlabCraftingRecipe.Serializer.ID, SlabToVerticalSlabCraftingRecipe.Serializer::new);
   /**
-   * {@link RegistryObject} for {@link BlockVerticalSlabRecipe} {@link BlockVerticalSlabRecipe.Serializer Serializer}.
+   * {@link RegistryObject} for {@link BlockToVerticalSlabCraftingRecipe} {@link BlockToVerticalSlabCraftingRecipe.Serializer Serializer}.
    */
-  public static final RegistryObject<BlockVerticalSlabRecipe.Serializer> BLOCK_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(BlockVerticalSlabRecipe.Serializer.ID, BlockVerticalSlabRecipe.Serializer::new);
+  public static final RegistryObject<BlockToVerticalSlabCraftingRecipe.Serializer> BLOCK_VERTICAL_SLAB_RECIPE_SERIALIZER = RECIPES.register(BlockToVerticalSlabCraftingRecipe.Serializer.ID, BlockToVerticalSlabCraftingRecipe.Serializer::new);
+  public static final RegistryObject<BlockToVerticalSlabStonecutterRecipe.Serializer> TEST_RECIPE_SERIALIZER = RECIPES.register(BlockToVerticalSlabStonecutterRecipe.Serializer.ID, BlockToVerticalSlabStonecutterRecipe.Serializer::new);
 
   public JustVerticalSlabsLoader() {
     MinecraftForge.EVENT_BUS.register(new ServerAboutToStartEventHandler());

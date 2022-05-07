@@ -37,6 +37,11 @@ public class VerticalSlabUtils {
    */
   @Nullable
   public static volatile ImmutableMap<Item, Item> blockMap;
+  /**
+   * {@link ImmutableMap} linking Stonecuttable Block {@link Item Items} to their respective Slab {@link Item Items}.
+   */
+  @Nullable
+  public static volatile ImmutableMap<Item, Item> stonecuttingMap;
 
   /**
    * ID to use when creating a new {@link CompoundTag} to store a Vertical Slab referring {@link BlockState}.

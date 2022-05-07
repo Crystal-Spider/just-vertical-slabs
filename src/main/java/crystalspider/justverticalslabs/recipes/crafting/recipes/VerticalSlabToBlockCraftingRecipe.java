@@ -1,6 +1,7 @@
-package crystalspider.justverticalslabs.recipes;
+package crystalspider.justverticalslabs.recipes.crafting.recipes;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
+import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -8,19 +9,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 /**
- * {@link VerticalSlabRecipe} to craft 2 matching adjacent Vertical Slabs into their referring block.
+ * {@link VerticalSlabCraftingRecipe} to craft 2 matching adjacent Vertical Slabs into their referring block.
  */
-public class ReferringBlockRecipe extends VerticalSlabRecipe {
+public class VerticalSlabToBlockCraftingRecipe extends VerticalSlabCraftingRecipe {
   /**
    * ID of this recipe.
    */
-  public static final String ID = "referring_block_recipe";
+  public static final String ID = "vertical_slab_to_block_crafting_recipe";
   /**
      * {@link ResourceLocation} of this recipe used to uniquely identify it.
      */
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
-  public ReferringBlockRecipe() {
+  public VerticalSlabToBlockCraftingRecipe() {
     super(2, 1, Items.OAK_PLANKS.getDefaultInstance());
   }
 
@@ -75,20 +76,31 @@ public class ReferringBlockRecipe extends VerticalSlabRecipe {
   }
 
   /**
-   * Serializer for {@link ReferringBlockRecipe}.
+   * Checks if both {@link ItemStack ItemStacks} represent the same kind of Vertical Slab, that is they all have the same referringBlockState.
+   * 
+   * @param verticalSlab1
+   * @param verticalSlab2
+   * @return whether both {@link ItemStack ItemStacks} represent the same kind of Vertical Slab.
    */
-  public static class Serializer extends VerticalSlabRecipe.Serializer<ReferringBlockRecipe> {
+  protected boolean verticalSlabsMatch(ItemStack verticalSlab1, ItemStack verticalSlab2) {
+    return VerticalSlabUtils.getReferringBlockState(verticalSlab1) == VerticalSlabUtils.getReferringBlockState(verticalSlab2);
+  }
+
+  /**
+   * Serializer for {@link VerticalSlabToBlockCraftingRecipe}.
+   */
+  public static class Serializer extends VerticalSlabCraftingRecipe.Serializer<VerticalSlabToBlockCraftingRecipe> {
     /**
      * ID of this {@link Serializer}.
      */
-    public static final String ID = ReferringBlockRecipe.ID + "_serializer";
+    public static final String ID = VerticalSlabToBlockCraftingRecipe.ID + "_serializer";
     /**
      * {@link ResourceLocation} of this {@link Serializer} used to uniquely identify it.
      */
     public static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
     public Serializer() {
-      super(ReferringBlockRecipe::new);
+      super(VerticalSlabToBlockCraftingRecipe::new);
     }
   }
 }

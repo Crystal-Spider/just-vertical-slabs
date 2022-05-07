@@ -1,6 +1,7 @@
-package crystalspider.justverticalslabs.recipes;
+package crystalspider.justverticalslabs.recipes.crafting.recipes;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
+import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -9,19 +10,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 /**
- * {@link VerticalSlabRecipe} to craft 3 matching blocks in a column into the correct Vertical Slab.
+ * {@link VerticalSlabCraftingRecipe} to craft 3 matching blocks in a column into the correct Vertical Slab.
  */
-public class BlockVerticalSlabRecipe extends VerticalSlabRecipe {
+public class BlockToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe {
   /**
    * ID of this recipe.
    */
-  public static final String ID = "block_vertical_slab_recipe";
+  public static final String ID = "block_to_vertical_slab_crafting_recipe";
   /**
    * {@link ResourceLocation} of this recipe used to uniquely identify it.
    */
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
-  public BlockVerticalSlabRecipe() {
+  public BlockToVerticalSlabCraftingRecipe() {
     super(1, 3, VerticalSlabUtils.getDefaultInstance());
   }
 
@@ -80,20 +81,20 @@ public class BlockVerticalSlabRecipe extends VerticalSlabRecipe {
   }
 
   /**
-   * Serializer for {@link BlockVerticalSlabRecipe}.
+   * Serializer for {@link BlockToVerticalSlabCraftingRecipe}.
    */
-  public static class Serializer extends VerticalSlabRecipe.Serializer<BlockVerticalSlabRecipe> {
+  public static class Serializer extends VerticalSlabCraftingRecipe.Serializer<BlockToVerticalSlabCraftingRecipe> {
     /**
      * ID of this {@link Serializer}.
      */
-    public static final String ID = BlockVerticalSlabRecipe.ID + "_serializer";
+    public static final String ID = BlockToVerticalSlabCraftingRecipe.ID + "_serializer";
     /**
      * {@link ResourceLocation} of this {@link Serializer} used to uniquely identify it.
      */
     public static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
     public Serializer() {
-      super(BlockVerticalSlabRecipe::new);
+      super(BlockToVerticalSlabCraftingRecipe::new);
     }
   }
 }
