@@ -10,20 +10,9 @@ updateJSONURL="https://raw.githubusercontent.com/Nyphet/just-vertical-slabs/mast
 displayURL="https://github.com/Nyphet/just-vertical-slabs" #optional
 logoFile="just-vertical-slabs.png" #optional
 # A text field displayed in the mod UI
-credits='''
-A very big thank you goes to the Forge team that allowed anyone to mod Minecraft for free and their support in the Forge Forums.
-In particular I want to thank diesieben07 that followed me throughtout most of the development, without him none of this would be possible.
-''' #optional
+credits="A very big thank you goes to the Forge team that allowed anyone to mod Minecraft for free and their support in the Forge Forums.\nIn particular I want to thank diesieben07 that followed me throughtout most of the development, without him none of this would be possible." #optional
 authors="Crystal Spider" #optional
-description='''
-Finally build with Vertical Slabs in Vanilla or with any mod you've installed!
-
-- Works out of the box with any mod!
-- Vertical Slab variants for any block with slab variants, Vanilla or not!
-- Vertical Slabs combine like stairs do!
-- Vertical Slabs craftings! See next section for more details.
-- Creative Tab with all available Vertical Slabs!
-'''
+description="Finally build with Vertical Slabs in Vanilla or with any mod you've installed!"
 [[dependencies.justverticalslabs]]
     modId="forge"
     mandatory=true
