@@ -32,7 +32,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ServerAboutToStartEventHandler {
   /**
-   * Handles the event {@link ServerAboutToStartEvent} to load the map of slabs-blocks.
+   * Handles the event {@link ServerAboutToStartEvent} to load the maps of slabs-blocks.
    * Searches through all {@link Item Items} with the {@link ItemTags#SLABS slabs} tag and associates them to the block they're made from.
    * 
    * @param event - {@link ServerAboutToStartEvent}.
