@@ -17,6 +17,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -48,6 +50,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+  public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
   private static final VoxelShape[] SHAPES = makeShapes();
   private static final int[] SHAPE_BY_STATE = new int[]{
     0,  // 0  Straight    - South
@@ -78,8 +81,9 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       .isValidSpawn((state, getter, pos, entityType) -> false)
       .isRedstoneConductor((state, getter, pos) -> false)
       .isSuffocating((state, getter, pos) -> false)
+      .lightLevel(LightBlock.LIGHT_EMISSION)
     );
-    this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)));
+    this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(LEVEL, Integer.valueOf(0)));
   }
 
   /**
@@ -277,7 +281,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   
   @Override
   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
-    stateDefinition.add(FACING, SHAPE, WATERLOGGED);
+    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL);
   }
 
   @Override
@@ -354,7 +358,9 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public int getLightEmission(BlockState state, BlockGetter getter, BlockPos pos) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
-      return referringBlockState.getLightEmission(getter, pos);
+      int lightLevel = referringBlockState.getLightEmission(getter, pos);
+      state.setValue(LEVEL, Integer.valueOf(lightLevel));
+      return lightLevel;
     }
     return super.getLightEmission(state, getter, pos);
   }
