@@ -7,6 +7,7 @@ import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
 import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.recipes.crafting.recipes.BlockToVerticalSlabCraftingRecipe;
+import crystalspider.justverticalslabs.recipes.crafting.recipes.SlabToBlockCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.crafting.recipes.SlabToVerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.crafting.recipes.VerticalSlabToBlockCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.crafting.recipes.VerticalSlabToSlabCraftingRecipe;
@@ -94,6 +95,13 @@ public class JustVerticalSlabsLoader {
    * {@link RegistryObject} for {@link BlockToVerticalSlabCraftingRecipe} {@link BlockToVerticalSlabCraftingRecipe.Serializer Serializer}.
    */
   public static final RegistryObject<BlockToVerticalSlabCraftingRecipe.Serializer> BLOCK_TO_VERTICAL_SLAB_CRAFTING_RECIPE_SERIALIZER = RECIPES.register(BlockToVerticalSlabCraftingRecipe.Serializer.ID, BlockToVerticalSlabCraftingRecipe.Serializer::new);
+  /**
+   * {@link RegistryObject} for {@link SlabToBlockCraftingRecipe} {@link SlabToBlockCraftingRecipe.Serializer Serializer}.
+   */
+  public static final RegistryObject<SlabToBlockCraftingRecipe.Serializer> SLAB_TO_BLOCK_CRAFTING_RECIPE_SERIALIZER = RECIPES.register(SlabToBlockCraftingRecipe.Serializer.ID, SlabToBlockCraftingRecipe.Serializer::new);
+  /**
+   * {@link RegistryObject} for {@link BlockToVerticalSlabStonecutterRecipe} {@link BlockToVerticalSlabStonecutterRecipe.Serializer Serializer}.
+   */
   public static final RegistryObject<BlockToVerticalSlabStonecutterRecipe.Serializer> BLOCK_TO_VERTICAL_SLAB_STONECUTTER_RECIPE_SERIALIZER = RECIPES.register(BlockToVerticalSlabStonecutterRecipe.Serializer.ID, BlockToVerticalSlabStonecutterRecipe.Serializer::new);
 
   public JustVerticalSlabsLoader() {
