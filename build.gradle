@@ -15,7 +15,7 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.0.0'
+version = '1.18.2-1.0.0.0'
 group = 'crystalspider.justverticalslabs'
 archivesBaseName = 'justverticalslabs'
 
