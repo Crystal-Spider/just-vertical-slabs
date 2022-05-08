@@ -120,6 +120,6 @@ public class ServerAboutToStartEventHandler {
   }
 
   private boolean isPlain(ItemStack itemStack) {
-    return !(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar"));
+    return !(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar") || itemStack.toString().contains("cut") || itemStack.toString().contains("smooth"));
   }
 }
