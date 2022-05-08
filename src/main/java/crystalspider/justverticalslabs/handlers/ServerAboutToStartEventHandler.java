@@ -3,6 +3,7 @@ package crystalspider.justverticalslabs.handlers;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -15,6 +16,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -37,7 +39,7 @@ public class ServerAboutToStartEventHandler {
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onServerAboutToStartEvent(ServerAboutToStartEvent event) {
-    Map<Item, Item> slabMap = new LinkedHashMap<Item, Item>(), blockMap = new HashMap<Item, Item>(), stonecuttingMap = new HashMap<Item, Item>();
+    Map<Item, Item> slabMap = new LinkedHashMap<Item, Item>(), blockMap = new HashMap<Item, Item>(), waxingMap = new HashMap<Item, Item>(), stonecuttingMap = new HashMap<Item, Item>();
     RecipeManager recipeManager = event.getServer().getRecipeManager();
     for (Item slab : ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS)) {
       for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
@@ -55,6 +57,14 @@ public class ServerAboutToStartEventHandler {
                 slabMap.put(slab, ingredient.getItems()[0].getItem());
               }
             });
+          } else if (ingredients.stream().anyMatch(ingredient -> ingredient.test(Items.HONEYCOMB.getDefaultInstance()))) {
+            List<Ingredient> notHoneyIngredients = ingredients.stream().filter(ingredient -> !ingredient.test(Items.HONEYCOMB.getDefaultInstance())).toList();
+            if (notHoneyIngredients.size() == 1) {
+              ItemStack oxidizableSlab = notHoneyIngredients.get(0).getItems()[0];
+              if (oxidizableSlab.is(ItemTags.SLABS)) {
+                waxingMap.put(oxidizableSlab.getItem(), slab);
+              }
+            }
           }
         }
       }
@@ -75,6 +85,7 @@ public class ServerAboutToStartEventHandler {
     VerticalSlabUtils.slabMap = ImmutableMap.copyOf(slabMap);
     VerticalSlabUtils.blockMap = ImmutableMap.copyOf(blockMap);
     VerticalSlabUtils.stonecuttingMap = ImmutableMap.copyOf(stonecuttingMap);
+    VerticalSlabUtils.waxingMap = ImmutableMap.copyOf(waxingMap);
   }
 
   /**

@@ -11,6 +11,7 @@ import crystalspider.justverticalslabs.recipes.crafting.recipes.SlabToBlockCraft
 import crystalspider.justverticalslabs.recipes.crafting.recipes.SlabToVerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.crafting.recipes.VerticalSlabToBlockCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.crafting.recipes.VerticalSlabToSlabCraftingRecipe;
+import crystalspider.justverticalslabs.recipes.crafting.recipes.WaxedVerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.stonecutter.recipes.BlockToVerticalSlabStonecutterRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.world.item.CreativeModeTab;
@@ -99,6 +100,10 @@ public class JustVerticalSlabsLoader {
    * {@link RegistryObject} for {@link SlabToBlockCraftingRecipe} {@link SlabToBlockCraftingRecipe.Serializer Serializer}.
    */
   public static final RegistryObject<SlabToBlockCraftingRecipe.Serializer> SLAB_TO_BLOCK_CRAFTING_RECIPE_SERIALIZER = RECIPES.register(SlabToBlockCraftingRecipe.Serializer.ID, SlabToBlockCraftingRecipe.Serializer::new);
+  /**
+   * {@link RegistryObject} for {@link WaxedVerticalSlabCraftingRecipe} {@link WaxedVerticalSlabCraftingRecipe.Serializer Serializer}.
+   */
+  public static final RegistryObject<WaxedVerticalSlabCraftingRecipe.Serializer> WAXED_VERTICAL_SLAB_CRAFTING_RECIPE_SERIALIZER = RECIPES.register(WaxedVerticalSlabCraftingRecipe.Serializer.ID, WaxedVerticalSlabCraftingRecipe.Serializer::new);
   /**
    * {@link RegistryObject} for {@link BlockToVerticalSlabStonecutterRecipe} {@link BlockToVerticalSlabStonecutterRecipe.Serializer Serializer}.
    */

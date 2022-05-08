@@ -51,7 +51,7 @@ public abstract class VerticalSlabCraftingRecipe implements VerticalSlabRecipe<C
    * Checks if the given {@code width} and {@code height} allow the recipe.
    */
   @Override
-  public final boolean canCraftInDimensions(int width, int height) {
+  public boolean canCraftInDimensions(int width, int height) {
     return width >= this.width && height >= this.height;
   }
 
