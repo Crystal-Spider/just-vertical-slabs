@@ -41,19 +41,21 @@ public class ServerAboutToStartEventHandler {
     RecipeManager recipeManager = event.getServer().getRecipeManager();
     for (Item slab : ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS)) {
       for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
-        if (recipe.getResultItem().is(slab) && !(recipe instanceof VerticalSlabCraftingRecipe) && isRecipeWithBlocks(ingredients) && sameIngredients(ingredients)) {
-          ingredients.stream().findFirst().ifPresent(ingredient -> {
-            for (ItemStack itemStack : ingredient.getItems()) {
-              if (isPlain(itemStack)) {
-                slabMap.put(slab, itemStack.getItem());
+        if (recipe.getResultItem().is(slab) && !(recipe instanceof VerticalSlabCraftingRecipe)) {
+          NonNullList<Ingredient> ingredients = recipe.getIngredients();
+          if (isRecipeWithBlocks(ingredients) && sameIngredients(ingredients)) {
+            ingredients.stream().findFirst().ifPresent(ingredient -> {
+              for (ItemStack itemStack : ingredient.getItems()) {
+                if (isPlain(itemStack)) {
+                  slabMap.put(slab, itemStack.getItem());
+                }
+                blockMap.put(itemStack.getItem(), slab);
               }
-              blockMap.put(itemStack.getItem(), slab);
-            }
-            if (!slabMap.containsKey(slab)) {
-              slabMap.put(slab, ingredient.getItems()[0].getItem());
-            }
-          });
+              if (!slabMap.containsKey(slab)) {
+                slabMap.put(slab, ingredient.getItems()[0].getItem());
+              }
+            });
+          }
         }
       }
       for (StonecutterRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)) {
