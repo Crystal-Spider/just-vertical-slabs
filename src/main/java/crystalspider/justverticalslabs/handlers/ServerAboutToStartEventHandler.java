@@ -3,19 +3,25 @@ package crystalspider.justverticalslabs.handlers;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
+import crystalspider.justverticalslabs.recipes.stonecutter.VerticalSlabStonecutterRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,27 +39,53 @@ public class ServerAboutToStartEventHandler {
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onServerAboutToStartEvent(ServerAboutToStartEvent event) {
-    Map<Item, Item> slabMap = new LinkedHashMap<Item, Item>(), blockMap = new HashMap<Item, Item>();
+    Map<Item, Item> slabMap = new LinkedHashMap<Item, Item>(), blockMap = new HashMap<Item, Item>(), waxingMap = new HashMap<Item, Item>(), stonecuttingMap = new HashMap<Item, Item>();
+    RecipeManager recipeManager = event.getServer().getRecipeManager();
     for (Item slab : ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS)) {
-      for (CraftingRecipe recipe : event.getServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
-        if (recipe.getResultItem().is(slab) && isRecipeWithBlocks(ingredients) && sameIngredients(ingredients)) {
-          ingredients.stream().findFirst().ifPresent(ingredient -> {
-            for (ItemStack itemStack : ingredient.getItems()) {
-              if (!(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar"))) {
-                slabMap.put(slab, itemStack.getItem());
+      for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
+        if (recipe.getResultItem().is(slab) && !(recipe instanceof VerticalSlabCraftingRecipe)) {
+          NonNullList<Ingredient> ingredients = recipe.getIngredients();
+          if (isRecipeWithBlocks(ingredients) && sameIngredients(ingredients)) {
+            ingredients.stream().findFirst().ifPresent(ingredient -> {
+              for (ItemStack itemStack : ingredient.getItems()) {
+                if (isPlain(itemStack)) {
+                  slabMap.put(slab, itemStack.getItem());
+                }
+                blockMap.put(itemStack.getItem(), slab);
               }
-              blockMap.put(itemStack.getItem(), slab);
+              if (!slabMap.containsKey(slab)) {
+                slabMap.put(slab, ingredient.getItems()[0].getItem());
+              }
+            });
+          } else if (ingredients.stream().anyMatch(ingredient -> ingredient.test(Items.HONEYCOMB.getDefaultInstance()))) {
+            List<Ingredient> notHoneyIngredients = ingredients.stream().filter(ingredient -> !ingredient.test(Items.HONEYCOMB.getDefaultInstance())).toList();
+            if (notHoneyIngredients.size() == 1) {
+              ItemStack oxidizableSlab = notHoneyIngredients.get(0).getItems()[0];
+              if (oxidizableSlab.is(ItemTags.SLABS)) {
+                waxingMap.put(oxidizableSlab.getItem(), slab);
+              }
             }
-            if (!slabMap.containsKey(slab)) {
-              slabMap.put(slab, ingredient.getItems()[0].getItem());
+          }
+        }
+      }
+      for (StonecutterRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)) {
+        if (recipe.getResultItem().is(slab) && !(recipe instanceof VerticalSlabStonecutterRecipe)) {
+          Ingredient ingredient = recipe.getIngredients().get(0);
+          for (ItemStack itemStack : ingredient.getItems()) {
+            Item block = itemStack.getItem();
+            if (!stonecuttingMap.containsKey(block)) {
+              stonecuttingMap.put(block, slab);
+            } else if (slabMap.get(slab) == block) {
+              stonecuttingMap.put(block, slab);
             }
-          });
+          }
         }
       }
     }
     VerticalSlabUtils.slabMap = ImmutableMap.copyOf(slabMap);
     VerticalSlabUtils.blockMap = ImmutableMap.copyOf(blockMap);
+    VerticalSlabUtils.stonecuttingMap = ImmutableMap.copyOf(stonecuttingMap);
+    VerticalSlabUtils.waxingMap = ImmutableMap.copyOf(waxingMap);
   }
 
   /**
@@ -85,5 +117,9 @@ public class ServerAboutToStartEventHandler {
       return same;
     }
     return false;
+  }
+
+  private boolean isPlain(ItemStack itemStack) {
+    return !(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar"));
   }
 }

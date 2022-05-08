@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,6 +38,16 @@ public class VerticalSlabUtils {
    */
   @Nullable
   public static volatile ImmutableMap<Item, Item> blockMap;
+  /**
+   * {@link ImmutableMap} linking Stonecuttable Block {@link Item Items} to their respective Slab {@link Item Items}.
+   */
+  @Nullable
+  public static volatile ImmutableMap<Item, Item> stonecuttingMap;
+  /**
+   * {@link ImmutableMap} linking Oxidizable Slab {@link Item Items} to their respective Waxed Slab {@link Item Items}.
+   */
+  @Nullable
+  public static volatile ImmutableMap<Item, Item> waxingMap;
 
   /**
    * ID to use when creating a new {@link CompoundTag} to store a Vertical Slab referring {@link BlockState}.
@@ -142,7 +153,10 @@ public class VerticalSlabUtils {
   public static BlockState getReferringBlockState(BlockGetter getter, BlockPos pos) {
     VerticalSlabBlockEntity blockEntity = getVerticalSlabBlockEntity(getter, pos);
     if (blockEntity != null) {
-      return blockEntity.getReferringBlockState();
+      BlockState referringBlockState = blockEntity.getReferringBlockState();
+      if (referringBlockState != null) {
+        return Block.byItem(blockMap.get(referringBlockState.getBlock().asItem())).defaultBlockState();
+      }
     }
     return null;
   }
