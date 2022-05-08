@@ -33,7 +33,7 @@ If you find a weird or incorrect behavior of any vertical slab, please open an i
 
 ## Credits
 A very big thank you goes to the Forge team that allowed anyone to mod Minecraft for free and their support in the Forge Forums.  
-In particular I want to thank diesieben07 that followed me throughtout most of the development, without him none of this would be possible.
+In particular I want to thank diesieben07 that followed me throughout most of the development, without him none of this would have been possible.
 
 ## License and right of use
 Feel free to use this mod for any modpack or video, just be sure to give credit and possibly link [here](https://github.com/Nyphet/just-vertical-slabs#readme).  
