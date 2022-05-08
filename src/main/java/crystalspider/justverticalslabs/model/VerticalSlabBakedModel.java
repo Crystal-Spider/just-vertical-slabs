@@ -231,12 +231,8 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   private BakedQuad getReferringBakedQuad(BlockState referringBlockState, Direction side, Random rand, IModelData modelData) {
     List<BakedQuad> referringBakedQuads = getReferringBakedModel(referringBlockState).getQuads(referringBlockState, side, rand, getReferringModelData(referringBlockState, modelData));
     if (referringBakedQuads.size() > 0) {
-      if (referringBakedQuads.size() > 1) {
-        // TODO: log warning.
-      }
       return referringBakedQuads.get(0);
     }
-    // TODO: log warning.
     return null;
   }
 

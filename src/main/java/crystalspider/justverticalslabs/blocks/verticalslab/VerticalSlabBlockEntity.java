@@ -65,7 +65,6 @@ public class VerticalSlabBlockEntity extends BlockEntity {
     if (referringBlockStateTag != null) {
       referringBlockState = NbtUtils.readBlockState(referringBlockStateTag);
     } else {
-      // TODO: log warning.
       referringBlockState = Blocks.AIR.defaultBlockState();
     }
   }
