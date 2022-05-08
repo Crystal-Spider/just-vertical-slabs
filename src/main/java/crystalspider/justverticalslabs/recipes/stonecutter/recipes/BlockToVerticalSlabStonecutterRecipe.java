@@ -3,11 +3,15 @@ package crystalspider.justverticalslabs.recipes.stonecutter.recipes;
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.recipes.stonecutter.VerticalSlabStonecutterRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 /**
  * {@link VerticalSlabStonecutterRecipe} to craft a block into 2 Vertical Slabs.
@@ -27,6 +31,18 @@ public class BlockToVerticalSlabStonecutterRecipe extends VerticalSlabStonecutte
   }
 
   @Override
+  public ItemStack getResultItem() {
+    if (EffectiveSide.get().isClient()) {
+      Minecraft minecraft = Minecraft.getInstance();
+      Screen screen = minecraft.screen;
+      if (screen instanceof StonecutterScreen) {
+        return assemble(((StonecutterScreen) screen).getMenu().container);
+      }
+    }
+    return super.getResultItem();
+  }
+
+  @Override
   public boolean matches(Container container, Level level) {
     return VerticalSlabUtils.stonecuttingMap.containsKey(container.getItem(0).getItem());
   }
@@ -40,7 +56,7 @@ public class BlockToVerticalSlabStonecutterRecipe extends VerticalSlabStonecutte
 
   @Override
   public Serializer getSerializer() {
-    return JustVerticalSlabsLoader.TEST_RECIPE_SERIALIZER.get();
+    return JustVerticalSlabsLoader.BLOCK_TO_VERTICAL_SLAB_STONECUTTER_RECIPE_SERIALIZER.get();
   }
 
   /**

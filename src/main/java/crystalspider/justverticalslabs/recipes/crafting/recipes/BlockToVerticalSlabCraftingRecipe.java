@@ -43,7 +43,7 @@ public class BlockToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecip
 
   @Override
   public Serializer getSerializer() {
-    return JustVerticalSlabsLoader.BLOCK_VERTICAL_SLAB_RECIPE_SERIALIZER.get();
+    return JustVerticalSlabsLoader.BLOCK_TO_VERTICAL_SLAB_CRAFTING_RECIPE_SERIALIZER.get();
   }
 
   @Override
