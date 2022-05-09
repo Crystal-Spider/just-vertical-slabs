@@ -28,7 +28,7 @@ Downloads are available [here](https://www.curseforge.com/minecraft/mc-mods/just
 ## Issues
 To open a new issue or search an existing one visit the [issues tab](https://github.com/Nyphet/just-vertical-slabs/issues).  
 Before opening a new issue please verify that no other issue about the same topic already exists, either open or closed.  
-If you find a mod that breaks with this mod or that does not get vertical slabs as it should, please open an issue.
+If you find a mod that breaks with this mod or that does not get vertical slabs as it should, please open an issue.  
 If you find a weird or incorrect behavior of any vertical slab, please open an issue.
 
 ## Credits
