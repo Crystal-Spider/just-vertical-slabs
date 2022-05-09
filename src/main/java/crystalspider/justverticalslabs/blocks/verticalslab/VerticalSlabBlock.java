@@ -83,7 +83,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       .isSuffocating((state, getter, pos) -> false)
       .lightLevel(LightBlock.LIGHT_EMISSION)
     );
-    this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(LEVEL, Integer.valueOf(0)));
+    this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, false).setValue(LEVEL, 0));
   }
 
   /**
@@ -201,13 +201,18 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public BlockState getStateForPlacement(BlockPlaceContext placeContext) {
     BlockPos pos = placeContext.getClickedPos();
     Level level = placeContext.getLevel();
-    BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, Boolean.valueOf(level.getFluidState(pos).getType() == Fluids.WATER));
+    BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(placeContext.getItemInHand());
     if (referringBlockState != null) {
-      blockstate = blockstate.setValue(LEVEL, Integer.valueOf(referringBlockState.getLightEmission(level, pos)));
+      try {
+        blockstate = blockstate.setValue(LEVEL, referringBlockState.getLightEmission(level, pos));
+      } catch (Exception e) {
+        blockstate = blockstate.setValue(LEVEL, referringBlockState.getLightEmission());
+      }
     }
     return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos));
   }
