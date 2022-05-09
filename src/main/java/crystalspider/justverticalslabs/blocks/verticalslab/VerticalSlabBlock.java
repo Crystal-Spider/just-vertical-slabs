@@ -203,8 +203,13 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   @Override
   public BlockState getStateForPlacement(BlockPlaceContext placeContext) {
     BlockPos pos = placeContext.getClickedPos();
-    BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, Boolean.valueOf(placeContext.getLevel().getFluidState(pos).getType() == Fluids.WATER));
-    return blockstate.setValue(SHAPE, getStairsShape(blockstate, placeContext.getLevel(), pos));
+    Level level = placeContext.getLevel();
+    BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, Boolean.valueOf(level.getFluidState(pos).getType() == Fluids.WATER));
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(placeContext.getItemInHand());
+    if (referringBlockState != null) {
+      blockstate = blockstate.setValue(LEVEL, Integer.valueOf(referringBlockState.getLightEmission(level, pos)));
+    }
+    return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos));
   }
 
   @Override
@@ -351,18 +356,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       return referringBlockState.getFriction(level, pos, entity);
     }
     return super.getFriction(state, level, pos, entity);
-  }
-
-  // FIXME: Light is not emitted correctly when placed.
-  @Override
-  public int getLightEmission(BlockState state, BlockGetter getter, BlockPos pos) {
-    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
-    if (referringBlockState != null) {
-      int lightLevel = referringBlockState.getLightEmission(getter, pos);
-      state.setValue(LEVEL, Integer.valueOf(lightLevel));
-      return lightLevel;
-    }
-    return super.getLightEmission(state, getter, pos);
   }
 
   @Override
