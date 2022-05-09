@@ -19,7 +19,7 @@ If you want more vertical slabs it's sufficient to add more slabs. Then, automat
 - Vertical slabs can be crafted into slabs and vice versa just by putting them alone in the crafting.
 - Waxing works as usual, both in-world and in-crafting.
 - Stonecutter recipes are available.  
-  It must be noted that, due to some implementation restrictions, a block can be stonecut only in its main vertical slab. To obtain the other vertical slab veriants of that block the crafting recipes above must be used.
+  It must be noted that, due to some implementation restrictions, a block can be stonecut only in its main vertical slab. To obtain the other vertical slab variants of that block the crafting recipes above must be used.
 
 ## Downloads
 This is the FORGE verstion, a port to FABRIC is planned but won't happen any time soon.  
@@ -41,6 +41,12 @@ For this mod to automatically add vertical slabs depending on the slabs present 
 - All slab items have at least 1 crafting recipe using at least 1 block and, if more blocks are used, they are all the same.
 
 These assumptions work 99% of cases, however in the remote case that for some reason a mod adds slabs that don't have the correct tag or can't be crafted from their block variant, the corresponding vertical slabs can't and won't be added.
+
+## Mod Improvement
+**Help wanted!**  
+There are a few points this mod is lacking in and I'd like to improve it, however I don't have nearly enough time nor energy to do so.  
+For this reason I'm looking for someone that would be available to help improve this project (for free of course).  
+If you think you are interested in becoming a co-author, help improve this mod and expand its ecosystem, please contact me with a message on [CurseForge](https://www.curseforge.com/private-messages/send?recipient=crystal_spider_).
 
 ## License and right of use
 Feel free to use this mod for any modpack or video, just be sure to give credit and possibly link [here](https://github.com/Nyphet/just-vertical-slabs#readme).  
