@@ -16,5 +16,5 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added in-world waxing recipes for vertical slabs that can be waxed.
 - Added creative tab with all vertical slabs.
 
-[Unreleased]: https://github.com/Nyphet/jsdoc-generator
+[Unreleased]: https://github.com/Nyphet/just-vertical-slabs
 [1.18.2-1.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-1.0.0.0
