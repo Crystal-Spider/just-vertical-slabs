@@ -14,7 +14,7 @@ import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
 import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;

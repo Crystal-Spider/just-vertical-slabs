@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

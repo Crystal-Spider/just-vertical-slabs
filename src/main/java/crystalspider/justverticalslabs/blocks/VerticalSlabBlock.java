@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs.blocks.verticalslab;
+package crystalspider.justverticalslabs.blocks;
 
 import java.util.function.Supplier;
 

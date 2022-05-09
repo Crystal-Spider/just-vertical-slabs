@@ -1,4 +1,4 @@
-package crystalspider.justverticalslabs.blocks.verticalslab;
+package crystalspider.justverticalslabs.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
