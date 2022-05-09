@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
 import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
@@ -53,6 +54,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   public VerticalSlabBakedModel(BakedModel jsonBakedModel) {
     this.jsonBakedModel = jsonBakedModel;
     this.overrides = new VerticalSlabItemOverrides();
+    JustVerticalSlabsLoader.LOGGER.debug("Baked VerticalSlabModel.");
   }
 
   /**
@@ -231,8 +233,12 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   private BakedQuad getReferringBakedQuad(BlockState referringBlockState, Direction side, Random rand, IModelData modelData) {
     List<BakedQuad> referringBakedQuads = getReferringBakedModel(referringBlockState).getQuads(referringBlockState, side, rand, getReferringModelData(referringBlockState, modelData));
     if (referringBakedQuads.size() > 0) {
+      if (referringBakedQuads.size() > 1) {
+        JustVerticalSlabsLoader.LOGGER.warn("Referred Block has more than 1 texture for " + side + " face. Only the first one will be used.");
+      }
       return referringBakedQuads.get(0);
     }
+    JustVerticalSlabsLoader.LOGGER.warn("Referred Block has no texture for " + side + " face. No texture will be generated for that face.");
     return null;
   }
 

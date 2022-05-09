@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
 
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -30,6 +31,7 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
 
   public VerticalSlabModel(BlockModel jsonBlockModel) {
     this.jsonBlockModel = jsonBlockModel;
+    JustVerticalSlabsLoader.LOGGER.debug("Loaded VerticalSlabModel.");
   }
 
   /**
@@ -45,6 +47,7 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
    */
   @Override
   public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
+    JustVerticalSlabsLoader.LOGGER.debug("Baking VerticalSlabModel...");
     return new VerticalSlabBakedModel(jsonBlockModel.bake(bakery, jsonBlockModel, spriteGetter, modelTransform, modelLocation, false));
   }
 

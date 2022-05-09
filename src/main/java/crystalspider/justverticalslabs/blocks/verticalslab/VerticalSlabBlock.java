@@ -2,6 +2,7 @@ package crystalspider.justverticalslabs.blocks.verticalslab;
 
 import javax.annotation.Nullable;
 
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -208,9 +209,15 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(placeContext.getItemInHand());
     if (referringBlockState != null) {
+      String position = "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
       try {
-        blockstate = blockstate.setValue(LEVEL, referringBlockState.getLightEmission(level, pos));
+        JustVerticalSlabsLoader.LOGGER.debug("Trying to get position sensitive light emission data from referring BlockState for Vertical Slab in position " + position + "...");
+        int lightLevel = referringBlockState.getLightEmission(level, pos);
+        blockstate = blockstate.setValue(LEVEL, lightLevel);
+        JustVerticalSlabsLoader.LOGGER.debug("Position sensitive light emission data for Vertical Slab in position " + position + " was succesfully retireved with value of " + lightLevel + ".");
       } catch (Exception e) {
+        JustVerticalSlabsLoader.LOGGER.debug("Position sensitive light emission data for Vertical Slab in position " + position + " could not be retrieved from referring BlockState as an Exception was thrown:", e);
+        JustVerticalSlabsLoader.LOGGER.debug("Switching to NON position sensitive light emission data from referring BlockState.");
         blockstate = blockstate.setValue(LEVEL, referringBlockState.getLightEmission());
       }
     }

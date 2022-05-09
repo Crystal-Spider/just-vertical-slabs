@@ -65,6 +65,7 @@ public class VerticalSlabBlockEntity extends BlockEntity {
     if (referringBlockStateTag != null) {
       referringBlockState = NbtUtils.readBlockState(referringBlockStateTag);
     } else {
+      JustVerticalSlabsLoader.LOGGER.warn("No referringBlockStateTag could be found while loading tag for Vertical Slab in position [" + getBlockPos().getX() + ", " + getBlockPos().getY() + ", " + getBlockPos().getZ() + "].");
       referringBlockState = Blocks.AIR.defaultBlockState();
     }
   }

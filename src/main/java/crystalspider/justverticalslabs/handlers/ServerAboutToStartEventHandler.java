@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.stonecutter.VerticalSlabStonecutterRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
@@ -42,6 +43,7 @@ public class ServerAboutToStartEventHandler {
     Map<Item, Item> slabMap = new LinkedHashMap<Item, Item>(), blockMap = new HashMap<Item, Item>(), waxingMap = new HashMap<Item, Item>(), stonecuttingMap = new HashMap<Item, Item>();
     RecipeManager recipeManager = event.getServer().getRecipeManager();
     for (Item slab : ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS)) {
+      JustVerticalSlabsLoader.LOGGER.debug("Adding " + slab + " to " + JustVerticalSlabsLoader.MODID + " mod maps...");
       for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
         if (recipe.getResultItem().is(slab) && !(recipe instanceof VerticalSlabCraftingRecipe)) {
           NonNullList<Ingredient> ingredients = recipe.getIngredients();
@@ -92,6 +94,7 @@ public class ServerAboutToStartEventHandler {
     VerticalSlabUtils.blockMap = ImmutableMap.copyOf(blockMap);
     VerticalSlabUtils.stonecuttingMap = ImmutableMap.copyOf(stonecuttingMap);
     VerticalSlabUtils.waxingMap = ImmutableMap.copyOf(waxingMap);
+    JustVerticalSlabsLoader.LOGGER.debug(JustVerticalSlabsLoader.MODID + " mod maps generated.");
   }
 
   /**

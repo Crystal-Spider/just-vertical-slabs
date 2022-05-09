@@ -28,6 +28,7 @@ public class VerticalSlabModelLoader implements IModelLoader<VerticalSlabModel> 
    */
   @Override
   public VerticalSlabModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+    JustVerticalSlabsLoader.LOGGER.debug("Loading VerticalSlabModel...");
     return new VerticalSlabModel(deserializationContext.deserialize(modelContents.getAsJsonObject("model"), BlockModel.class));
   }
 

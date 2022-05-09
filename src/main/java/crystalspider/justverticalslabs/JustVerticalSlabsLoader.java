@@ -1,5 +1,8 @@
 package crystalspider.justverticalslabs;
 
+import com.mojang.logging.LogUtils;
+
+import org.slf4j.Logger;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
@@ -34,6 +37,11 @@ import net.minecraftforge.registries.RegistryObject;
  */
 @Mod(JustVerticalSlabsLoader.MODID)
 public class JustVerticalSlabsLoader {
+  /**
+   * Logger.
+   */
+  public static final Logger LOGGER = LogUtils.getLogger();
+
   /**
    * JustVerticalSlab mod ID.
    */
@@ -111,6 +119,7 @@ public class JustVerticalSlabsLoader {
   public static final RegistryObject<BlockToVerticalSlabStonecutterRecipe.Serializer> BLOCK_TO_VERTICAL_SLAB_STONECUTTER_RECIPE_SERIALIZER = RECIPES.register(BlockToVerticalSlabStonecutterRecipe.Serializer.ID, BlockToVerticalSlabStonecutterRecipe.Serializer::new);
 
   public JustVerticalSlabsLoader() {
+    LOGGER.debug("Registering mod '" + MODID + "' to buses...");
     IEventBus minecraftEventBus = MinecraftForge.EVENT_BUS;
     minecraftEventBus.register(new ServerAboutToStartEventHandler());
     minecraftEventBus.register(new RecipeUpdateEventHandler());
@@ -121,5 +130,6 @@ public class JustVerticalSlabsLoader {
     ITEMS.register(modEventBus);
     RECIPES.register(modEventBus);
     modEventBus.register(new ModelRegistryEventHandler());
+    LOGGER.debug("Registering to buses of mod '" + MODID + "' completed.");
   }
 }

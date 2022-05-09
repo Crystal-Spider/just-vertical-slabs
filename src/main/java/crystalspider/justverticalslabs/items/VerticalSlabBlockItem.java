@@ -2,6 +2,7 @@ package crystalspider.justverticalslabs.items;
 
 import javax.annotation.Nullable;
 
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -101,6 +102,7 @@ public class VerticalSlabBlockItem extends BlockItem {
           CompoundTag compoundtag2 = compoundtag1.copy();
           compoundtag1.merge(compoundtag);
           if (!compoundtag1.equals(compoundtag2)) {
+            JustVerticalSlabsLoader.LOGGER.debug("Forcing VerticalSlabBlockEntity update on client...");
             blockentity.load(compoundtag1);
             blockentity.setChanged();
             return true;
