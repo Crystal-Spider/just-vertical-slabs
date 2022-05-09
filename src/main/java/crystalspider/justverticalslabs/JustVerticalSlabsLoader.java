@@ -4,6 +4,7 @@ import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
+import crystalspider.justverticalslabs.handlers.RightClickBlockHandler;
 import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.recipes.crafting.recipes.BlockToVerticalSlabCraftingRecipe;
@@ -110,13 +111,15 @@ public class JustVerticalSlabsLoader {
   public static final RegistryObject<BlockToVerticalSlabStonecutterRecipe.Serializer> BLOCK_TO_VERTICAL_SLAB_STONECUTTER_RECIPE_SERIALIZER = RECIPES.register(BlockToVerticalSlabStonecutterRecipe.Serializer.ID, BlockToVerticalSlabStonecutterRecipe.Serializer::new);
 
   public JustVerticalSlabsLoader() {
-    MinecraftForge.EVENT_BUS.register(new ServerAboutToStartEventHandler());
-    MinecraftForge.EVENT_BUS.register(new RecipeUpdateEventHandler());
-    IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-    BLOCKS.register(bus);
-    BLOCK_ENTITIES.register(bus);
-    ITEMS.register(bus);
-    RECIPES.register(bus);
-    bus.register(new ModelRegistryEventHandler());
+    IEventBus minecraftEventBus = MinecraftForge.EVENT_BUS;
+    minecraftEventBus.register(new ServerAboutToStartEventHandler());
+    minecraftEventBus.register(new RecipeUpdateEventHandler());
+    minecraftEventBus.register(new RightClickBlockHandler());
+    IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    BLOCKS.register(modEventBus);
+    BLOCK_ENTITIES.register(modEventBus);
+    ITEMS.register(modEventBus);
+    RECIPES.register(modEventBus);
+    modEventBus.register(new ModelRegistryEventHandler());
   }
 }

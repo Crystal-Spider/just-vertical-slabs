@@ -32,7 +32,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ServerAboutToStartEventHandler {
   /**
-   * Handles the event {@link ServerAboutToStartEvent} to load the map of slabs-blocks.
+   * Handles the event {@link ServerAboutToStartEvent} to load the maps of slabs-blocks.
    * Searches through all {@link Item Items} with the {@link ItemTags#SLABS slabs} tag and associates them to the block they're made from.
    * 
    * @param event - {@link ServerAboutToStartEvent}.
@@ -45,14 +45,17 @@ public class ServerAboutToStartEventHandler {
       for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
         if (recipe.getResultItem().is(slab) && !(recipe instanceof VerticalSlabCraftingRecipe)) {
           NonNullList<Ingredient> ingredients = recipe.getIngredients();
-          if (isRecipeWithBlocks(ingredients) && sameIngredients(ingredients)) {
-            ingredients.stream().findFirst().ifPresent(ingredient -> {
+          // A slab can be connected to its block only if there exists a crafting recipe that uses at least one block and, if more, the blocks used are all the same.
+          List<Ingredient> blockIngredients = getBlockIngredients(ingredients);
+          if (sameIngredients(blockIngredients)) {
+            blockIngredients.stream().findFirst().ifPresent(ingredient -> {
               for (ItemStack itemStack : ingredient.getItems()) {
                 if (isPlain(itemStack)) {
                   slabMap.put(slab, itemStack.getItem());
                 }
                 blockMap.put(itemStack.getItem(), slab);
               }
+              // If no plain block is connected to this slab that means the slab is not plain either, so add the first (and theoretically only) block item.
               if (!slabMap.containsKey(slab)) {
                 slabMap.put(slab, ingredient.getItems()[0].getItem());
               }
@@ -74,8 +77,11 @@ public class ServerAboutToStartEventHandler {
           for (ItemStack itemStack : ingredient.getItems()) {
             Item block = itemStack.getItem();
             if (!stonecuttingMap.containsKey(block)) {
+              // Put the block in the map if it's the first one that can be stonecut in the slab.
               stonecuttingMap.put(block, slab);
             } else if (slabMap.get(slab) == block) {
+              // If another block was associated to the slab in the stonecuttingMap, but the slabMap has this block associated to the slab,
+              // that means this block is the plain one for the slab so overwrite the block in the stonecuttingMap.
               stonecuttingMap.put(block, slab);
             }
           }
@@ -94,8 +100,8 @@ public class ServerAboutToStartEventHandler {
    * @param recipe
    * @return whether the {@code recipe} uses only items that are blocks and not slabs.
    */
-  private boolean isRecipeWithBlocks(NonNullList<Ingredient> ingredients) {
-    return ingredients.stream().allMatch(ingredient -> Arrays.stream(ingredient.getItems()).allMatch(itemStack -> !itemStack.is(ItemTags.SLABS) && itemStack.getItem() instanceof BlockItem));
+  private List<Ingredient> getBlockIngredients(NonNullList<Ingredient> ingredients) {
+    return ingredients.stream().filter(ingredient -> Arrays.stream(ingredient.getItems()).allMatch(itemStack -> !itemStack.is(ItemTags.SLABS) && itemStack.getItem() instanceof BlockItem)).toList();
   }
 
   /**
@@ -104,7 +110,7 @@ public class ServerAboutToStartEventHandler {
    * @param ingredients
    * @return whether all ingredients match, false if no ingredient is present.
    */
-  private boolean sameIngredients(NonNullList<Ingredient> ingredients) {
+  private boolean sameIngredients(List<Ingredient> ingredients) {
     if (ingredients.size() > 0) {
       boolean same = true;
       Ingredient firstIngredient = ingredients.get(0);
@@ -119,7 +125,13 @@ public class ServerAboutToStartEventHandler {
     return false;
   }
 
+  /**
+   * Checks if the given {@link ItemStack} represents a plain block.
+   * 
+   * @param itemStack
+   * @return whether the given {@link ItemStack} represents a plain block.
+   */
   private boolean isPlain(ItemStack itemStack) {
-    return !(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar"));
+    return !(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar") || itemStack.toString().contains("cut") || itemStack.toString().contains("smooth"));
   }
 }
