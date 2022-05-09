@@ -54,7 +54,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   public VerticalSlabBakedModel(BakedModel jsonBakedModel) {
     this.jsonBakedModel = jsonBakedModel;
     this.overrides = new VerticalSlabItemOverrides();
-    JustVerticalSlabsLoader.LOGGER.debug("Baked VerticalSlabModel.");
+    JustVerticalSlabsLoader.LOGGER.trace("Baked VerticalSlabModel.");
   }
 
   /**

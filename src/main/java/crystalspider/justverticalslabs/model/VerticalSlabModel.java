@@ -31,7 +31,7 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
 
   public VerticalSlabModel(BlockModel jsonBlockModel) {
     this.jsonBlockModel = jsonBlockModel;
-    JustVerticalSlabsLoader.LOGGER.debug("Loaded VerticalSlabModel.");
+    JustVerticalSlabsLoader.LOGGER.trace("Loaded VerticalSlabModel.");
   }
 
   /**
@@ -47,7 +47,7 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
    */
   @Override
   public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
-    JustVerticalSlabsLoader.LOGGER.debug("Baking VerticalSlabModel...");
+    JustVerticalSlabsLoader.LOGGER.trace("Baking VerticalSlabModel...");
     return new VerticalSlabBakedModel(jsonBlockModel.bake(bakery, jsonBlockModel, spriteGetter, modelTransform, modelLocation, false));
   }
 
