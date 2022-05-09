@@ -4,8 +4,8 @@ import com.mojang.logging.LogUtils;
 
 import org.slf4j.Logger;
 
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlock;
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
 import crystalspider.justverticalslabs.handlers.RightClickBlockHandler;

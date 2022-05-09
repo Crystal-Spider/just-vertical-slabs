@@ -1,4 +1,6 @@
-package crystalspider.justverticalslabs.blocks.verticalslab;
+package crystalspider.justverticalslabs.blocks;
+
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -209,17 +211,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(placeContext.getItemInHand());
     if (referringBlockState != null) {
-      String position = "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
-      try {
-        JustVerticalSlabsLoader.LOGGER.debug("Trying to get position sensitive light emission data from referring BlockState for Vertical Slab in position " + position + "...");
-        int lightLevel = referringBlockState.getLightEmission(level, pos);
-        blockstate = blockstate.setValue(LEVEL, lightLevel);
-        JustVerticalSlabsLoader.LOGGER.debug("Position sensitive light emission data for Vertical Slab in position " + position + " was succesfully retireved with value of " + lightLevel + ".");
-      } catch (Exception e) {
-        JustVerticalSlabsLoader.LOGGER.debug("Position sensitive light emission data for Vertical Slab in position " + position + " could not be retrieved from referring BlockState as an Exception was thrown:", e);
-        JustVerticalSlabsLoader.LOGGER.debug("Switching to NON position sensitive light emission data from referring BlockState.");
-        blockstate = blockstate.setValue(LEVEL, referringBlockState.getLightEmission());
-      }
+      blockstate = blockstate.setValue(LEVEL, getReferringProperty((Level getter, BlockPos blockPos, Object o) -> referringBlockState.getLightEmission(getter, blockPos), referringBlockState::getLightEmission, level, pos, null));
     }
     return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos));
   }
@@ -316,7 +308,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public float getDestroyProgress(BlockState state, Player player, BlockGetter getter, BlockPos pos) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
-      return referringBlockState.getDestroyProgress(player, getter, pos);
+      return getReferringProperty((BlockGetter blockGetter, BlockPos blockPos, Player entity) -> referringBlockState.getDestroyProgress(entity, blockGetter, blockPos), () -> super.getDestroyProgress(state, player, getter, pos), getter, pos, player);
     }
     return super.getDestroyProgress(state, player, getter, pos);
  }
@@ -365,7 +357,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public float getFriction(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
-      return referringBlockState.getFriction(level, pos, entity);
+      return getReferringProperty(referringBlockState::getFriction, () -> super.getFriction(state, level, pos, entity), level, pos, entity);
     }
     return super.getFriction(state, level, pos, entity);
   }
@@ -374,7 +366,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public boolean canHarvestBlock(BlockState state, BlockGetter getter, BlockPos pos, Player player) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
-      return referringBlockState.canHarvestBlock(getter, pos, player);
+      return getReferringProperty(referringBlockState::canHarvestBlock, () -> super.canHarvestBlock(state, getter, pos, player), getter, pos, player);
     }
     return super.canHarvestBlock(state, getter, pos, player);
   }
@@ -383,7 +375,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public float getExplosionResistance(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
-      return referringBlockState.getExplosionResistance(getter, pos, explosion);
+      return getReferringProperty(referringBlockState::getExplosionResistance, () -> super.getExplosionResistance(state, getter, pos, explosion), getter, pos, explosion);
     }
     return super.getExplosionResistance(state, getter, pos, explosion);
   }
@@ -392,7 +384,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
-      return referringBlockState.getEnchantPowerBonus(level, pos) / 2;
+      return getReferringProperty((LevelReader levelReader, BlockPos blockPos, Object o) -> referringBlockState.getEnchantPowerBonus(levelReader, blockPos), () -> 0F, level, pos, null);
     }
     return super.getEnchantPowerBonus(state, level, pos);
   }
@@ -401,7 +393,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
-      return referringBlockState.getSoundType(level, pos, entity);
+      return getReferringProperty(referringBlockState::getSoundType, referringBlockState::getSoundType, level, pos, entity);
     }
     return super.getSoundType(state, level, pos, entity);
   }
@@ -410,7 +402,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public int getFlammability(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
-      return referringBlockState.getFlammability(getter, pos, direction);
+      return getReferringProperty(referringBlockState::getFlammability, () -> super.getFlammability(state, getter, pos, direction), getter, pos, direction);
     }
     return super.getFlammability(state, getter, pos, direction);
   }
@@ -419,7 +411,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public int getFireSpreadSpeed(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
-      return referringBlockState.getFireSpreadSpeed(getter, pos, direction);
+      return getReferringProperty(referringBlockState::getFireSpreadSpeed, () -> super.getFireSpreadSpeed(state, getter, pos, direction), getter, pos, direction);
     }
     return super.getFireSpreadSpeed(state, getter, pos, direction);
   }
@@ -428,7 +420,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(level, pos);
     if (referringBlockState != null) {
-      return referringBlockState.isFireSource(level, pos, direction);
+      return getReferringProperty(referringBlockState::isFireSource, () -> super.isFireSource(state, level, pos, direction), level, pos, direction);
     }
     return super.isFireSource(state, level, pos, direction);
   }
@@ -437,7 +429,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public boolean canEntityDestroy(BlockState state, BlockGetter getter, BlockPos pos, Entity entity) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
-      return referringBlockState.canEntityDestroy(getter, pos, entity);
+      return getReferringProperty(referringBlockState::canEntityDestroy, () -> super.canEntityDestroy(state, getter, pos, entity), getter, pos, entity);
     }
     return super.canEntityDestroy(state, getter, pos, entity);
   }
@@ -446,7 +438,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   public boolean canDropFromExplosion(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
     BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(getter, pos);
     if (referringBlockState != null) {
-      return referringBlockState.canDropFromExplosion(getter, pos, explosion);
+      return getReferringProperty(referringBlockState::canDropFromExplosion, () -> true, getter, pos, explosion);
     }
     return super.canDropFromExplosion(state, getter, pos, explosion);
   }
@@ -463,5 +455,29 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   private int getShapeIndex(BlockState state) {
     return state.getValue(SHAPE).ordinal() * 4 + state.getValue(FACING).get2DDataValue();
+  }
+
+  /**
+   * Returns the desired Block Property using {@code positionSensitiveFunction} and {@code fallbackFunction} on a best-effort base.
+   * 
+   * @param <T> extraParameter of a position sensitive function.
+   * @param <R> type of the desired property.
+   * @param <G> {@link BlockGetter} subclass used to retrieve position sensitive data.
+   * @param positionSensitiveFunction {@link BlockStateFunction} to use when possible.
+   * @param fallbackFunction {@link Supplier} for the property in case position sensitive data can't be retrieved.
+   * @param getter {@link BlockGetter} subclass instance used to retrieve position sensitive data.
+   * @param pos {@link BlockPos position} of the block.
+   * @param extraParameter extra parameter used to retrieved data.
+   * @return the most accurate possible desired Block Property.
+   */
+  private <T, R, G extends BlockGetter> R getReferringProperty(BlockStateFunction<T, R, G> positionSensitiveFunction, Supplier<R> fallbackFunction, G getter, BlockPos pos, T extraParameter) {
+    String position = "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
+    try {
+      return positionSensitiveFunction.apply(getter, pos, extraParameter);
+    } catch (Exception e) {
+      JustVerticalSlabsLoader.LOGGER.warn("Position sensitive data for Vertical Slab in position " + position + " could not be retrieved from referring BlockState as an Exception was thrown:", e);
+      JustVerticalSlabsLoader.LOGGER.debug("Switching to NON position sensitive data.");
+      return fallbackFunction.get();
+    }
   }
 }

@@ -1,6 +1,6 @@
 package crystalspider.justverticalslabs.handlers;
 
-import crystalspider.justverticalslabs.blocks.verticalslab.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -53,7 +53,9 @@ public class RightClickBlockHandler {
         if (player instanceof ServerPlayer) {
           CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer) player, blockPos, itemStack);
         }
-        itemStack.shrink(1);
+        if (!player.isCreative()) {
+          itemStack.shrink(1);
+        }
         VerticalSlabBlockEntity blockEntity = VerticalSlabUtils.getVerticalSlabBlockEntity(level, blockPos);
         blockEntity.load(VerticalSlabUtils.putReferringBlockState(new CompoundTag(), Block.byItem(VerticalSlabUtils.slabMap.get(waxedBlockState.getBlock().asItem())).defaultBlockState()));
         blockEntity.requestModelDataUpdate();
