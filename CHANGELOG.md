@@ -8,7 +8,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new
 
-## [1.18.2-1.0.0.0] - 2022/05/08
+## [1.18.2-1.0.0.0] - 2022/10/05
 - Added vertical slab variants for any block having a slab variant, vanilla or not.
 - Added "stair combining logic" to vertical slabs.
 - Added crafting recipes involving vertical slabs.
