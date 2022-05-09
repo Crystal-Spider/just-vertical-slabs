@@ -36,6 +36,11 @@ public interface VerticalSlabRecipe<C extends Container> extends Recipe<C> {
   @Override
   public abstract Serializer<C, ? extends VerticalSlabRecipe<C>> getSerializer();
 
+  @Override
+  default boolean isSpecial() {
+    return true;
+  }
+
   /**
    * Checks if the given {@link ItemStack} represents a valid Vertical Slab.
    * 
