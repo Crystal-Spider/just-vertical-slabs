@@ -102,9 +102,9 @@ public class VerticalSlabBlockItem extends BlockItem {
           CompoundTag compoundtag2 = compoundtag1.copy();
           compoundtag1.merge(compoundtag);
           if (!compoundtag1.equals(compoundtag2)) {
-            JustVerticalSlabsLoader.LOGGER.debug("Forcing VerticalSlabBlockEntity update on client...");
             blockentity.load(compoundtag1);
             blockentity.setChanged();
+            JustVerticalSlabsLoader.LOGGER.trace("Forced VerticalSlabBlockEntity update on client.");
             return true;
           }
         }
