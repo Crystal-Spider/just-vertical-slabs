@@ -35,6 +35,13 @@ If you find a weird or incorrect behavior of any vertical slab, please open an i
 A very big thank you goes to the Forge team that allowed anyone to mod Minecraft for free and their support in the Forge Forums.  
 In particular I want to thank diesieben07 that followed me throughout most of the development, without him none of this would have been possible.
 
+## Technical details
+For this mod to automatically add vertical slabs depending on the slabs present in the game two assumptions must be made:
+- All slab items have the "minecraft:slabs" tag.
+- All slab items have at least 1 crafting recipe using at least 1 block and, if more blocks are used, they are all the same.
+
+These assumptions work 99% of cases, however in the remote case that for some reason a mod adds slabs that don't have the correct tag or can't be crafted from their block variant, the corresponding vertical slabs can't and won't be added.
+
 ## License and right of use
 Feel free to use this mod for any modpack or video, just be sure to give credit and possibly link [here](https://github.com/Nyphet/just-vertical-slabs#readme).  
 This project is published under the [GNU General Public License v3.0](https://github.com/Nyphet/just-vertical-slabs/blob/master/LICENSE).
