@@ -22,7 +22,7 @@ If you want more vertical slabs it's sufficient to add more slabs. Then, automat
   It must be noted that, due to some implementation restrictions, a block can be stonecut only in its main vertical slab. To obtain the other vertical slab variants of that block the crafting recipes above must be used.
 
 ## Downloads
-This is the FORGE verstion, a port to FABRIC is planned but won't happen any time soon.  
+This is the FORGE version, a port to FABRIC is planned but won't happen any time soon.  
 Downloads are available [here](https://www.curseforge.com/minecraft/mc-mods/just-vertical-slabs/files).
 
 ## Issues
