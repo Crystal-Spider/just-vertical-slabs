@@ -10,8 +10,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -47,9 +47,9 @@ public class RightClickBlockHandler {
    * @return {@link InteractionResult}.
    */
   private InteractionResult wax(Level level, BlockPos blockPos, Player player, ItemStack itemStack) {
-    BlockState blockState = VerticalSlabUtils.getReferringBlockState(level, blockPos);
-    if (blockState != null) {
-      return HoneycombItem.getWaxed(blockState).map((waxedBlockState) -> {
+    BlockState slabState = VerticalSlabUtils.getReferredSlabState(level, blockPos);
+    if (slabState != null && itemStack.is(Items.HONEYCOMB)) {
+      return HoneycombItem.getWaxed(slabState).map((waxedSlabState) -> {
         if (player instanceof ServerPlayer) {
           CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer) player, blockPos, itemStack);
         }
@@ -57,7 +57,7 @@ public class RightClickBlockHandler {
           itemStack.shrink(1);
         }
         VerticalSlabBlockEntity blockEntity = VerticalSlabUtils.getVerticalSlabBlockEntity(level, blockPos);
-        blockEntity.load(VerticalSlabUtils.putReferringBlockState(new CompoundTag(), Block.byItem(VerticalSlabUtils.slabMap.get(waxedBlockState.getBlock().asItem())).defaultBlockState()));
+        blockEntity.load(VerticalSlabUtils.putReferredSlabState(new CompoundTag(), waxedSlabState));
         blockEntity.requestModelDataUpdate();
         level.setBlock(blockPos, blockEntity.getBlockState(), 11);
         level.levelEvent(player, 3003, blockPos, 0);

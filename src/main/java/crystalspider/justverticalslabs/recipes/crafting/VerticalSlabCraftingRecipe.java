@@ -24,17 +24,10 @@ public abstract class VerticalSlabCraftingRecipe implements VerticalSlabRecipe<C
    * Height of the recipe.
    */
   private final int height;
-  /**
-   * Default result item for this recipe.
-   * Since {@link VerticalSlabRecipe VerticalSlabRecipes} are highly dependent on input data, this method should never be used.
-   */
-  @Deprecated
-  private final ItemStack resultItem;
 
-  public VerticalSlabCraftingRecipe(int width, int height, ItemStack resultItem) {
+  public VerticalSlabCraftingRecipe(int width, int height) {
     this.width = width;
     this.height = height;
-    this.resultItem = resultItem;
   }
 
   /**
@@ -44,7 +37,7 @@ public abstract class VerticalSlabCraftingRecipe implements VerticalSlabRecipe<C
   @Override
   @Deprecated
   public final ItemStack getResultItem() {
-    return resultItem;
+    return ItemStack.EMPTY;
   }
 
   /**

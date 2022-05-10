@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 
 /**
  * {@link VerticalSlabCraftingRecipe} to craft 3 matching blocks in a column into the correct Vertical Slab.
@@ -23,12 +22,12 @@ public class BlockToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecip
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public BlockToVerticalSlabCraftingRecipe() {
-    super(1, 3, VerticalSlabUtils.getDefaultInstance());
+    super(1, 3);
   }
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(Block.byItem(VerticalSlabUtils.slabMap.get(VerticalSlabUtils.blockMap.get(matchedItem.getItem()))).defaultBlockState());
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(VerticalSlabUtils.blockMap.get(matchedItem.getItem())));
     verticalSlab.setCount(6);
     return verticalSlab;
   }

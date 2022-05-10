@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
@@ -36,6 +37,9 @@ public interface VerticalSlabRecipe<C extends Container> extends Recipe<C> {
   @Override
   public abstract Serializer<C, ? extends VerticalSlabRecipe<C>> getSerializer();
 
+  /**
+   * Vertical Slab recipes are special since they make use of NBTs.
+   */
   @Override
   default boolean isSpecial() {
     return true;
@@ -48,7 +52,8 @@ public interface VerticalSlabRecipe<C extends Container> extends Recipe<C> {
    * @return whether the {@link ItemStack} is a Vertical Slab.
    */
   default boolean isVerticalSlab(ItemStack itemStack) {
-    return !itemStack.isEmpty() && VerticalSlabUtils.getReferringBlockState(itemStack) != null;
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
+    return !itemStack.isEmpty() && referredSlabState != null && VerticalSlabUtils.slabStateMap.containsKey(referredSlabState.getBlock().asItem());
   }
 
   /**

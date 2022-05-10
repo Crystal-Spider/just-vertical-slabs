@@ -10,37 +10,36 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 public class VerticalSlabBlockEntity extends BlockEntity {
-  private BlockState referringBlockState = null;
+  private BlockState referredSlabState = null;
 
   public VerticalSlabBlockEntity(BlockPos pos, BlockState state) {
     super(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), pos, state);
   }
 
   @Nullable
-  public BlockState getReferringBlockState() {
-    return referringBlockState;
+  public BlockState getReferredSlabState() {
+    return referredSlabState;
   }
 
   @Override
   public void saveAdditional(CompoundTag tag) {
-    saveReferringBlockState(tag);
+    saveReferredSlabState(tag);
   }
 
   @Override
   public void load(CompoundTag tag) {
     super.load(tag);
-    loadReferringBlockState(tag);
+    loadReferredSlabState(tag);
   }
 
   @Override
   public CompoundTag getUpdateTag() {
-    return saveReferringBlockState(super.getUpdateTag());
+    return saveReferredSlabState(super.getUpdateTag());
   }
 
   @Override
@@ -50,23 +49,23 @@ public class VerticalSlabBlockEntity extends BlockEntity {
 
   @Override
   public IModelData getModelData() {
-    return VerticalSlabUtils.buildModelData(referringBlockState);
+    return VerticalSlabUtils.buildModelData(referredSlabState);
   }
 
-  private CompoundTag saveReferringBlockState(CompoundTag tag) {
-    if (referringBlockState != null) {
-      VerticalSlabUtils.putReferringBlockState(tag, referringBlockState);
+  private CompoundTag saveReferredSlabState(CompoundTag tag) {
+    if (referredSlabState != null) {
+      VerticalSlabUtils.putReferredSlabState(tag, referredSlabState);
     }
     return tag;
   }
 
-  private void loadReferringBlockState(CompoundTag tag) {
-    CompoundTag referringBlockStateTag = tag.getCompound(VerticalSlabUtils.NBT_ID);
-    if (referringBlockStateTag != null) {
-      referringBlockState = NbtUtils.readBlockState(referringBlockStateTag);
+  private void loadReferredSlabState(CompoundTag tag) {
+    CompoundTag referredSlabStateTag = tag.getCompound(VerticalSlabUtils.NBT_ID);
+    if (referredSlabStateTag != null) {
+      referredSlabState = NbtUtils.readBlockState(referredSlabStateTag);
     } else {
-      JustVerticalSlabsLoader.LOGGER.warn("No referringBlockStateTag could be found while loading tag for Vertical Slab in position [" + getBlockPos().getX() + ", " + getBlockPos().getY() + ", " + getBlockPos().getZ() + "].");
-      referringBlockState = Blocks.AIR.defaultBlockState();
+      JustVerticalSlabsLoader.LOGGER.warn("No referredSlabState Tag could be found while loading NBTs for Vertical Slab in position [" + getBlockPos().getX() + ", " + getBlockPos().getY() + ", " + getBlockPos().getZ() + "].");
+      referredSlabState = null;
     }
   }
 }

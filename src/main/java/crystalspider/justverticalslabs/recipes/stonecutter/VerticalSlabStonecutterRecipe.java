@@ -14,8 +14,8 @@ import net.minecraft.world.level.Level;
  * Abstract implementation of a {@link StonecutterRecipe} involving a Vertical Slab.
  */
 public abstract class VerticalSlabStonecutterRecipe extends StonecutterRecipe implements VerticalSlabRecipe<Container> {
-  public VerticalSlabStonecutterRecipe(ResourceLocation resourceLocation, String string, ItemStack resultItem) {
-    super(resourceLocation, string, Ingredient.EMPTY, resultItem);
+  public VerticalSlabStonecutterRecipe(ResourceLocation resourceLocation, String string) {
+    super(resourceLocation, string, Ingredient.EMPTY, ItemStack.EMPTY);
   }
 
   @Override

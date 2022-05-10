@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /**
  * {@link VerticalSlabCraftingRecipe} to craft 2 matching slabs into their block.
@@ -23,7 +22,7 @@ public class SlabToBlockCraftingRecipe extends VerticalSlabCraftingRecipe {
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public SlabToBlockCraftingRecipe() {
-    super(1, 2, Items.OAK_SLAB.getDefaultInstance());
+    super(1, 2);
   }
 
   @Override

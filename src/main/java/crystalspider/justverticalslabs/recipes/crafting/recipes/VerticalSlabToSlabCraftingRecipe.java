@@ -6,7 +6,6 @@ import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /**
  * {@link VerticalSlabCraftingRecipe} to craft one Vertical Slab into its respective Slab.
@@ -22,12 +21,12 @@ public class VerticalSlabToSlabCraftingRecipe extends VerticalSlabCraftingRecipe
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public VerticalSlabToSlabCraftingRecipe() {
-    super(1, 1, Items.OAK_SLAB.getDefaultInstance());
+    super(1, 1);
   }
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    return VerticalSlabUtils.blockMap.get(VerticalSlabUtils.getReferringBlockState(matchedItem).getBlock().asItem()).getDefaultInstance();
+    return VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem().getDefaultInstance();
   }
 
   /**

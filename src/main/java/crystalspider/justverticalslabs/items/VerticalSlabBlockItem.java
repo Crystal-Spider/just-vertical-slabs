@@ -36,9 +36,9 @@ public class VerticalSlabBlockItem extends BlockItem {
    */
   @Override
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
-    if (this.allowdedIn(creativeModeTab) && VerticalSlabUtils.slabMap != null) {
-      for(BlockState referringBlockState : VerticalSlabUtils.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList()) {
-        itemStacks.add(VerticalSlabUtils.getItemStackWithState(this, referringBlockState));
+    if (this.allowdedIn(creativeModeTab) && VerticalSlabUtils.slabStateMap != null) {
+      for(BlockState referredSlabState : VerticalSlabUtils.slabStateMap.values()) {
+        itemStacks.add(VerticalSlabUtils.getItemStackWithState(this, referredSlabState));
       }
     }
   }
@@ -56,9 +56,9 @@ public class VerticalSlabBlockItem extends BlockItem {
    */
   @Override
   public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
-    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(itemStack);
-    if (referringBlockState != null) {
-      return ForgeHooks.getBurnTime(VerticalSlabUtils.blockMap.get(referringBlockState.getBlock().asItem()).getDefaultInstance(), recipeType);
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
+    if (referredSlabState != null) {
+      return ForgeHooks.getBurnTime(VerticalSlabUtils.slabStateMap.get(referredSlabState.getBlock().asItem()).getBlock().asItem().getDefaultInstance(), recipeType);
     }
     return super.getBurnTime(itemStack, recipeType);
   }
@@ -68,10 +68,10 @@ public class VerticalSlabBlockItem extends BlockItem {
    */
   @Override
   public Component getName(ItemStack itemStack) {
-    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(itemStack);
-    if (referringBlockState != null) {
-      Item referringSlab = VerticalSlabUtils.blockMap.get(referringBlockState.getBlock().asItem());
-      return referringSlab.getName(referringSlab.getDefaultInstance());
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
+    if (referredSlabState != null) {
+      Item referredSlab = referredSlabState.getBlock().asItem();
+      return referredSlab.getName(referredSlab.getDefaultInstance());
     }
     return super.getName(itemStack);
   }

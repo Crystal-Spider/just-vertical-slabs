@@ -6,7 +6,6 @@ import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 
 /**
  * {@link VerticalSlabCraftingRecipe} to craft one Slab into its respective Vertical Slab.
@@ -22,12 +21,12 @@ public class SlabToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public SlabToVerticalSlabCraftingRecipe() {
-    super(1, 1, VerticalSlabUtils.getDefaultInstance());
+    super(1, 1);
   }
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    return VerticalSlabUtils.getVerticalSlabItem(Block.byItem(VerticalSlabUtils.slabMap.get(matchedItem.getItem())).defaultBlockState());
+    return VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(matchedItem.getItem()));
   }
 
   /**
@@ -50,7 +49,7 @@ public class SlabToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe
     for (int i = 0; i < craftingContainer.getContainerSize() && correctPattern; i++) {
       ItemStack itemStack = craftingContainer.getItem(i);
       if (!itemStack.isEmpty()) {
-        if (matchIndex == null && VerticalSlabUtils.slabMap.containsKey(itemStack.getItem())) {
+        if (matchIndex == null && VerticalSlabUtils.slabStateMap.containsKey(itemStack.getItem())) {
           matchIndex = i;
         } else {
           matchIndex = null;

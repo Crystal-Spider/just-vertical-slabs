@@ -7,8 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 public class WaxedVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe {
   /**
@@ -21,12 +19,12 @@ public class WaxedVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe 
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public WaxedVerticalSlabCraftingRecipe() {
-    super(1, 1, VerticalSlabUtils.getVerticalSlabItem(Blocks.WAXED_CUT_COPPER.defaultBlockState()));
+    super(1, 1);
   }
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    return VerticalSlabUtils.getVerticalSlabItem(Block.byItem(VerticalSlabUtils.slabMap.get(VerticalSlabUtils.waxingMap.get(VerticalSlabUtils.blockMap.get(VerticalSlabUtils.getReferringBlockState(matchedItem).getBlock().asItem())))).defaultBlockState());
+    return VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(VerticalSlabUtils.waxingMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem())));
   }
 
   /**
@@ -54,7 +52,7 @@ public class WaxedVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe 
     for (int i = 0; i < craftingContainer.getContainerSize() && correctPattern; i++) {
       ItemStack itemStack = craftingContainer.getItem(i);
       if (!itemStack.isEmpty()) {
-        if (matchIndex == null && isVerticalSlab(itemStack) && VerticalSlabUtils.waxingMap.containsKey(VerticalSlabUtils.blockMap.get(VerticalSlabUtils.getReferringBlockState(itemStack).getBlock().asItem()))) {
+        if (matchIndex == null && isVerticalSlab(itemStack) && VerticalSlabUtils.waxingMap.containsKey(VerticalSlabUtils.getReferredSlabState(itemStack).getBlock().asItem())) {
           matchIndex = i;
         } else if(!hasHoneycomb && itemStack.is(Items.HONEYCOMB)) {
           hasHoneycomb = true;

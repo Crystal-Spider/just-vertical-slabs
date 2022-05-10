@@ -135,7 +135,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
 
   /**
    * Returns the {@link TextureAtlasSprite particle icon} of this model based on the given {@link IModelData data}.
-   * In details, uses the given {@link IModelData data} to search for the {@link VerticalSlabBlockEntity#REFERRING_BLOCK_STATE referringBlockState} property.
+   * In details, uses the given {@link IModelData data} to search for the {@link VerticalSlabBlockEntity#REFERRED_SLAB_STATE referringBlockState} property.
    * If such property is not null, returns the {@link BakedModel#getParticleIcon(IModelData)} of the {@link #getReferringBakedModel(BlockState) referred BakedModel},
    * otherwise returns the {@link #getParticleIcon() default particle icon} of this model.
    * 
@@ -144,7 +144,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   @Override
   public TextureAtlasSprite getParticleIcon(IModelData extraData) {
-    BlockState referringBlockState = extraData.getData(VerticalSlabUtils.REFERRING_BLOCK_STATE);
+    BlockState referringBlockState = extraData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
     if (referringBlockState != null) {
       return getReferringBakedModel(referringBlockState).getParticleIcon(getReferringModelData(referringBlockState, extraData));
     }
@@ -154,7 +154,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   /**
    * Returns the {@link List} of {@link BakedQuad} to use to render the model based on {@link Direction side} and {@link IModelData modelData}.
    * Caches as much as possible to speed up computational time of subsequent calls.
-   * {@link IModelData modelData} should contain a {@link VerticalSlabBlockEntity#REFERRING_BLOCK_STATE referringBlockState} property in order to render this model correctly.
+   * {@link IModelData modelData} should contain a {@link VerticalSlabBlockEntity#REFERRED_SLAB_STATE referringBlockState} property in order to render this model correctly.
    * If such condition is not met, an {@link Collections#emptyList() empty list} is returned and thus nothing will be rendered.
    * 
    * @param state - {@link BlockState} of the block being rendered, null if an item is being rendered.
@@ -166,7 +166,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   @Override
   public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
-    BlockState referringBlockState = modelData.getData(VerticalSlabUtils.REFERRING_BLOCK_STATE);
+    BlockState referringBlockState = modelData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
     if (referringBlockState != null) {
       VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {

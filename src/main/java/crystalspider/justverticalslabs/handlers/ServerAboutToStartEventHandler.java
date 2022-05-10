@@ -23,6 +23,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -40,10 +42,12 @@ public class ServerAboutToStartEventHandler {
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onServerAboutToStartEvent(ServerAboutToStartEvent event) {
-    Map<Item, Item> slabMap = new LinkedHashMap<Item, Item>(), blockMap = new HashMap<Item, Item>(), waxingMap = new HashMap<Item, Item>(), stonecuttingMap = new HashMap<Item, Item>();
+    Map<Item, BlockState> slabStateMap = new LinkedHashMap<Item, BlockState>();
+    Map<Item, Item> slabMap = new HashMap<Item, Item>(), blockMap = new HashMap<Item, Item>(), waxingMap = new HashMap<Item, Item>(), stonecuttingMap = new HashMap<Item, Item>();
     RecipeManager recipeManager = event.getServer().getRecipeManager();
     for (Item slab : ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS)) {
       JustVerticalSlabsLoader.LOGGER.debug("Adding " + slab + " to " + JustVerticalSlabsLoader.MODID + " mod maps...");
+      slabStateMap.put(slab, Block.byItem(slab).defaultBlockState());
       for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
         if (recipe.getResultItem().is(slab) && !(recipe instanceof VerticalSlabCraftingRecipe)) {
           NonNullList<Ingredient> ingredients = recipe.getIngredients();
@@ -90,6 +94,7 @@ public class ServerAboutToStartEventHandler {
         }
       }
     }
+    VerticalSlabUtils.slabStateMap = ImmutableMap.copyOf(slabStateMap);
     VerticalSlabUtils.slabMap = ImmutableMap.copyOf(slabMap);
     VerticalSlabUtils.blockMap = ImmutableMap.copyOf(blockMap);
     VerticalSlabUtils.stonecuttingMap = ImmutableMap.copyOf(stonecuttingMap);

@@ -6,7 +6,6 @@ import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /**
  * {@link VerticalSlabCraftingRecipe} to craft 2 matching adjacent Vertical Slabs into their referring block.
@@ -22,12 +21,12 @@ public class VerticalSlabToBlockCraftingRecipe extends VerticalSlabCraftingRecip
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public VerticalSlabToBlockCraftingRecipe() {
-    super(2, 1, Items.OAK_PLANKS.getDefaultInstance());
+    super(2, 1);
   }
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    return VerticalSlabUtils.getReferringBlockState(matchedItem).getBlock().asItem().getDefaultInstance();
+    return VerticalSlabUtils.slabMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem()).getDefaultInstance();
   }
 
   /**
@@ -76,14 +75,14 @@ public class VerticalSlabToBlockCraftingRecipe extends VerticalSlabCraftingRecip
   }
 
   /**
-   * Checks if both {@link ItemStack ItemStacks} represent the same kind of Vertical Slab, that is they all have the same referringBlockState.
+   * Checks if both {@link ItemStack ItemStacks} represent the same kind of Vertical Slab and that kind can be crafted into a block.
    * 
-   * @param verticalSlab1
-   * @param verticalSlab2
+   * @param itemStack1
+   * @param itemStack2
    * @return whether both {@link ItemStack ItemStacks} represent the same kind of Vertical Slab.
    */
-  protected boolean verticalSlabsMatch(ItemStack verticalSlab1, ItemStack verticalSlab2) {
-    return VerticalSlabUtils.getReferringBlockState(verticalSlab1) == VerticalSlabUtils.getReferringBlockState(verticalSlab2);
+  protected boolean verticalSlabsMatch(ItemStack itemStack1, ItemStack itemStack2) {
+    return VerticalSlabUtils.getReferredSlabState(itemStack1) == VerticalSlabUtils.getReferredSlabState(itemStack2) && VerticalSlabUtils.slabMap.containsKey(VerticalSlabUtils.getReferredSlabState(itemStack1).getBlock().asItem());
   }
 
   /**

@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 /**
@@ -27,7 +26,7 @@ public class BlockToVerticalSlabStonecutterRecipe extends VerticalSlabStonecutte
   private static final ResourceLocation RESOURCE_LOCATION = VerticalSlabUtils.getResourceLocation(ID);
 
   public BlockToVerticalSlabStonecutterRecipe() {
-    super(RESOURCE_LOCATION, "", VerticalSlabUtils.getDefaultInstance());
+    super(RESOURCE_LOCATION, "");
   }
 
   @Override
@@ -49,7 +48,7 @@ public class BlockToVerticalSlabStonecutterRecipe extends VerticalSlabStonecutte
 
   @Override
   public ItemStack assemble(Container container) {
-    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(Block.byItem(VerticalSlabUtils.slabMap.get(VerticalSlabUtils.stonecuttingMap.get(container.getItem(0).getItem()))).defaultBlockState());
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(VerticalSlabUtils.stonecuttingMap.get(container.getItem(0).getItem())));
     verticalSlab.setCount(2);
     return verticalSlab;
   }

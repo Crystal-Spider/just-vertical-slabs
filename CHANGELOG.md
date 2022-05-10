@@ -8,6 +8,12 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new
 
+## [1.18.2-2.0.0.0] - 2022/10/05
+- Refractored code to base Vertical Slabs on Slabs rather than Blocks.
+- Improved dynamic model code.
+- Updated readme.
+- Removed requirement for crafting recipe of a Slab to be considered a valid Slab. Now it's sufficient to have the *minecraft:slabs* tag. 
+
 ## [1.18.2-1.0.0.0] - 2022/10/05
 - Added vertical slab variants for any block having a slab variant, vanilla or not.
 - Added "stair combining logic" to vertical slabs.
@@ -17,4 +23,5 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added creative tab with all vertical slabs.
 
 [Unreleased]: https://github.com/Nyphet/just-vertical-slabs
+[1.18.2-2.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-2.0.0.0
 [1.18.2-1.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-1.0.0.0

@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.searchtree.MutableSearchTree;
 import net.minecraft.client.searchtree.SearchRegistry;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -23,8 +22,8 @@ public class RecipeUpdateEventHandler {
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onRecipesUpdatedEvent(RecipesUpdatedEvent event) {
     MutableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
-    for(BlockState referringBlockState : VerticalSlabUtils.slabMap.values().stream().map(item -> Block.byItem(item).defaultBlockState()).toList()) {
-      creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referringBlockState));
+    for(BlockState referredSlabState : VerticalSlabUtils.slabStateMap.values()) {
+      creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState));
     }
     creativeSearchTree.refresh();
   }

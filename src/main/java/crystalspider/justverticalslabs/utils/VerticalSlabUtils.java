@@ -29,6 +29,11 @@ import net.minecraftforge.client.model.data.ModelProperty;
  */
 public class VerticalSlabUtils {
   /**
+   * {@link ImmutableMap} linking Slab {@link Item Items} to their respective {@link BlockState BlockStates}.
+   */
+  @Nullable
+  public static volatile ImmutableMap<Item, BlockState> slabStateMap;
+  /**
    * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item Items}.
    */
   @Nullable
@@ -50,24 +55,24 @@ public class VerticalSlabUtils {
   public static volatile ImmutableMap<Item, Item> waxingMap;
 
   /**
-   * ID to use when creating a new {@link CompoundTag} to store a Vertical Slab referring {@link BlockState}.
+   * ID to use when creating a new {@link CompoundTag} to store a Vertical Slab referred Slab {@link BlockState}.
    */
-  public static final String NBT_ID = "referringBlockState";
+  public static final String NBT_ID = "referredSlabState";
 
   /**
    * {@link BlockState} {@link ModelProperty} to use when building and reading {@link IModelData} of a Vertical Slab.
    */
-  public static final ModelProperty<BlockState> REFERRING_BLOCK_STATE = new ModelProperty<BlockState>();
+  public static final ModelProperty<BlockState> REFERRED_SLAB_STATE = new ModelProperty<BlockState>();
 
   /**
-   * Builds and returns a new {@link IModelData} with {@link #REFERRING_BLOCK_STATE referringBlockState property}
-   * holding the value of the given {@code referringBlockState}.
+   * Builds and returns a new {@link IModelData} with {@link #REFERRED_SLAB_STATE referredSlabState property}
+   * holding the value of the given {@code referredSlabState}.
    * 
-   * @param referringBlockState
+   * @param referredSlabState
    * @return Vertical Slab {@link IModelData}.
    */
-  public static IModelData buildModelData(BlockState referringBlockState) {
-    return new ModelDataMap.Builder().withInitial(REFERRING_BLOCK_STATE, referringBlockState).build();
+  public static IModelData buildModelData(BlockState referredSlabState) {
+    return new ModelDataMap.Builder().withInitial(REFERRED_SLAB_STATE, referredSlabState).build();
   }
 
   /**
@@ -86,41 +91,41 @@ public class VerticalSlabUtils {
    * @return Vertical Slab {@link ItemStack} default instance.
    */
   public static ItemStack getDefaultInstance() {
-    return getVerticalSlabItem(Blocks.OAK_PLANKS.defaultBlockState());
+    return getVerticalSlabItem(Blocks.OAK_SLAB.defaultBlockState());
   }
 
   /**
-   * Returns a Vertical Slab {@link ItemStack} with the specified {@code referringBlockState}.
+   * Returns a Vertical Slab {@link ItemStack} with the specified {@code referredSlabState}.
    * 
-   * @param referringBlockState
+   * @param referredSlabState
    * @return Vertical Slab {@link ItemStack}.
    */
-  public static ItemStack getVerticalSlabItem(BlockState referringBlockState) {
-    return getItemStackWithState(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get(), referringBlockState);
+  public static ItemStack getVerticalSlabItem(BlockState referredSlabState) {
+    return getItemStackWithState(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get(), referredSlabState);
   }
 
   /**
-   * Returns a {@link ItemStack} with the specified {@code referringBlockState}.
+   * Returns a {@link ItemStack} with the specified {@code referredSlabState}.
    * 
    * @param itemLike - {@link ItemLike} instance to use to get a basic {@link ItemStack}.
-   * @param referringBlockState - {@link BlockState} to save in the {@link ItemStack} NBTs.
-   * @return {@link ItemStack} with {@code referringBlockState} in its NBTs.
+   * @param referredSlabState - {@link BlockState} to save in the {@link ItemStack} NBTs.
+   * @return {@link ItemStack} with {@code referredSlabState} in its NBTs.
    */
-  public static ItemStack getItemStackWithState(ItemLike itemLike, BlockState referringBlockState) {
+  public static ItemStack getItemStackWithState(ItemLike itemLike, BlockState referredSlabState) {
     ItemStack itemStack = new ItemStack(itemLike);
-    BlockItem.setBlockEntityData(itemStack, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), putReferringBlockState(new CompoundTag(), referringBlockState));
+    BlockItem.setBlockEntityData(itemStack, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), putReferredSlabState(new CompoundTag(), referredSlabState));
     return itemStack;
   }
 
   /**
-   * Puts the given {@code referringBlockState} in the given {@link CompoundTag}.
+   * Puts the given {@code referredSlabState} in the given {@link CompoundTag}.
    * 
    * @param compoundTag
-   * @param referringBlockState
+   * @param referredSlabState
    * @return modified {@link CompoundTag}.
    */
-  public static CompoundTag putReferringBlockState(CompoundTag compoundTag, BlockState referringBlockState) {
-    compoundTag.put(VerticalSlabUtils.NBT_ID, NbtUtils.writeBlockState(referringBlockState));
+  public static CompoundTag putReferredSlabState(CompoundTag compoundTag, BlockState referredSlabState) {
+    compoundTag.put(VerticalSlabUtils.NBT_ID, NbtUtils.writeBlockState(referredSlabState));
     return compoundTag;
   }
 
@@ -142,34 +147,34 @@ public class VerticalSlabUtils {
   }
 
   /**
-   * Returns the {@link BlockState referringBlockState} for the given {@link BlockGetter} and {@link BlockPos}.
+   * Returns the {@link BlockState referredSlabState} for the given {@link BlockGetter} and {@link BlockPos}.
    * Returns {@code null} if none could be found.
    * 
    * @param getter
    * @param pos
-   * @return {@link BlockState referringBlockState} or {@code null}.
+   * @return {@link BlockState referredSlabState} or {@code null}.
    */
   @Nullable
-  public static BlockState getReferringBlockState(BlockGetter getter, BlockPos pos) {
+  public static BlockState getReferredSlabState(BlockGetter getter, BlockPos pos) {
     VerticalSlabBlockEntity blockEntity = getVerticalSlabBlockEntity(getter, pos);
     if (blockEntity != null) {
-      BlockState referringBlockState = blockEntity.getReferringBlockState();
-      if (referringBlockState != null) {
-        return Block.byItem(blockMap.get(referringBlockState.getBlock().asItem())).defaultBlockState();
+      BlockState referredSlabState = blockEntity.getReferredSlabState();
+      if (referredSlabState != null) {
+        return referredSlabState;
       }
     }
     return null;
   }
 
   /**
-   * Returns the {@link BlockState referringBlockState} for the given {@link ItemStack}.
+   * Returns the {@link BlockState referredSlabState} for the given {@link ItemStack}.
    * Returns {@code null} if none could be found.
    * 
    * @param itemStack
-   * @return {@link BlockState referringBlockState} or {@code null}.
+   * @return {@link BlockState referredSlabState} or {@code null}.
    */
   @Nullable
-  public static BlockState getReferringBlockState(ItemStack itemStack) {
+  public static BlockState getReferredSlabState(ItemStack itemStack) {
     if (itemStack.getItem() instanceof VerticalSlabBlockItem) {
       CompoundTag compoundTag = itemStack.getTagElement("BlockEntityTag");
       if (compoundTag != null) {
@@ -178,6 +183,23 @@ public class VerticalSlabUtils {
           return NbtUtils.readBlockState(compoundTag);
         }
       }
+    }
+    return null;
+  }
+
+  /**
+   * Returns the {@link BlockState referredBlockState} for the given {@link BlockGetter} and {@link BlockPos}.
+   * Returns {@code null} if none could be found.
+   * 
+   * @param getter
+   * @param pos
+   * @return {@link BlockState referredBlockState} or {@code null}.
+   */
+  @Nullable
+  public static BlockState getReferredBlockState(BlockGetter getter, BlockPos pos) {
+    BlockState referredSlabState = getReferredSlabState(getter, pos);
+    if (referredSlabState != null && slabMap.containsKey(referredSlabState.getBlock().asItem())) {
+      return Block.byItem(slabMap.get(referredSlabState.getBlock().asItem())).defaultBlockState();
     }
     return null;
   }
