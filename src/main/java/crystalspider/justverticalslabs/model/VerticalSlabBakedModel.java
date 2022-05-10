@@ -171,23 +171,10 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
       VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
         ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
-        List<BakedQuad> jsonBakedQuads = jsonBakedModel.getQuads(state, side, rand, modelData);
-        if (jsonBakedQuads.size() > 0) {
-          if (side != null) {
-            BakedQuad referringBakedQuad = getReferringBakedQuad(referringBlockState, side, rand, modelData);
-            if (referringBakedQuad != null) {
-              for (BakedQuad jsonBakedQuad : jsonBakedQuads) {
-                bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referringBakedQuad.getSprite(), side));
-              }
-            }
-          } else {
-            for (BakedQuad jsonBakedQuad : jsonBakedQuads) {
-              Direction orientation = jsonBakedQuad.getDirection();
-              BakedQuad referringBakedQuad = getReferringBakedQuad(referringBlockState, orientation, rand, modelData);
-              if (referringBakedQuad != null) {
-                bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referringBakedQuad.getSprite(), orientation));
-              }
-            }
+        for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
+          Direction orientation = jsonBakedQuad.getDirection();
+          for (BakedQuad referringBakedQuad : getReferringBakedQuads(referringBlockState, orientation, rand, modelData)) {
+            bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referringBakedQuad.getSprite(), orientation));
           }
         }
         bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
@@ -219,27 +206,27 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   }
 
   /**
-   * Returns the first {@link BakedQuad} for the referred block given {@link Direction side}, {@link Random rand} and {@link IModelData modelData}.
-   * Returns null if no {@link BakedQuad} could be retrieved.
-   * Logs debug warnings when no {@link BakedQuad} can be retrieved or when there are more than 1 {@link BakedQuad} to choose from.
+   * Returns the {@link List} of all referred {@link BakedQuad BakedQuads} for the given {@link Direction}.
    * 
    * @param referringBlockState - {@link BlockState} of the referred block.
    * @param side - {@link Direction side} of the block being rendered.
    * @param rand - {@link Random rand} parameter.
    * @param modelData - {@link IModelData model data} of the block being rendered.
-   * @return the first {@link BakedQuad} for the referred block, or null if none could be retrieved.
+   * @return {@link List} of all referred {@link BakedQuad BakedQuads} for the given {@link Direction}.
    */
-  @Nullable
-  private BakedQuad getReferringBakedQuad(BlockState referringBlockState, Direction side, Random rand, IModelData modelData) {
-    List<BakedQuad> referringBakedQuads = getReferringBakedModel(referringBlockState).getQuads(referringBlockState, side, rand, getReferringModelData(referringBlockState, modelData));
-    if (referringBakedQuads.size() > 0) {
-      if (referringBakedQuads.size() > 1) {
-        JustVerticalSlabsLoader.LOGGER.warn("Referred Block has more than 1 texture for " + side + " face. Only the first one will be used.");
+  private List<BakedQuad> getReferringBakedQuads(BlockState referringBlockState, Direction side, Random rand, IModelData modelData) {
+    BakedModel referringBakedModel = getReferringBakedModel(referringBlockState);
+    IModelData referringModelData = getReferringModelData(referringBlockState, modelData);
+    List<BakedQuad> referringBakedQuads = referringBakedModel.getQuads(referringBlockState, side, rand, referringModelData);
+    for (BakedQuad referringBakedQuad : referringBakedModel.getQuads(referringBlockState, null, rand, referringModelData)) {
+      if (referringBakedQuad.getDirection() == side) {
+        referringBakedQuads.add(referringBakedQuad);
       }
-      return referringBakedQuads.get(0);
     }
-    JustVerticalSlabsLoader.LOGGER.warn("Referred Block has no texture for " + side + " face. No texture will be generated for that face.");
-    return null;
+    if (referringBakedQuads.size() == 0) {
+      JustVerticalSlabsLoader.LOGGER.warn("Referred Block has no texture for " + side + " face. No texture will be generated for that face.");
+    }
+    return referringBakedQuads;
   }
 
   /**
@@ -251,11 +238,11 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    * @return new {@link BakedQuad} using the given sprite and orientation.
    */
   private BakedQuad getNewBakedQuad(BakedQuad jsonBakedQuad, TextureAtlasSprite referringSprite, Direction orientation) {
-    return new BakedQuad(updateVertices(jsonBakedQuad.getVertices().clone(), jsonBakedQuad.getSprite(), referringSprite), jsonBakedQuad.getTintIndex(), orientation, referringSprite, jsonBakedQuad.isShade());
+    return new BakedQuad(updateVertices(jsonBakedQuad.getVertices(), jsonBakedQuad.getSprite(), referringSprite), jsonBakedQuad.getTintIndex(), orientation, referringSprite, jsonBakedQuad.isShade());
   }
 
   /**
-   * Updates and returns the given vertices.
+   * Returns the updated vertices.
    * Updates only UV vertices to use the new sprite instead of the old one.
    * 
    * @param vertices
@@ -264,12 +251,13 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    * @return updated vertices.
    */
   private int[] updateVertices(int[] vertices, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite) {
+    int[] updatedVertices = vertices.clone();
     for (int i = 0; i < 4; i++) {
       int vertexIndex = i * 8 + 4;
-      vertices[vertexIndex] = changeUVertexSprite(oldSprite, newSprite, vertices[vertexIndex]);
-      vertices[vertexIndex + 1] = changeVVertexSprite(oldSprite, newSprite, vertices[vertexIndex + 1]);
+      updatedVertices[vertexIndex] = changeUVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex]);
+      updatedVertices[vertexIndex + 1] = changeVVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 1]);
     }
-    return vertices;
+    return updatedVertices;
   }
 
   /**

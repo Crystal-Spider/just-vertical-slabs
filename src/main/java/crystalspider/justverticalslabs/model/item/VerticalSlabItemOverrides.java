@@ -7,10 +7,9 @@ import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Vertical Slab Item Overrides, to override default {@link ItemOverrides} and properly render items.
@@ -34,15 +33,9 @@ public class VerticalSlabItemOverrides extends ItemOverrides {
    */
   @Override
   public BakedModel resolve(BakedModel bakedModel, ItemStack itemStack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int integer) {
-    CompoundTag itemStackTag = itemStack.getTag();
-    if (itemStackTag != null) {
-      CompoundTag blockEntityTag = itemStackTag.getCompound("BlockEntityTag");
-      if (blockEntityTag != null) {
-        CompoundTag referringBlockStateTag = blockEntityTag.getCompound(VerticalSlabUtils.NBT_ID);
-        if (referringBlockStateTag != null) {
-          return new VerticalSlabItemBakedModel((VerticalSlabBakedModel) bakedModel, VerticalSlabUtils.buildModelData(NbtUtils.readBlockState(referringBlockStateTag)));
-        }
-      }
+    BlockState referringBlockState = VerticalSlabUtils.getReferringBlockState(itemStack);
+    if (referringBlockState != null) {
+      return new VerticalSlabItemBakedModel((VerticalSlabBakedModel) bakedModel, VerticalSlabUtils.buildModelData(referringBlockState));
     }
     return super.resolve(bakedModel, itemStack, level, entity, integer);
   }
