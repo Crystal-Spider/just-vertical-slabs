@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
+import crystalspider.justverticalslabs.handlers.FMLClientSetupEventHandler;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
 import crystalspider.justverticalslabs.handlers.RightClickBlockHandler;
@@ -130,5 +131,6 @@ public class JustVerticalSlabsLoader {
     ITEMS.register(modEventBus);
     RECIPES.register(modEventBus);
     modEventBus.register(new ModelRegistryEventHandler());
+    modEventBus.register(new FMLClientSetupEventHandler());
   }
 }
