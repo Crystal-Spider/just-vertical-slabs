@@ -105,10 +105,8 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
    * @return
    */
   private static VoxelShape[] makeShapes() {
-    // S = 0, W = 1, N = 2, E = 3
-    // ST = 0, IL = 1, IR = 2, OL = 3, OR = 4
     VoxelShape[] shapes = new VoxelShape[12 * 16];
-    for (double h = 16D; h > 7; h--) {
+    for (double h = 16D; h > 8; h--) {
       VoxelShape facingSouthShape = verticalBox(0, 1, 2, 2, h);
       VoxelShape facingWestShape = verticalBox(0, 0, 1, 2, h);
       VoxelShape facingNorthShape = verticalBox(0, 0, 2, 1, h);
