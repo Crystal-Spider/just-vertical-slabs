@@ -126,7 +126,6 @@ public class JustVerticalSlabsLoader {
     minecraftEventBus.register(new ServerAboutToStartEventHandler());
     minecraftEventBus.register(new RecipeUpdateEventHandler());
     minecraftEventBus.register(new RightClickBlockHandler());
-    minecraftEventBus.register(new ColorHandlerEventHandler());
     IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     BLOCKS.register(modEventBus);
     BLOCK_ENTITIES.register(modEventBus);
@@ -134,6 +133,6 @@ public class JustVerticalSlabsLoader {
     RECIPES.register(modEventBus);
     modEventBus.register(new ModelRegistryEventHandler());
     modEventBus.register(new FMLClientSetupEventHandler());
-    // modEventBus.register(new ColorHandlerEventHandler());
+    modEventBus.register(new ColorHandlerEventHandler());
   }
 }
