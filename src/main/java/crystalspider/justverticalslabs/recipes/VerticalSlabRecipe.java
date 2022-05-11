@@ -92,6 +92,6 @@ public interface VerticalSlabRecipe<C extends Container> extends Recipe<C> {
      * Since no data is needed, nothing is written on the buffer.
      */
     @Override
-    public final void toNetwork(FriendlyByteBuf friendlyByteBuf, T referringBlockRecipe) {}
+    public final void toNetwork(FriendlyByteBuf friendlyByteBuf, T verticalSlabRecipe) {}
   }
 }

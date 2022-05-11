@@ -16,8 +16,8 @@
               },
               "ops": [
                 {
-                  "source": "referringBlockState",
-                  "target": "BlockEntityTag.referringBlockState",
+                  "source": "referredSlabState",
+                  "target": "BlockEntityTag.referredSlabState",
                   "op": "replace"
                 },
                 {

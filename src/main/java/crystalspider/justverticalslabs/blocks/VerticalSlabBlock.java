@@ -212,9 +212,9 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     BlockPos pos = placeContext.getClickedPos();
     Level level = placeContext.getLevel();
     BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
-    BlockState referringBlockState = VerticalSlabUtils.getReferredSlabState(placeContext.getItemInHand());
-    if (referringBlockState != null) {
-      blockstate = blockstate.setValue(LEVEL, getReferredProperty((Level getter, BlockPos blockPos, Object o) -> referringBlockState.getLightEmission(getter, blockPos), referringBlockState::getLightEmission, level, pos, null));
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(placeContext.getItemInHand());
+    if (referredSlabState != null) {
+      blockstate = blockstate.setValue(LEVEL, getReferredProperty((Level getter, BlockPos blockPos, Object o) -> referredSlabState.getLightEmission(getter, blockPos), referredSlabState::getLightEmission, level, pos, null));
     }
     return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos));
   }
@@ -333,12 +333,12 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float damage) {
-    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(level, pos);
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
+    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     try {
       if (referredBlockState != null) {
         referredBlockState.getBlock().fallOn(level, state, pos, entity, damage);
       } else {
-        BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
         if (referredSlabState != null) {
           referredSlabState.getBlock().fallOn(level, state, pos, entity, damage);
         } else {
@@ -354,12 +354,12 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   @Override
   public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
     BlockPos pos = entity.getOnPos();
-    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(getter, pos);
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
+    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     try {
       if (referredBlockState != null) {
         referredBlockState.getBlock().updateEntityAfterFallOn(getter, entity);
       } else {
-        BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
         if (referredSlabState != null) {
           referredSlabState.getBlock().updateEntityAfterFallOn(getter, entity);
         } else {
@@ -379,11 +379,11 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public float getFriction(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
-    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(level, pos);
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
+    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     if (referredBlockState != null) {
       return getReferredProperty(referredBlockState::getFriction, () -> super.getFriction(state, level, pos, entity), level, pos, entity);
     } else {
-      BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
       if (referredSlabState != null) {
         return getReferredProperty(referredSlabState::getFriction, () -> super.getFriction(state, level, pos, entity), level, pos, entity);
       }
@@ -411,11 +411,11 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public float getEnchantPowerBonus(BlockState state, LevelReader level, BlockPos pos) {
-    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(level, pos);
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
+    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     if (referredBlockState != null) {
       return getReferredProperty((LevelReader levelReader, BlockPos blockPos, Object o) -> referredBlockState.getEnchantPowerBonus(levelReader, blockPos), () -> 0F, level, pos, null);
     } else {
-      BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
       if (referredSlabState != null) {
         return getReferredProperty((LevelReader levelReader, BlockPos blockPos, Object o) -> referredSlabState.getEnchantPowerBonus(levelReader, blockPos), () -> 0F, level, pos, null);
       }
@@ -567,7 +567,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
    * @param position - {@link BlockPos} of the block for which position sensitive data was needed.
    */
   private void logDataWarning(Exception e, BlockPos pos) {
-    JustVerticalSlabsLoader.LOGGER.warn("Position sensitive data for Vertical Slab in position " + formatPosition(pos) + " could not be retrieved from referring BlockState as an Exception was thrown:", e);
+    JustVerticalSlabsLoader.LOGGER.warn("Position sensitive data for Vertical Slab in position " + formatPosition(pos) + " could not be retrieved from referred BlockState as an Exception was thrown:", e);
     JustVerticalSlabsLoader.LOGGER.debug("Switching to NON position sensitive data.");
   }
 

@@ -135,8 +135,8 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
 
   /**
    * Returns the {@link TextureAtlasSprite particle icon} of this model based on the given {@link IModelData data}.
-   * In details, uses the given {@link IModelData data} to search for the {@link VerticalSlabBlockEntity#REFERRED_SLAB_STATE referringBlockState} property.
-   * If such property is not null, returns the {@link BakedModel#getParticleIcon(IModelData)} of the {@link #getReferringBakedModel(BlockState) referred BakedModel},
+   * In details, uses the given {@link IModelData data} to search for the {@link VerticalSlabBlockEntity#REFERRED_SLAB_STATE referredSlabState} property.
+   * If such property is not null, returns the {@link BakedModel#getParticleIcon(IModelData)} of the {@link #getReferredBakedModel(BlockState) referred BakedModel},
    * otherwise returns the {@link #getParticleIcon() default particle icon} of this model.
    * 
    * @param extraData - {@link IModelData} to use to render.
@@ -144,9 +144,9 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   @Override
   public TextureAtlasSprite getParticleIcon(IModelData extraData) {
-    BlockState referringBlockState = extraData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
-    if (referringBlockState != null) {
-      return getReferringBakedModel(referringBlockState).getParticleIcon(getReferringModelData(referringBlockState, extraData));
+    BlockState referredSlabState = extraData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
+    if (referredSlabState != null) {
+      return getReferredBakedModel(referredSlabState).getParticleIcon(getReferredModelData(referredSlabState, extraData));
     }
     return getParticleIcon();
   }
@@ -154,7 +154,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   /**
    * Returns the {@link List} of {@link BakedQuad} to use to render the model based on {@link Direction side} and {@link IModelData modelData}.
    * Caches as much as possible to speed up computational time of subsequent calls.
-   * {@link IModelData modelData} should contain a {@link VerticalSlabBlockEntity#REFERRED_SLAB_STATE referringBlockState} property in order to render this model correctly.
+   * {@link IModelData modelData} should contain a {@link VerticalSlabBlockEntity#REFERRED_SLAB_STATE referredSlabState} property in order to render this model correctly.
    * If such condition is not met, an {@link Collections#emptyList() empty list} is returned and thus nothing will be rendered.
    * 
    * @param state - {@link BlockState} of the block being rendered, null if an item is being rendered.
@@ -166,15 +166,15 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   @Override
   public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
-    BlockState referringBlockState = modelData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
-    if (referringBlockState != null) {
-      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referringBlockState);
+    BlockState referredSlabState = modelData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
+    if (referredSlabState != null) {
+      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referredSlabState);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
         ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
         for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
           Direction orientation = jsonBakedQuad.getDirection();
-          for (BakedQuad referringBakedQuad : getReferringBakedQuads(referringBlockState, orientation, rand, modelData)) {
-            bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referringBakedQuad.getSprite(), orientation));
+          for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredSlabState, orientation, rand, modelData)) {
+            bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), orientation));
           }
         }
         bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
@@ -187,11 +187,11 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   /**
    * Returns the {@link BakedModel} of the given {@link BlockState}.
    * 
-   * @param referringBlockState - {@link BlockState} from which retrieve the {@link BakedModel}.
+   * @param referredSlabState - {@link BlockState} from which retrieve the {@link BakedModel}.
    * @return the {@link BakedModel} of the given {@link BlockState}.
    */
-  private BakedModel getReferringBakedModel(BlockState referringBlockState) {
-    return Minecraft.getInstance().getBlockRenderer().getBlockModel(referringBlockState);
+  private BakedModel getReferredBakedModel(BlockState referredSlabState) {
+    return Minecraft.getInstance().getBlockRenderer().getBlockModel(referredSlabState);
   }
 
   /**
@@ -201,44 +201,44 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    * @param defaultData - {@link IModelData default model data} to return if no model data can be retrieved from the given {@link BlockState}.
    * @return {@link IModelData model data} of the given {@link BlockState} or the {@link IModelData default model data}.
    */
-  private IModelData getReferringModelData(BlockState blockState, IModelData defaultData) {
+  private IModelData getReferredModelData(BlockState blockState, IModelData defaultData) {
     return blockState.hasBlockEntity() ? ((EntityBlock) blockState.getBlock()).newBlockEntity(new BlockPos(0, 0, 0), blockState).getModelData() : defaultData;
   }
 
   /**
    * Returns the {@link List} of all referred {@link BakedQuad BakedQuads} for the given {@link Direction}.
    * 
-   * @param referringBlockState - {@link BlockState} of the referred block.
+   * @param referredSlabState - {@link BlockState} of the referred block.
    * @param side - {@link Direction side} of the block being rendered.
    * @param rand - {@link Random rand} parameter.
    * @param modelData - {@link IModelData model data} of the block being rendered.
    * @return {@link List} of all referred {@link BakedQuad BakedQuads} for the given {@link Direction}.
    */
-  private List<BakedQuad> getReferringBakedQuads(BlockState referringBlockState, Direction side, Random rand, IModelData modelData) {
-    BakedModel referringBakedModel = getReferringBakedModel(referringBlockState);
-    IModelData referringModelData = getReferringModelData(referringBlockState, modelData);
-    List<BakedQuad> referringBakedQuads = referringBakedModel.getQuads(referringBlockState, side, rand, referringModelData);
-    for (BakedQuad referringBakedQuad : referringBakedModel.getQuads(referringBlockState, null, rand, referringModelData)) {
-      if (referringBakedQuad.getDirection() == side) {
-        referringBakedQuads.add(referringBakedQuad);
+  private List<BakedQuad> getReferredBakedQuads(BlockState referredSlabState, Direction side, Random rand, IModelData modelData) {
+    BakedModel referredBakedModel = getReferredBakedModel(referredSlabState);
+    IModelData referredModelData = getReferredModelData(referredSlabState, modelData);
+    List<BakedQuad> referredBakedQuads = referredBakedModel.getQuads(referredSlabState, side, rand, referredModelData);
+    for (BakedQuad referredBakedQuad : referredBakedModel.getQuads(referredSlabState, null, rand, referredModelData)) {
+      if (referredBakedQuad.getDirection() == side) {
+        referredBakedQuads.add(referredBakedQuad);
       }
     }
-    if (referringBakedQuads.size() == 0) {
+    if (referredBakedQuads.size() == 0) {
       JustVerticalSlabsLoader.LOGGER.warn("Referred Block has no texture for " + side + " face. No texture will be generated for that face.");
     }
-    return referringBakedQuads;
+    return referredBakedQuads;
   }
 
   /**
    * Returns a new {@link BakedQuad} that uses the given sprite and orientation instead of its default ones.
    * 
    * @param jsonBakedQuad - original {@link BakedQuad}.
-   * @param referringSprite - new {@link TextureAtlasSprite sprite}.
+   * @param referredSprite - new {@link TextureAtlasSprite sprite}.
    * @param orientation - face this {@link BakedQuad} is associated to (not the culling face).
    * @return new {@link BakedQuad} using the given sprite and orientation.
    */
-  private BakedQuad getNewBakedQuad(BakedQuad jsonBakedQuad, TextureAtlasSprite referringSprite, Direction orientation) {
-    return new BakedQuad(updateVertices(jsonBakedQuad.getVertices(), jsonBakedQuad.getSprite(), referringSprite), jsonBakedQuad.getTintIndex(), orientation, referringSprite, jsonBakedQuad.isShade());
+  private BakedQuad getNewBakedQuad(BakedQuad jsonBakedQuad, TextureAtlasSprite referredSprite, int[] referredVertices, Direction orientation) {
+    return new BakedQuad(updateVertices(jsonBakedQuad.getVertices(), referredVertices, jsonBakedQuad.getSprite(), referredSprite, orientation == Direction.UP), jsonBakedQuad.getTintIndex(), orientation, referredSprite, jsonBakedQuad.isShade());
   }
 
   /**
@@ -250,12 +250,16 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    * @param newSprite
    * @return updated vertices.
    */
-  private int[] updateVertices(int[] vertices, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite) {
+  private int[] updateVertices(int[] vertices, int[] referredVertices, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite, boolean faceUp) {
     int[] updatedVertices = vertices.clone();
     for (int i = 0; i < 4; i++) {
-      int vertexIndex = i * 8 + 4;
-      updatedVertices[vertexIndex] = changeUVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex]);
-      updatedVertices[vertexIndex + 1] = changeVVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 1]);
+      int vertexIndex = i * 8;
+      float y = Float.intBitsToFloat(referredVertices[vertexIndex + 1]);
+      if (faceUp && y > 0 && y < 0.5) {
+        updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y + 0.5F);
+      }
+      updatedVertices[vertexIndex + 4] = changeUVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 4]);
+      updatedVertices[vertexIndex + 5] = changeVVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 5]);
     }
     return updatedVertices;
   }

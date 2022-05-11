@@ -8,7 +8,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * {@link VerticalSlabCraftingRecipe} to craft 2 matching adjacent Vertical Slabs into their referring block.
+ * {@link VerticalSlabCraftingRecipe} to craft 2 matching adjacent Vertical Slabs into their referred block.
  */
 public class VerticalSlabToBlockCraftingRecipe extends VerticalSlabCraftingRecipe {
   /**

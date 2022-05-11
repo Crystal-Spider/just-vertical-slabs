@@ -197,7 +197,18 @@ public class VerticalSlabUtils {
    */
   @Nullable
   public static BlockState getReferredBlockState(BlockGetter getter, BlockPos pos) {
-    BlockState referredSlabState = getReferredSlabState(getter, pos);
+    return getReferredBlockState(getReferredSlabState(getter, pos));
+  }
+
+  /**
+   * Returns the {@link BlockState referredBlockState} for the given {@link BlockState referredSlabState}.
+   * Returns {@code null} if none could be found.
+   * 
+   * @param referredSlabState
+   * @return {@link BlockState referredBlockState} or {@code null}.
+   */
+  @Nullable
+  public static BlockState getReferredBlockState(BlockState referredSlabState) {
     if (referredSlabState != null && slabMap.containsKey(referredSlabState.getBlock().asItem())) {
       return Block.byItem(slabMap.get(referredSlabState.getBlock().asItem())).defaultBlockState();
     }

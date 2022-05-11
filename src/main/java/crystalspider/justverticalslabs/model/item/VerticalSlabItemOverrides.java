@@ -33,9 +33,9 @@ public class VerticalSlabItemOverrides extends ItemOverrides {
    */
   @Override
   public BakedModel resolve(BakedModel bakedModel, ItemStack itemStack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int integer) {
-    BlockState referringBlockState = VerticalSlabUtils.getReferredSlabState(itemStack);
-    if (referringBlockState != null) {
-      return new VerticalSlabItemBakedModel((VerticalSlabBakedModel) bakedModel, VerticalSlabUtils.buildModelData(referringBlockState));
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
+    if (referredSlabState != null) {
+      return new VerticalSlabItemBakedModel((VerticalSlabBakedModel) bakedModel, VerticalSlabUtils.buildModelData(referredSlabState));
     }
     return super.resolve(bakedModel, itemStack, level, entity, integer);
   }
