@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Forge Semantic Versioning](https://mcforge.readthedocs.io/en/1.18.x/gettingstarted/versioning/#versioning).
 
 ## [Unreleased]
-- Nothing new
+- Fixed dynamic colors, like for grass and foliage.
+- Fixed overlayed textures.
+- Improved drops.
+- Added support for blocks that are not full height, like Dirt Path.
 
 ## [1.18.2-2.0.0.0] - 2022/10/05
 - Refractored code to base Vertical Slabs on Slabs rather than Blocks.
