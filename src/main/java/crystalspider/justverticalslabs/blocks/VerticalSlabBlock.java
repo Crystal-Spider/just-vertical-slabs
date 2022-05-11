@@ -107,35 +107,52 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   private static VoxelShape[] makeShapes() {
     // S = 0, W = 1, N = 2, E = 3
     // ST = 0, IL = 1, IR = 2, OL = 3, OR = 4
-    VoxelShape facingSouthShape = verticalBox(0, 1, 2, 2);
-    VoxelShape facingWestShape = verticalBox(0, 0, 1, 2);
-    VoxelShape facingNorthShape = verticalBox(0, 0, 2, 1);
-    VoxelShape facingEastShape = verticalBox(1, 0, 2, 2);
+    VoxelShape[] shapes = new VoxelShape[12 * 16];
+    for (double h = 16D; h > 7; h--) {
+      VoxelShape facingSouthShape = verticalBox(0, 1, 2, 2, h);
+      VoxelShape facingWestShape = verticalBox(0, 0, 1, 2, h);
+      VoxelShape facingNorthShape = verticalBox(0, 0, 2, 1, h);
+      VoxelShape facingEastShape = verticalBox(1, 0, 2, 2, h);
 
-    VoxelShape innerLeftBottomShape = Shapes.or(facingSouthShape, facingWestShape);
-    VoxelShape innerLeftTopShape = Shapes.or(facingNorthShape, facingWestShape);
-    VoxelShape innerRightBottomShape = Shapes.or(facingSouthShape, facingEastShape);
-    VoxelShape innerRightTopShape = Shapes.or(facingNorthShape, facingEastShape);
+      VoxelShape innerLeftBottomShape = Shapes.or(facingSouthShape, facingWestShape);
+      VoxelShape innerLeftTopShape = Shapes.or(facingNorthShape, facingWestShape);
+      VoxelShape innerRightBottomShape = Shapes.or(facingSouthShape, facingEastShape);
+      VoxelShape innerRightTopShape = Shapes.or(facingNorthShape, facingEastShape);
 
-    VoxelShape outerLeftBottomShape = verticalBox(0, 1, 1, 2);
-    VoxelShape outerLeftTopShape = verticalBox(0, 0, 1, 1);
-    VoxelShape outerRightBottomShape = verticalBox(1, 1, 2, 2);
-    VoxelShape outerRightTopShape = verticalBox(1, 0, 2, 1);
+      VoxelShape outerLeftBottomShape = verticalBox(0, 1, 1, 2, h);
+      VoxelShape outerLeftTopShape = verticalBox(0, 0, 1, 1, h);
+      VoxelShape outerRightBottomShape = verticalBox(1, 1, 2, 2, h);
+      VoxelShape outerRightTopShape = verticalBox(1, 0, 2, 1, h);
 
-    return new VoxelShape[]{
-      facingSouthShape,       // 0
-      facingWestShape,        // 1
-      facingNorthShape,       // 2
-      facingEastShape,        // 3
-      innerLeftBottomShape,   // 4
-      innerLeftTopShape,      // 5
-      innerRightBottomShape,  // 6
-      innerRightTopShape,     // 7
-      outerLeftBottomShape,   // 8
-      outerLeftTopShape,      // 9
-      outerRightBottomShape,  // 10
-      outerRightTopShape      // 11
-    };
+      int index = (int) (16 - h) * 12;
+      shapes[index] = facingSouthShape;
+      shapes[index + 1] = facingWestShape;
+      shapes[index + 2] = facingNorthShape;
+      shapes[index + 3] = facingEastShape;
+      shapes[index + 4] = innerLeftBottomShape;
+      shapes[index + 5] = innerLeftTopShape;
+      shapes[index + 6] = innerRightBottomShape;
+      shapes[index + 7] = innerRightTopShape;
+      shapes[index + 8] = outerLeftBottomShape;
+      shapes[index + 9] = outerLeftTopShape;
+      shapes[index + 10] = outerRightBottomShape;
+      shapes[index + 11] = outerRightTopShape;
+    }
+    return shapes;
+    // return new VoxelShape[]{
+    //   facingSouthShape,       // 0
+    //   facingWestShape,        // 1
+    //   facingNorthShape,       // 2
+    //   facingEastShape,        // 3
+    //   innerLeftBottomShape,   // 4
+    //   innerLeftTopShape,      // 5
+    //   innerRightBottomShape,  // 6
+    //   innerRightTopShape,     // 7
+    //   outerLeftBottomShape,   // 8
+    //   outerLeftTopShape,      // 9
+    //   outerRightBottomShape,  // 10
+    //   outerRightTopShape      // 11
+    // };
   }
 
   /**
@@ -147,8 +164,8 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
    * @param z
    * @return
    */
-  private static VoxelShape verticalBox(double originX, double originZ, double x, double z) {
-    return Block.box(originX * 8, 0.0D, originZ * 8, x * 8, 16.0D, z * 8);
+  private static VoxelShape verticalBox(double originX, double originZ, double x, double z, double height) {
+    return Block.box(originX * 8, 0.0D, originZ * 8, x * 8, height, z * 8);
   }
 
   /**
@@ -200,7 +217,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
 
   @Override
   public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
-    return SHAPES[SHAPE_BY_STATE[this.getShapeIndex(state)]];
+    return SHAPES[this.getShapeIndex(state, getter, pos, collisionContext)];
   }
 
   @Override
@@ -484,8 +501,35 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     return new VerticalSlabBlockEntity(pos, state);
   }
 
-  private int getShapeIndex(BlockState state) {
-    return state.getValue(SHAPE).ordinal() * 4 + state.getValue(FACING).get2DDataValue();
+  /**
+   * 
+   * 
+   * @param state
+   * @param getter
+   * @param pos
+   * @param collisionContext
+   * @return
+   */
+  private int getShapeIndex(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
+    return SHAPE_BY_STATE[state.getValue(SHAPE).ordinal() * 4 + state.getValue(FACING).get2DDataValue()] + 12 * getHeightDiff(getter, pos, collisionContext);
+  }
+
+  private int getHeightDiff(BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
+    int heightDiff = getHeightDiff(VerticalSlabUtils.getReferredBlockState(getter, pos), getter, pos, collisionContext, 1);
+    if (heightDiff == 0) {
+      return getHeightDiff(VerticalSlabUtils.getReferredSlabState(getter, pos), getter, pos, collisionContext, 0.5);
+    }
+    return heightDiff;
+  }
+
+  private int getHeightDiff(BlockState referredState, BlockGetter getter, BlockPos pos, CollisionContext collisionContext, double maxHeight) {
+    if (referredState != null) {
+      VoxelShape referredShape = getReferredProperty(referredState::getShape, () -> Shapes.empty(), getter, pos, collisionContext);
+      if (!referredShape.isEmpty()) {
+        return (int) Math.round((maxHeight - referredShape.bounds().getYsize()) * 16);
+      }
+    }
+    return 0;
   }
 
   /**
