@@ -174,7 +174,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
         for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
           Direction orientation = jsonBakedQuad.getDirection();
           for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredSlabState, orientation, rand, modelData)) {
-            bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), orientation));
+            bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), referredBakedQuad.getTintIndex(), orientation));
           }
         }
         bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
@@ -237,8 +237,8 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    * @param orientation - face this {@link BakedQuad} is associated to (not the culling face).
    * @return new {@link BakedQuad} using the given sprite and orientation.
    */
-  private BakedQuad getNewBakedQuad(BakedQuad jsonBakedQuad, TextureAtlasSprite referredSprite, int[] referredVertices, Direction orientation) {
-    return new BakedQuad(updateVertices(jsonBakedQuad.getVertices(), referredVertices, jsonBakedQuad.getSprite(), referredSprite, orientation == Direction.UP), jsonBakedQuad.getTintIndex(), orientation, referredSprite, jsonBakedQuad.isShade());
+  private BakedQuad getNewBakedQuad(BakedQuad jsonBakedQuad, TextureAtlasSprite referredSprite, int[] referredVertices, int tintIndex, Direction orientation) {
+    return new BakedQuad(updateVertices(jsonBakedQuad.getVertices(), referredVertices, jsonBakedQuad.getSprite(), referredSprite, orientation == Direction.UP), tintIndex, orientation, referredSprite, jsonBakedQuad.isShade());
   }
 
   /**

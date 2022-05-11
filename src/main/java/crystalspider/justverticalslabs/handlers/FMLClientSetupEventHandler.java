@@ -18,7 +18,7 @@ public class FMLClientSetupEventHandler {
   @SubscribeEvent
   public void setup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> {
-      // TODO: Check if it work also for translucent blocks.
+      // TODO: Check if it works also for translucent blocks.
       ItemBlockRenderTypes.setRenderLayer(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get(), RenderType.cutoutMipped());
     });
   }
