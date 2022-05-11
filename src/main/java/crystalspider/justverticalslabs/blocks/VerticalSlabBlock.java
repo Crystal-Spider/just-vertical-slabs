@@ -139,20 +139,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       shapes[index + 11] = outerRightTopShape;
     }
     return shapes;
-    // return new VoxelShape[]{
-    //   facingSouthShape,       // 0
-    //   facingWestShape,        // 1
-    //   facingNorthShape,       // 2
-    //   facingEastShape,        // 3
-    //   innerLeftBottomShape,   // 4
-    //   innerLeftTopShape,      // 5
-    //   innerRightBottomShape,  // 6
-    //   innerRightTopShape,     // 7
-    //   outerLeftBottomShape,   // 8
-    //   outerLeftTopShape,      // 9
-    //   outerRightBottomShape,  // 10
-    //   outerRightTopShape      // 11
-    // };
   }
 
   /**
@@ -502,18 +488,27 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   }
 
   /**
-   * 
+   * Returns the index to use to get the {@link VoxelShape shape}.
    * 
    * @param state
    * @param getter
    * @param pos
    * @param collisionContext
-   * @return
+   * @return index to use to get the {@link VoxelShape shape}.
    */
   private int getShapeIndex(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
     return SHAPE_BY_STATE[state.getValue(SHAPE).ordinal() * 4 + state.getValue(FACING).get2DDataValue()] + 12 * getHeightDiff(getter, pos, collisionContext);
   }
 
+  /**
+   * Returns the height difference between a full height block and the referred Block/Slab.
+   * Best effort based.
+   * 
+   * @param getter
+   * @param pos
+   * @param collisionContext
+   * @return height difference between full height and referred block/slab.
+   */
   private int getHeightDiff(BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
     int heightDiff = getHeightDiff(VerticalSlabUtils.getReferredBlockState(getter, pos), getter, pos, collisionContext, 1);
     if (heightDiff == 0) {
@@ -522,6 +517,17 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     return heightDiff;
   }
 
+  /**
+   * Returns the height difference between a full height block and the referred BlockState.
+   * Best effort based.
+   * 
+   * @param referredState
+   * @param getter
+   * @param pos
+   * @param collisionContext
+   * @param maxHeight
+   * @return height difference between full height and referred block/slab by the referred BlockState.
+   */
   private int getHeightDiff(BlockState referredState, BlockGetter getter, BlockPos pos, CollisionContext collisionContext, double maxHeight) {
     if (referredState != null) {
       VoxelShape referredShape = getReferredProperty(referredState::getShape, () -> Shapes.empty(), getter, pos, collisionContext);

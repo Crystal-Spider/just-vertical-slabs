@@ -15,6 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 public class VerticalSlabBlockEntity extends BlockEntity {
+  /**
+   * {@link BlockState} of the referred Slab.
+   */
   private BlockState referredSlabState = null;
 
   public VerticalSlabBlockEntity(BlockPos pos, BlockState state) {
@@ -52,6 +55,12 @@ public class VerticalSlabBlockEntity extends BlockEntity {
     return VerticalSlabUtils.buildModelData(referredSlabState);
   }
 
+  /**
+   * Saves the {@link #referredSlabState} to the given {@link CompoundTag}.
+   * 
+   * @param tag - {@link CompoundTag} where to save the {@link #referredSlabState}.
+   * @return updated {@link CompoundTag}.
+   */
   private CompoundTag saveReferredSlabState(CompoundTag tag) {
     if (referredSlabState != null) {
       VerticalSlabUtils.putReferredSlabState(tag, referredSlabState);
@@ -59,6 +68,11 @@ public class VerticalSlabBlockEntity extends BlockEntity {
     return tag;
   }
 
+  /**
+   * Tries to load the {@link #referredSlabState} from the given {@link CompoundTag}.
+   * 
+   * @param tag - {@link CompoundTag} containing the {@link #referredSlabState}.
+   */
   private void loadReferredSlabState(CompoundTag tag) {
     CompoundTag referredSlabStateTag = tag.getCompound(VerticalSlabUtils.NBT_ID);
     if (referredSlabStateTag != null) {
