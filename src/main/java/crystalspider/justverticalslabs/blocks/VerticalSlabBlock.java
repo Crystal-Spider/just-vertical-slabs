@@ -85,6 +85,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       .isRedstoneConductor((state, getter, pos) -> false)
       .isSuffocating((state, getter, pos) -> false)
       .lightLevel(LightBlock.LIGHT_EMISSION)
+      .dynamicShape()
     );
     this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, false).setValue(LEVEL, 0));
   }
