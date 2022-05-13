@@ -47,7 +47,6 @@ import net.minecraftforge.common.IPlantable;
 
 /**
  * Vertical Slab Block.
- * TODO: return jumpFactor and speedFactor based on referredBlockState.
  */
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
