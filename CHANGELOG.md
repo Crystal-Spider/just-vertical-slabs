@@ -11,6 +11,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Improved drops.
 - Added support for blocks that are not full height, like Dirt Path.
 - Fixed not full height vertical slabs occluding other blocks when they shouldn't.
+- Improved Inner Vertical Slab ("big corner") model.
 
 ## [1.18.2-2.0.0.0] - 2022/10/05
 - Refractored code to base Vertical Slabs on Slabs rather than Blocks.
