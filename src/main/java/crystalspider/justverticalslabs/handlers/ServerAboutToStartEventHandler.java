@@ -56,10 +56,10 @@ public class ServerAboutToStartEventHandler {
           if (sameIngredients(blockIngredients)) {
             blockIngredients.stream().findFirst().ifPresent(ingredient -> {
               for (ItemStack itemStack : ingredient.getItems()) {
-                if (isPlain(itemStack)) {
+                if (isPlain(itemStack.toString())) {
                   slabMap.put(slab, itemStack.getItem());
                 }
-                blockMap.put(itemStack.getItem(), slab);
+                blockMap.putIfAbsent(itemStack.getItem(), slab);
               }
               // If no plain block is connected to this slab that means the slab is not plain either, so add the first (and theoretically only) block item.
               if (!slabMap.containsKey(slab)) {
@@ -134,12 +134,12 @@ public class ServerAboutToStartEventHandler {
   }
 
   /**
-   * Checks if the given {@link ItemStack} represents a plain block.
+   * Checks if the given {@link ItemStack} name represents a plain block.
    * 
-   * @param itemStack
-   * @return whether the given {@link ItemStack} represents a plain block.
+   * @param itemStackName
+   * @return whether the given {@link ItemStack} name represents a plain block.
    */
-  private boolean isPlain(ItemStack itemStack) {
-    return !(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar") || itemStack.toString().contains("cut") || itemStack.toString().contains("smooth"));
+  private boolean isPlain(String itemStackName) {
+    return !(itemStackName.contains("chiseled") || itemStackName.contains("pillar") || itemStackName.contains("cut") || itemStackName.contains("smooth"));
   }
 }

@@ -255,6 +255,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     for (int i = 0; i < 4; i++) {
       int vertexIndex = i * 8;
       float y = Float.intBitsToFloat(referredVertices[vertexIndex + 1]);
+      // Lower only top face since RenderType CutoutMipped will remove extra transparent texture bits that go out of the shape. 
       if (faceUp && y > 0 && y < 0.5) {
         updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y + 0.5F);
       }
