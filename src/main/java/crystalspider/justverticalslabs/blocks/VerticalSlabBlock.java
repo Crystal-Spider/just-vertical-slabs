@@ -509,7 +509,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
    */
   private int getHeightDiff(BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
     int heightDiff = getHeightDiff(VerticalSlabUtils.getReferredBlockState(getter, pos), getter, pos, collisionContext, 1);
-    if (heightDiff == 0) {
+    if (heightDiff == 0 || heightDiff >= 0.5) {
       return getHeightDiff(VerticalSlabUtils.getReferredSlabState(getter, pos), getter, pos, collisionContext, 0.5);
     }
     return heightDiff;
