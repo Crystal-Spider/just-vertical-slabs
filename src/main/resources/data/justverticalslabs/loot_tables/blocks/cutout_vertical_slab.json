@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "justverticalslabs:cutout_vertical_slab",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": {
+                "type": "context",
+                "target": "block_entity"
+              },
+              "ops": [
+                {
+                  "source": "referredSlabState",
+                  "target": "BlockEntityTag.referredSlabState",
+                  "op": "replace"
+                },
+                {
+                  "source": "id",
+                  "target": "BlockEntityTag.id",
+                  "op": "replace"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

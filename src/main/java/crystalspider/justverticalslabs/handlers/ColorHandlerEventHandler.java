@@ -26,21 +26,25 @@ public class ColorHandlerEventHandler {
    */
   @SubscribeEvent
   public void onColorHandlerEventBlock(ColorHandlerEvent.Block event) {
-    event.getBlockColors().register(new BlockColor() {
-      public int getColor(BlockState state, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, int tintIndex) {
-        if (getter != null && pos != null) {
-          BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
-          if (referredSlabState != null) {
-            Item slab = referredSlabState.getBlock().asItem();
-            if (VerticalSlabUtils.slabMap.containsKey(slab)) {
-              return event.getBlockColors().getColor(Block.byItem(VerticalSlabUtils.slabMap.get(slab)).defaultBlockState(), getter, pos, tintIndex);
+    event.getBlockColors().register(
+      new BlockColor() {
+        public int getColor(BlockState state, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, int tintIndex) {
+          if (getter != null && pos != null) {
+            BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
+            if (referredSlabState != null) {
+              Item slab = referredSlabState.getBlock().asItem();
+              if (VerticalSlabUtils.slabMap.containsKey(slab)) {
+                return event.getBlockColors().getColor(Block.byItem(VerticalSlabUtils.slabMap.get(slab)).defaultBlockState(), getter, pos, tintIndex);
+              }
+              return event.getBlockColors().getColor(VerticalSlabUtils.slabStateMap.get(slab), getter, pos, tintIndex);
             }
-            return event.getBlockColors().getColor(VerticalSlabUtils.slabStateMap.get(slab), getter, pos, tintIndex);
           }
+          return -1;
         }
-        return -1;
-      }
-    }, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get());
+      },
+      JustVerticalSlabsLoader.CUTOUT_VERTICAL_SLAB_BLOCK.get(),
+      JustVerticalSlabsLoader.TRANSLUCENT_VERTICAL_SLAB_BLOCK.get()
+    );
   }
 
   /**
@@ -50,18 +54,22 @@ public class ColorHandlerEventHandler {
    */
   @SubscribeEvent
   public void onColorHandlerEventItem(ColorHandlerEvent.Item event) {
-    event.getItemColors().register(new ItemColor() {
-      public int getColor(ItemStack itemStack, int tintIndex) {
-        BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
-        if (referredSlabState != null) {
-          Item slab = referredSlabState.getBlock().asItem();
-          if (VerticalSlabUtils.slabMap.containsKey(slab)) {
-            return event.getItemColors().getColor(VerticalSlabUtils.slabMap.get(slab).getDefaultInstance(), tintIndex);
+    event.getItemColors().register(
+      new ItemColor() {
+        public int getColor(ItemStack itemStack, int tintIndex) {
+          BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
+          if (referredSlabState != null) {
+            Item slab = referredSlabState.getBlock().asItem();
+            if (VerticalSlabUtils.slabMap.containsKey(slab)) {
+              return event.getItemColors().getColor(VerticalSlabUtils.slabMap.get(slab).getDefaultInstance(), tintIndex);
+            }
+            return event.getItemColors().getColor(slab.getDefaultInstance(), tintIndex);
           }
-          return event.getItemColors().getColor(slab.getDefaultInstance(), tintIndex);
+          return -1;
         }
-        return -1;
-      }
-    }, JustVerticalSlabsLoader.VERTICAL_SLAB_ITEM.get());
+      },
+      JustVerticalSlabsLoader.CUTOUT_VERTICAL_SLAB_ITEM.get(),
+      JustVerticalSlabsLoader.TRANSLUCENT_VERTICAL_SLAB_ITEM.get()
+    );
   }
 }

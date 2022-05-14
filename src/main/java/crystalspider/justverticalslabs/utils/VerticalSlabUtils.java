@@ -34,6 +34,11 @@ public class VerticalSlabUtils {
   @Nullable
   public static volatile ImmutableMap<Item, BlockState> slabStateMap;
   /**
+   * {@link ImmutableMap} linking Translucent Slab {@link Item Items} to their respective {@link BlockState BlockStates}.
+   */
+  @Nullable
+  public static volatile ImmutableMap<Item, BlockState> translucentMap;
+  /**
    * {@link ImmutableMap} linking Slab {@link Item Items} to their respective Block {@link Item Items}.
    */
   @Nullable
@@ -91,17 +96,18 @@ public class VerticalSlabUtils {
    * @return Vertical Slab {@link ItemStack} default instance.
    */
   public static ItemStack getDefaultInstance() {
-    return getVerticalSlabItem(Blocks.OAK_SLAB.defaultBlockState());
+    return getVerticalSlabItem(Blocks.OAK_SLAB.defaultBlockState(), false);
   }
 
   /**
    * Returns a Vertical Slab {@link ItemStack} with the specified {@code referredSlabState}.
    * 
    * @param referredSlabState
+   * @param translucent - whether a Translucent or Cutout VerticalSlabBlock is to be used to generate the {@link ItemStack}.
    * @return Vertical Slab {@link ItemStack}.
    */
-  public static ItemStack getVerticalSlabItem(BlockState referredSlabState) {
-    return getItemStackWithState(JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK.get(), referredSlabState);
+  public static ItemStack getVerticalSlabItem(BlockState referredSlabState, boolean translucent) {
+    return translucent ? getItemStackWithState(JustVerticalSlabsLoader.TRANSLUCENT_VERTICAL_SLAB_BLOCK.get(), referredSlabState) : getItemStackWithState(JustVerticalSlabsLoader.CUTOUT_VERTICAL_SLAB_BLOCK.get(), referredSlabState);
   }
 
   /**
