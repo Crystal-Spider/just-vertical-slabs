@@ -30,6 +30,7 @@ If applicable, copy and paste relevant logs.
  - OS:  
  - Minecraft version: 
  - Release version: 
+ - Other mods installed that add slabs: 
 
 **Additional context**
 Add any other context about the problem here.
