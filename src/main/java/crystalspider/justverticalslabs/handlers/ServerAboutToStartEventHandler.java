@@ -144,7 +144,12 @@ public class ServerAboutToStartEventHandler {
    * @return whether the given {@link ItemStack} name represents a plain block.
    */
   private boolean isPlain(String itemStackName) {
-    return !(itemStackName.contains("chiseled") || itemStackName.contains("pillar") || itemStackName.contains("cut") || itemStackName.contains("smooth"));
+    return !(
+      itemStackName.contains("chiseled") ||
+      itemStackName.contains("pillar") ||
+      itemStackName.contains("smooth") ||
+      itemStackName.contains("cut")
+    );
   }
 
   /**
@@ -155,6 +160,7 @@ public class ServerAboutToStartEventHandler {
    */
   private boolean isTranslucent(String itemStackName) {
     return (
+      itemStackName.contains("spawner") ||
       itemStackName.contains("glass") ||
       itemStackName.contains("slime") ||
       itemStackName.contains("honey") ||
