@@ -23,9 +23,9 @@ import net.minecraftforge.common.ForgeHooks;
 /**
  * Vertical Slab {@link BlockItem}.
  */
-public class VerticalSlabBlockItem extends BlockItem {
-  public VerticalSlabBlockItem(Block block, Properties properties) {
-    super(block, properties);
+public abstract class VerticalSlabBlockItem extends BlockItem {
+  public VerticalSlabBlockItem(Block block) {
+    super(block, new Item.Properties().tab(JustVerticalSlabsLoader.TAB_JUST_VERTICAL_SLABS));
   }
 
   /**
@@ -35,13 +35,7 @@ public class VerticalSlabBlockItem extends BlockItem {
    * @param itemStacks - {@link NonNullList list} of {@link ItemStack ItemStacks} in the given {@link CreativeModeTab}.
    */
   @Override
-  public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
-    if (this.allowdedIn(creativeModeTab) && VerticalSlabUtils.slabStateMap != null) {
-      for(BlockState referredSlabState : VerticalSlabUtils.slabStateMap.values()) {
-        itemStacks.add(VerticalSlabUtils.getItemStackWithState(this, referredSlabState));
-      }
-    }
-  }
+  public abstract void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks);
 
   /**
    * Returns a Vertical Slab {@link ItemStack} {@link VerticalSlabUtils#getDefaultInstance() default instance}.

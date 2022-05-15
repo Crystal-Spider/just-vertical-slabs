@@ -42,12 +42,15 @@ public class ServerAboutToStartEventHandler {
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onServerAboutToStartEvent(ServerAboutToStartEvent event) {
-    Map<Item, BlockState> slabStateMap = new LinkedHashMap<Item, BlockState>();
+    Map<Item, BlockState> slabStateMap = new LinkedHashMap<Item, BlockState>(), translucentMap = new LinkedHashMap<Item, BlockState>();
     Map<Item, Item> slabMap = new HashMap<Item, Item>(), blockMap = new HashMap<Item, Item>(), waxingMap = new HashMap<Item, Item>(), stonecuttingMap = new HashMap<Item, Item>();
     RecipeManager recipeManager = event.getServer().getRecipeManager();
     for (Item slab : ForgeRegistries.ITEMS.tags().getTag(ItemTags.SLABS)) {
       JustVerticalSlabsLoader.LOGGER.debug("Adding " + slab + " to " + JustVerticalSlabsLoader.MODID + " mod maps...");
       slabStateMap.put(slab, Block.byItem(slab).defaultBlockState());
+      if (isTranslucent(slab.getDefaultInstance().toString())) {
+        translucentMap.put(slab, Block.byItem(slab).defaultBlockState());
+      }
       for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
         if (recipe.getResultItem().is(slab) && !(recipe instanceof VerticalSlabCraftingRecipe)) {
           NonNullList<Ingredient> ingredients = recipe.getIngredients();
@@ -56,10 +59,10 @@ public class ServerAboutToStartEventHandler {
           if (sameIngredients(blockIngredients)) {
             blockIngredients.stream().findFirst().ifPresent(ingredient -> {
               for (ItemStack itemStack : ingredient.getItems()) {
-                if (isPlain(itemStack)) {
+                if (isPlain(itemStack.toString())) {
                   slabMap.put(slab, itemStack.getItem());
                 }
-                blockMap.put(itemStack.getItem(), slab);
+                blockMap.putIfAbsent(itemStack.getItem(), slab);
               }
               // If no plain block is connected to this slab that means the slab is not plain either, so add the first (and theoretically only) block item.
               if (!slabMap.containsKey(slab)) {
@@ -95,6 +98,7 @@ public class ServerAboutToStartEventHandler {
       }
     }
     VerticalSlabUtils.slabStateMap = ImmutableMap.copyOf(slabStateMap);
+    VerticalSlabUtils.translucentMap = ImmutableMap.copyOf(translucentMap);
     VerticalSlabUtils.slabMap = ImmutableMap.copyOf(slabMap);
     VerticalSlabUtils.blockMap = ImmutableMap.copyOf(blockMap);
     VerticalSlabUtils.stonecuttingMap = ImmutableMap.copyOf(stonecuttingMap);
@@ -134,12 +138,33 @@ public class ServerAboutToStartEventHandler {
   }
 
   /**
-   * Checks if the given {@link ItemStack} represents a plain block.
+   * Checks if the given {@link ItemStack} name represents a plain block.
    * 
-   * @param itemStack
-   * @return whether the given {@link ItemStack} represents a plain block.
+   * @param itemStackName
+   * @return whether the given {@link ItemStack} name represents a plain block.
    */
-  private boolean isPlain(ItemStack itemStack) {
-    return !(itemStack.toString().contains("chiseled") || itemStack.toString().contains("pillar") || itemStack.toString().contains("cut") || itemStack.toString().contains("smooth"));
+  private boolean isPlain(String itemStackName) {
+    return !(
+      itemStackName.contains("chiseled") ||
+      itemStackName.contains("pillar") ||
+      itemStackName.contains("smooth") ||
+      itemStackName.contains("cut")
+    );
+  }
+
+  /**
+   * Checks if the given {@link ItemStack} name represents a translucent block.
+   * 
+   * @param itemStackName
+   * @return whether the given {@link ItemStack} name represents a translucent block.
+   */
+  private boolean isTranslucent(String itemStackName) {
+    return (
+      itemStackName.contains("spawner") ||
+      itemStackName.contains("glass") ||
+      itemStackName.contains("slime") ||
+      itemStackName.contains("honey") ||
+      itemStackName.contains("ice")
+    );
   }
 }

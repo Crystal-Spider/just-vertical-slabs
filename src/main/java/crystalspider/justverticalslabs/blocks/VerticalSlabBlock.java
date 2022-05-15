@@ -1,5 +1,6 @@
 package crystalspider.justverticalslabs.blocks;
 
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -47,9 +48,8 @@ import net.minecraftforge.common.IPlantable;
 
 /**
  * Vertical Slab Block.
- * TODO: return jumpFactor and speedFactor based on referredBlockState.
  */
-public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
+public abstract class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
   public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -78,9 +78,9 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     10  // 19 Outer Right - East
   };
 
-  public VerticalSlabBlock() {
+  public VerticalSlabBlock(Material material) {
     super(
-      BlockBehaviour.Properties.of(Material.AIR)
+      BlockBehaviour.Properties.of(material)
       .isValidSpawn((state, getter, pos, entityType) -> false)
       .isRedstoneConductor((state, getter, pos) -> false)
       .isSuffocating((state, getter, pos) -> false)
@@ -206,19 +206,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public BlockState getStateForPlacement(BlockPlaceContext placeContext) {
-    BlockPos pos = placeContext.getClickedPos();
-    Level level = placeContext.getLevel();
-    BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
-    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(placeContext.getItemInHand());
-    if (referredSlabState != null) {
-      blockstate = blockstate.setValue(LEVEL, getReferredProperty((Level getter, BlockPos blockPos, Object o) -> referredSlabState.getLightEmission(getter, blockPos), referredSlabState::getLightEmission, level, pos, null));
-    }
-    return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos));
-  }
-
-  @Override
   public BlockState updateShape(BlockState state, Direction direction, BlockState blockState, LevelAccessor accessor, BlockPos pos, BlockPos blockPos) {
     if (state.getValue(WATERLOGGED)) {
       accessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(accessor));
@@ -272,37 +259,25 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       default: break;
     }
     return super.mirror(state, mirror);
- }
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public BlockState getStateForPlacement(BlockPlaceContext placeContext) {
+    BlockPos pos = placeContext.getClickedPos();
+    Level level = placeContext.getLevel();
+    BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(placeContext.getItemInHand());
+    if (referredSlabState != null) {
+      blockstate = blockstate.setValue(LEVEL, getReferredProperty((Level getter, BlockPos blockPos, Object o) -> referredSlabState.getLightEmission(getter, blockPos), referredSlabState::getLightEmission, level, pos, null));
+    }
+    return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos));
+  }
 
   @Override
   @SuppressWarnings("deprecation")
   public FluidState getFluidState(BlockState state) {
     return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
-  }
-
-  @Override
-  public boolean useShapeForLightOcclusion(BlockState state) {
-    return true;
-  }
-  
-  @Override
-  public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType computationType) {
-    return false;
-  }
-  
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
-    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL);
-  }
-
-  @Override
-  public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-    return false;
-  }
-
-  @Override
-  public boolean canBeReplaced(BlockState state, Fluid fluid) {
-    return false;
   }
 
   @Override
@@ -323,11 +298,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       blockEntity.saveToItem(itemStack);
     }
     return itemStack;
-  }
-
-  @Override
-  public boolean isPossibleToRespawnInThis() {
-    return false;
   }
 
   @Override
@@ -372,11 +342,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   }
 
   @Override
-  public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
-    return false;
-  }
-
-  @Override
   public float getFriction(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
@@ -388,15 +353,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       }
     }
     return super.getFriction(state, level, pos, entity);
-  }
-
-  @Override
-  public boolean canHarvestBlock(BlockState state, BlockGetter getter, BlockPos pos, Player player) {
-    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
-    if (referredSlabState != null) {
-      return getReferredProperty(referredSlabState::canHarvestBlock, () -> super.canHarvestBlock(state, getter, pos, player), getter, pos, player);
-    }
-    return super.canHarvestBlock(state, getter, pos, player);
   }
 
   @Override
@@ -413,10 +369,10 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     if (referredBlockState != null) {
-      return getReferredProperty((LevelReader levelReader, BlockPos blockPos, Object o) -> referredBlockState.getEnchantPowerBonus(levelReader, blockPos), () -> 0F, level, pos, null);
+      return getReferredProperty(referredBlockState::getEnchantPowerBonus, () -> 0F, level, pos);
     } else {
       if (referredSlabState != null) {
-        return getReferredProperty((LevelReader levelReader, BlockPos blockPos, Object o) -> referredSlabState.getEnchantPowerBonus(levelReader, blockPos), () -> 0F, level, pos, null);
+        return getReferredProperty(referredSlabState::getEnchantPowerBonus, () -> 0F, level, pos);
       }
     }
     return super.getEnchantPowerBonus(state, level, pos);
@@ -477,6 +433,40 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   }
 
   @Override
+  public boolean canHarvestBlock(BlockState state, BlockGetter getter, BlockPos pos, Player player) {
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
+    if (referredSlabState != null) {
+      return getReferredProperty(referredSlabState::canHarvestBlock, () -> super.canHarvestBlock(state, getter, pos, player), getter, pos, player);
+    }
+    return super.canHarvestBlock(state, getter, pos, player);
+  }
+
+  @Override
+  public boolean isPossibleToRespawnInThis() {
+    return false;
+  }
+
+  @Override
+  public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType computationType) {
+    return false;
+  }
+
+  @Override
+  public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+    return false;
+  }
+
+  @Override
+  public boolean canBeReplaced(BlockState state, Fluid fluid) {
+    return false;
+  }
+
+  @Override
+  public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
+    return false;
+  }
+
+  @Override
   public boolean collisionExtendsVertically(BlockState state, BlockGetter level, BlockPos pos, Entity collidingEntity) {
     return false;
   }
@@ -484,6 +474,68 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
   @Override
   public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new VerticalSlabBlockEntity(pos, state);
+  }
+
+  @Override
+  public abstract boolean useShapeForLightOcclusion(BlockState state);
+
+  @Override
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
+    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL);
+  }
+
+  /**
+   * Returns the desired Block Property using {@code positionSensitiveFunction} and {@code fallbackFunction} on a best-effort base.
+   * 
+   * @param <T> extraParameter of a position sensitive function.
+   * @param <R> type of the desired property.
+   * @param <G> {@link BlockGetter} subclass used to retrieve position sensitive data.
+   * @param positionSensitiveFunction {@link BlockStateFunction} to use when possible.
+   * @param fallbackFunction {@link Supplier} for the property in case position sensitive data can't be retrieved.
+   * @param getter {@link BlockGetter} subclass instance used to retrieve position sensitive data.
+   * @param pos {@link BlockPos position} of the block.
+   * @return the most accurate possible desired Block Property.
+   */
+  protected <R, G extends BlockGetter> R getReferredProperty(BiFunction<G, BlockPos, R> positionSensitiveFunction, Supplier<R> fallbackFunction, G getter, BlockPos pos) {
+    try {
+      return positionSensitiveFunction.apply(getter, pos);
+    } catch (Exception e) {
+      logDataWarning(e, pos);
+      return fallbackFunction.get();
+    }
+  }
+
+  /**
+   * Returns the desired Block Property using {@code positionSensitiveFunction} and {@code fallbackFunction} on a best-effort base.
+   * 
+   * @param <T> extraParameter of a position sensitive function.
+   * @param <R> type of the desired property.
+   * @param <G> {@link BlockGetter} subclass used to retrieve position sensitive data.
+   * @param positionSensitiveFunction {@link BlockStateFunction} to use when possible.
+   * @param fallbackFunction {@link Supplier} for the property in case position sensitive data can't be retrieved.
+   * @param getter {@link BlockGetter} subclass instance used to retrieve position sensitive data.
+   * @param pos {@link BlockPos position} of the block.
+   * @param extraParameter extra parameter used to retrieved data.
+   * @return the most accurate possible desired Block Property.
+   */
+  protected <T, R, G extends BlockGetter> R getReferredProperty(BlockStateFunction<G, T, R> positionSensitiveFunction, Supplier<R> fallbackFunction, G getter, BlockPos pos, T extraParameter) {
+    try {
+      return positionSensitiveFunction.apply(getter, pos, extraParameter);
+    } catch (Exception e) {
+      logDataWarning(e, pos);
+      return fallbackFunction.get();
+    }
+  }
+
+  /**
+   * Logs a warning with the given {@link Exception} for the Vertical Slab in the give {@link BlockPos position}.
+   * 
+   * @param e - {@link Exception} that prevented to retrieve position sensitive data.
+   * @param position - {@link BlockPos} of the block for which position sensitive data was needed.
+   */
+  protected void logDataWarning(Exception e, BlockPos pos) {
+    JustVerticalSlabsLoader.LOGGER.warn("Position sensitive data for Vertical Slab in position " + formatPosition(pos) + " could not be retrieved from referred BlockState as an Exception was thrown:", e);
+    JustVerticalSlabsLoader.LOGGER.debug("Switching to NON position sensitive data.");
   }
 
   /**
@@ -510,7 +562,7 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
    */
   private int getHeightDiff(BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
     int heightDiff = getHeightDiff(VerticalSlabUtils.getReferredBlockState(getter, pos), getter, pos, collisionContext, 1);
-    if (heightDiff == 0) {
+    if (heightDiff == 0 || heightDiff >= 0.5) {
       return getHeightDiff(VerticalSlabUtils.getReferredSlabState(getter, pos), getter, pos, collisionContext, 0.5);
     }
     return heightDiff;
@@ -535,39 +587,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock, 
       }
     }
     return 0;
-  }
-
-  /**
-   * Returns the desired Block Property using {@code positionSensitiveFunction} and {@code fallbackFunction} on a best-effort base.
-   * 
-   * @param <T> extraParameter of a position sensitive function.
-   * @param <R> type of the desired property.
-   * @param <G> {@link BlockGetter} subclass used to retrieve position sensitive data.
-   * @param positionSensitiveFunction {@link BlockStateFunction} to use when possible.
-   * @param fallbackFunction {@link Supplier} for the property in case position sensitive data can't be retrieved.
-   * @param getter {@link BlockGetter} subclass instance used to retrieve position sensitive data.
-   * @param pos {@link BlockPos position} of the block.
-   * @param extraParameter extra parameter used to retrieved data.
-   * @return the most accurate possible desired Block Property.
-   */
-  private <T, R, G extends BlockGetter> R getReferredProperty(BlockStateFunction<T, R, G> positionSensitiveFunction, Supplier<R> fallbackFunction, G getter, BlockPos pos, T extraParameter) {
-    try {
-      return positionSensitiveFunction.apply(getter, pos, extraParameter);
-    } catch (Exception e) {
-      logDataWarning(e, pos);
-      return fallbackFunction.get();
-    }
-  }
-
-  /**
-   * Logs a warning with the given {@link Exception} for the Vertical Slab in the give {@link BlockPos position}.
-   * 
-   * @param e - {@link Exception} that prevented to retrieve position sensitive data.
-   * @param position - {@link BlockPos} of the block for which position sensitive data was needed.
-   */
-  private void logDataWarning(Exception e, BlockPos pos) {
-    JustVerticalSlabsLoader.LOGGER.warn("Position sensitive data for Vertical Slab in position " + formatPosition(pos) + " could not be retrieved from referred BlockState as an Exception was thrown:", e);
-    JustVerticalSlabsLoader.LOGGER.debug("Switching to NON position sensitive data.");
   }
 
   /**

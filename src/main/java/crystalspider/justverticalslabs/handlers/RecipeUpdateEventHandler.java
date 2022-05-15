@@ -23,7 +23,7 @@ public class RecipeUpdateEventHandler {
   public void onRecipesUpdatedEvent(RecipesUpdatedEvent event) {
     MutableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
     for(BlockState referredSlabState : VerticalSlabUtils.slabStateMap.values()) {
-      creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState));
+      creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));
     }
     creativeSearchTree.refresh();
   }

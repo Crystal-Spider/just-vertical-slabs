@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "justverticalslabs:vertical_slab",
+          "name": "justverticalslabs:translucent_vertical_slab",
           "functions": [
             {
               "function": "minecraft:copy_nbt",

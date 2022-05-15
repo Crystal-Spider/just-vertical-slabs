@@ -27,7 +27,8 @@ public class BlockToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecip
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(VerticalSlabUtils.blockMap.get(matchedItem.getItem())));
+    Item slab = VerticalSlabUtils.blockMap.get(matchedItem.getItem());
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
     verticalSlab.setCount(6);
     return verticalSlab;
   }

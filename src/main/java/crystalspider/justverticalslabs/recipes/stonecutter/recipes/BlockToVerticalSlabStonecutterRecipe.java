@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
@@ -48,7 +49,8 @@ public class BlockToVerticalSlabStonecutterRecipe extends VerticalSlabStonecutte
 
   @Override
   public ItemStack assemble(Container container) {
-    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(VerticalSlabUtils.stonecuttingMap.get(container.getItem(0).getItem())));
+    Item slab = VerticalSlabUtils.stonecuttingMap.get(container.getItem(0).getItem());
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
     verticalSlab.setCount(2);
     return verticalSlab;
   }

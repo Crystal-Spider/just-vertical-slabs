@@ -9,6 +9,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
@@ -170,10 +171,11 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     if (referredSlabState != null) {
       VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referredSlabState);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
+        BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
         ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
         for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
           Direction orientation = jsonBakedQuad.getDirection();
-          for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredSlabState, orientation, rand, modelData)) {
+          for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredBlockState != null && VerticalSlabUtils.isTranslucent(referredSlabState) ? referredBlockState : referredSlabState, orientation, rand, modelData)) {
             bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), referredBakedQuad.getTintIndex(), orientation));
           }
         }
@@ -243,7 +245,8 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
 
   /**
    * Returns the updated vertices.
-   * Updates only UV vertices to use the new sprite instead of the old one.
+   * Updates UV vertex elements to use the new sprite instead of the old one.
+   * Updates the Y Position vertex element to make the new sprite adhere to the correct shape.
    * 
    * @param vertices
    * @param oldSprite
@@ -252,11 +255,15 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   private int[] updateVertices(int[] vertices, int[] referredVertices, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite, boolean faceUp) {
     int[] updatedVertices = vertices.clone();
-    for (int i = 0; i < 4; i++) {
-      int vertexIndex = i * 8;
+    for (int vertexIndex = 0; vertexIndex < DefaultVertexFormat.BLOCK.getVertexSize(); vertexIndex += DefaultVertexFormat.BLOCK.getIntegerSize()) {
       float y = Float.intBitsToFloat(referredVertices[vertexIndex + 1]);
-      if (faceUp && y > 0 && y < 0.5) {
-        updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y + 0.5F);
+      // Lower only top face since RenderType CutoutMipped will remove extra transparent texture bits that go out of the shape.
+      if (faceUp && y > 0 && y < 1 && y != 0.5) {
+        if (y < 0.5) {
+          updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y + 0.5F);
+        } else {
+          updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y);
+        }
       }
       updatedVertices[vertexIndex + 4] = changeUVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 4]);
       updatedVertices[vertexIndex + 5] = changeVVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 5]);

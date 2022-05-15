@@ -1,0 +1,94 @@
+{
+  "variants": {
+    "shape=straight,facing=south": {
+      "model": "justverticalslabs:block/vertical_slab",
+      "y": 180,
+      "uvlock": true
+    },
+    "shape=straight,facing=west": {
+      "model": "justverticalslabs:block/vertical_slab",
+      "y": 270,
+      "uvlock": true
+    },
+    "shape=straight,facing=north": {
+      "model": "justverticalslabs:block/vertical_slab"
+    },
+    "shape=straight,facing=east": {
+      "model": "justverticalslabs:block/vertical_slab",
+      "y": 90,
+      "uvlock": true
+    },
+    "shape=inner_left,facing=south": {
+      "model": "justverticalslabs:block/vertical_slab_inner",
+      "y": 180,
+      "uvlock": true
+    },
+    "shape=inner_left,facing=west": {
+      "model": "justverticalslabs:block/vertical_slab_inner",
+      "y": 270,
+      "uvlock": true
+    },
+    "shape=inner_left,facing=north": {
+      "model": "justverticalslabs:block/vertical_slab_inner"
+    },
+    "shape=inner_left,facing=east": {
+      "model": "justverticalslabs:block/vertical_slab_inner",
+      "y": 90,
+      "uvlock": true
+    },
+    "shape=inner_right,facing=south": {
+      "model": "justverticalslabs:block/vertical_slab_inner",
+      "y": 270,
+      "uvlock": true
+    },
+    "shape=inner_right,facing=west": {
+      "model": "justverticalslabs:block/vertical_slab_inner"
+    },
+    "shape=inner_right,facing=north": {
+      "model": "justverticalslabs:block/vertical_slab_inner",
+      "y": 90,
+      "uvlock": true
+    },
+    "shape=inner_right,facing=east": {
+      "model": "justverticalslabs:block/vertical_slab_inner",
+      "y": 180,
+      "uvlock": true
+    },
+    "shape=outer_left,facing=south": {
+      "model": "justverticalslabs:block/vertical_slab_outer",
+      "y": 180,
+      "uvlock": true
+    },
+    "shape=outer_left,facing=west": {
+      "model": "justverticalslabs:block/vertical_slab_outer",
+      "y": 270,
+      "uvlock": true
+    },
+    "shape=outer_left,facing=north": {
+      "model": "justverticalslabs:block/vertical_slab_outer"
+    },
+    "shape=outer_left,facing=east": {
+      "model": "justverticalslabs:block/vertical_slab_outer",
+      "y": 90,
+      "uvlock": true
+    },
+    "shape=outer_right,facing=south": {
+      "model": "justverticalslabs:block/vertical_slab_outer",
+      "y": 270,
+      "uvlock": true
+    },
+    "shape=outer_right,facing=west": {
+      "model": "justverticalslabs:block/vertical_slab_outer"
+    },
+    "shape=outer_right,facing=north": {
+      "model": "justverticalslabs:block/vertical_slab_outer",
+      "y": 90,
+      "uvlock": true
+    },
+    "shape=outer_right,facing=east": {
+      "model": "justverticalslabs:block/vertical_slab_outer",
+      "y": 180,
+      "uvlock": true
+    }
+  }
+}

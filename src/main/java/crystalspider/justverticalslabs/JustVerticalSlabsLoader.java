@@ -4,6 +4,8 @@ import com.mojang.logging.LogUtils;
 
 import org.slf4j.Logger;
 
+import crystalspider.justverticalslabs.blocks.CutoutVerticalSlabBlock;
+import crystalspider.justverticalslabs.blocks.TranslucentVerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.ColorHandlerEventHandler;
@@ -12,6 +14,8 @@ import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
 import crystalspider.justverticalslabs.handlers.RightClickBlockHandler;
 import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
+import crystalspider.justverticalslabs.items.CutoutVerticalSlabBlockItem;
+import crystalspider.justverticalslabs.items.TranslucentVerticalSlabBlockItem;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.loot.VerticalSlabLootModifier;
 import crystalspider.justverticalslabs.recipes.crafting.recipes.BlockToVerticalSlabCraftingRecipe;
@@ -80,24 +84,32 @@ public class JustVerticalSlabsLoader {
   /**
    * {@link GlobalLootModifierSerializer} {@link DeferredRegister deferred register}.
    */
-  private static final DeferredRegister<GlobalLootModifierSerializer<?>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, MODID);
+  public static final DeferredRegister<GlobalLootModifierSerializer<?>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, MODID);
   /**
    * {@link RecipeSerializer Recipe Serializer} {@link DeferredRegister deferred register}.
    */
   public static final DeferredRegister<RecipeSerializer<?>> RECIPES = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 
   /**
-   * {@link RegistryObject} for {@link VerticalSlabBlock}.
+   * {@link RegistryObject} for {@link CutoutVerticalSlabBlock}.
    */
-  public static final RegistryObject<VerticalSlabBlock> VERTICAL_SLAB_BLOCK = BLOCKS.register(VERTICAL_SLAB_ID, VerticalSlabBlock::new);
+  public static final RegistryObject<VerticalSlabBlock> CUTOUT_VERTICAL_SLAB_BLOCK = BLOCKS.register("cutout_" + VERTICAL_SLAB_ID, CutoutVerticalSlabBlock::new);
+  /**
+   * {@link RegistryObject} for {@link TranslucentVerticalSlabBlock}.
+   */
+  public static final RegistryObject<VerticalSlabBlock> TRANSLUCENT_VERTICAL_SLAB_BLOCK = BLOCKS.register("translucent_" + VERTICAL_SLAB_ID, TranslucentVerticalSlabBlock::new);
   /**
    * {@link RegistryObject} for {@link VerticalSlabBlockEntity}.
    */
-  public static final RegistryObject<BlockEntityType<VerticalSlabBlockEntity>> VERTICAL_SLAB_BLOCK_ENTITY = BLOCK_ENTITIES.register(VERTICAL_SLAB_ID + "_block_entity", () -> BlockEntityType.Builder.of(VerticalSlabBlockEntity::new, VERTICAL_SLAB_BLOCK.get()).build(null));
+  public static final RegistryObject<BlockEntityType<VerticalSlabBlockEntity>> VERTICAL_SLAB_BLOCK_ENTITY = BLOCK_ENTITIES.register(VERTICAL_SLAB_ID + "_block_entity", () -> BlockEntityType.Builder.of(VerticalSlabBlockEntity::new, CUTOUT_VERTICAL_SLAB_BLOCK.get(), TRANSLUCENT_VERTICAL_SLAB_BLOCK.get()).build(null));
   /**
-   * {@link RegistryObject} for {@link VerticalSlabBlockItem}.
+   * {@link RegistryObject} for {@link CutoutVerticalSlabBlockItem}.
    */
-  public static final RegistryObject<VerticalSlabBlockItem> VERTICAL_SLAB_ITEM = ITEMS.register(VERTICAL_SLAB_ID, () -> new VerticalSlabBlockItem(VERTICAL_SLAB_BLOCK.get(), new Item.Properties().tab(TAB_JUST_VERTICAL_SLABS)));
+  public static final RegistryObject<VerticalSlabBlockItem> CUTOUT_VERTICAL_SLAB_ITEM = ITEMS.register("cutout_" + VERTICAL_SLAB_ID, CutoutVerticalSlabBlockItem::new);
+  /**
+   * {@link RegistryObject} for {@link TranslucentVerticalSlabBlockItem}.
+   */
+  public static final RegistryObject<VerticalSlabBlockItem> TRANSLUCENT_VERTICAL_SLAB_ITEM = ITEMS.register("translucent_" + VERTICAL_SLAB_ID, TranslucentVerticalSlabBlockItem::new);
   /**
    * {@link RegistryObject} for {@link VerticalSlabLootModifier} {@link VerticalSlabLootModifier.Serializer Serializer}.
    */

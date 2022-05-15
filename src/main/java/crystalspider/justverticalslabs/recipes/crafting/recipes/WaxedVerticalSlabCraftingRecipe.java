@@ -5,6 +5,7 @@ import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingReci
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -24,7 +25,8 @@ public class WaxedVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe 
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    return VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(VerticalSlabUtils.waxingMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem())));
+    Item slab = VerticalSlabUtils.waxingMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem());
+    return VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
   }
 
   /**

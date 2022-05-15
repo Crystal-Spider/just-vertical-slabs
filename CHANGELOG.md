@@ -11,14 +11,22 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Improved drops.
 - Added support for blocks that are not full height, like Dirt Path.
 - Fixed not full height vertical slabs occluding other blocks when they shouldn't.
+- Improved Inner Vertical Slab ("big corner") model.
+- Added support for transparent (translucent) vertical slabs.
+- Improved dynamic models.
+- Now, when possible, most properties refer to the block rather than the slab to improve coherence.
+- Fixed broken textures when using external shaders.
 
-## [1.18.2-2.0.0.0] - 2022/10/05
+## [1.18.2-3.0.0.0] - 2022/05/gg
+- TBR.
+
+## [1.18.2-2.0.0.0] - 2022/05/10
 - Refractored code to base Vertical Slabs on Slabs rather than Blocks.
 - Improved dynamic model code.
 - Updated readme.
 - Removed requirement for crafting recipe of a Slab to be considered a valid Slab. Now it's sufficient to have the *minecraft:slabs* tag. 
 
-## [1.18.2-1.0.0.0] - 2022/10/05
+## [1.18.2-1.0.0.0] - 2022/05/09
 - Added vertical slab variants for any block having a slab variant, vanilla or not.
 - Added "stair combining logic" to vertical slabs.
 - Added crafting recipes involving vertical slabs.
@@ -27,5 +35,6 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added creative tab with all vertical slabs.
 
 [Unreleased]: https://github.com/Nyphet/just-vertical-slabs
+[1.18.2-3.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.0.0.0
 [1.18.2-2.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-2.0.0.0
 [1.18.2-1.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-1.0.0.0
