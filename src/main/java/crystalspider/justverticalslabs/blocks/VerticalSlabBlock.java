@@ -1,5 +1,6 @@
 package crystalspider.justverticalslabs.blocks;
 
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -368,10 +369,10 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     if (referredBlockState != null) {
-      return getReferredProperty((LevelReader levelReader, BlockPos blockPos, Object o) -> referredBlockState.getEnchantPowerBonus(levelReader, blockPos), () -> 0F, level, pos, null);
+      return getReferredProperty(referredBlockState::getEnchantPowerBonus, () -> 0F, level, pos);
     } else {
       if (referredSlabState != null) {
-        return getReferredProperty((LevelReader levelReader, BlockPos blockPos, Object o) -> referredSlabState.getEnchantPowerBonus(levelReader, blockPos), () -> 0F, level, pos, null);
+        return getReferredProperty(referredSlabState::getEnchantPowerBonus, () -> 0F, level, pos);
       }
     }
     return super.getEnchantPowerBonus(state, level, pos);
@@ -493,10 +494,31 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
    * @param fallbackFunction {@link Supplier} for the property in case position sensitive data can't be retrieved.
    * @param getter {@link BlockGetter} subclass instance used to retrieve position sensitive data.
    * @param pos {@link BlockPos position} of the block.
+   * @return the most accurate possible desired Block Property.
+   */
+  protected <R, G extends BlockGetter> R getReferredProperty(BiFunction<G, BlockPos, R> positionSensitiveFunction, Supplier<R> fallbackFunction, G getter, BlockPos pos) {
+    try {
+      return positionSensitiveFunction.apply(getter, pos);
+    } catch (Exception e) {
+      logDataWarning(e, pos);
+      return fallbackFunction.get();
+    }
+  }
+
+  /**
+   * Returns the desired Block Property using {@code positionSensitiveFunction} and {@code fallbackFunction} on a best-effort base.
+   * 
+   * @param <T> extraParameter of a position sensitive function.
+   * @param <R> type of the desired property.
+   * @param <G> {@link BlockGetter} subclass used to retrieve position sensitive data.
+   * @param positionSensitiveFunction {@link BlockStateFunction} to use when possible.
+   * @param fallbackFunction {@link Supplier} for the property in case position sensitive data can't be retrieved.
+   * @param getter {@link BlockGetter} subclass instance used to retrieve position sensitive data.
+   * @param pos {@link BlockPos position} of the block.
    * @param extraParameter extra parameter used to retrieved data.
    * @return the most accurate possible desired Block Property.
    */
-  protected <T, R, G extends BlockGetter> R getReferredProperty(BlockStateFunction<T, R, G> positionSensitiveFunction, Supplier<R> fallbackFunction, G getter, BlockPos pos, T extraParameter) {
+  protected <T, R, G extends BlockGetter> R getReferredProperty(BlockStateFunction<G, T, R> positionSensitiveFunction, Supplier<R> fallbackFunction, G getter, BlockPos pos, T extraParameter) {
     try {
       return positionSensitiveFunction.apply(getter, pos, extraParameter);
     } catch (Exception e) {

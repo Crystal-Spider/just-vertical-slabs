@@ -1,5 +1,6 @@
 package crystalspider.justverticalslabs.blocks;
 
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,30 +16,35 @@ public class TranslucentVerticalSlabBlock extends VerticalSlabBlock {
     super(Material.GLASS);
   }
 
-  // TODO: mimick property
-  @Override
-  public boolean useShapeForLightOcclusion(BlockState state) {
-    return false;
-  }
-
-  // TODO: mimick property (maybe already in VerticalSlabBlock)
-  public boolean propagatesSkylightDown(BlockState state, BlockGetter getter, BlockPos pos) {
-    return !isShapeFullBlock(state.getShape(getter, pos)) && state.getFluidState().isEmpty();
-  }
-
-  // TODO: Override necessary?
   @Override
   public VoxelShape getOcclusionShape(BlockState state, BlockGetter getter, BlockPos pos) {
     return Shapes.empty();
   }
 
-  // TODO: mimick property
+  // TODO: mimick property, how?
   @Override
+  public boolean useShapeForLightOcclusion(BlockState state) {
+    return false;
+  }
+
+  // FIXME: it's cached, will it break something?
+  @Override
+  public boolean propagatesSkylightDown(BlockState state, BlockGetter getter, BlockPos pos) {
+    return !isShapeFullBlock(state.getShape(getter, pos)) && state.getFluidState().isEmpty();
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
   public int getLightBlock(BlockState state, BlockGetter getter, BlockPos pos) {
-    if (state.isSolidRender(getter, pos)) {
-       return getter.getMaxLightLevel();
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
+    BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+    if (referredBlockState != null) {
+      return getReferredProperty(referredBlockState::getLightBlock, () -> super.getLightBlock(state, getter, pos), getter, pos);
     } else {
-       return state.propagatesSkylightDown(getter, pos) ? 0 : 1;
+      if (referredSlabState != null) {
+        return getReferredProperty(referredSlabState::getLightBlock, () -> super.getLightBlock(state, getter, pos), getter, pos);
+      }
     }
+    return super.getLightBlock(state, getter, pos);
  }
 }
