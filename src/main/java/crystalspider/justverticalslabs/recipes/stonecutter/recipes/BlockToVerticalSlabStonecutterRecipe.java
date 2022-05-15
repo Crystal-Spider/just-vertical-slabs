@@ -50,7 +50,7 @@ public class BlockToVerticalSlabStonecutterRecipe extends VerticalSlabStonecutte
   @Override
   public ItemStack assemble(Container container) {
     Item slab = VerticalSlabUtils.stonecuttingMap.get(container.getItem(0).getItem());
-    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.translucentMap.containsKey(slab));
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
     verticalSlab.setCount(2);
     return verticalSlab;
   }

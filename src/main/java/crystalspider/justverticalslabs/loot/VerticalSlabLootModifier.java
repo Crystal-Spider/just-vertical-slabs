@@ -42,7 +42,7 @@ public class VerticalSlabLootModifier extends LootModifier {
           for (ItemStack slabLoot : referredLootTable.getRandomItems(builder.create(LootContextParamSets.BLOCK))) {
             Item itemLoot = slabLoot.getItem();
             if (VerticalSlabUtils.slabStateMap.containsKey(itemLoot)) {
-              loot.add(VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(itemLoot), VerticalSlabUtils.translucentMap.containsKey(itemLoot)));
+              loot.add(VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(itemLoot), VerticalSlabUtils.isTranslucent(itemLoot)));
             } else {
               loot.add(slabLoot);
             }

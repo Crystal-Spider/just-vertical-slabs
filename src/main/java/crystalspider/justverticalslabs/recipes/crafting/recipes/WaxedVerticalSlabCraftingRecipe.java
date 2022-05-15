@@ -26,7 +26,7 @@ public class WaxedVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
     Item slab = VerticalSlabUtils.waxingMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem());
-    return VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.translucentMap.containsKey(slab));
+    return VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
   }
 
   /**
