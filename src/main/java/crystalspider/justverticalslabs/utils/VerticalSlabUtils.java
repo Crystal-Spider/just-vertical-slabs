@@ -91,6 +91,26 @@ public class VerticalSlabUtils {
   }
 
   /**
+   * Checks whether the given {@link BlockState referredSlabState} represents a translucent Slab.
+   * 
+   * @param referredSlabState
+   * @return check value.
+   */
+  public static boolean isTranslucent(BlockState referredSlabState) {
+    return isTranslucent(referredSlabState.getBlock().asItem());
+  }
+
+  /**
+   * Checks whether the given {@link Item slab} represents a translucent Slab.
+   * 
+   * @param slab
+   * @return check value.
+   */
+  public static boolean isTranslucent(Item slab) {
+    return translucentMap.containsKey(slab);
+  }
+
+  /**
    * Returns the Vertical Slab {@link ItemStack} default instance.
    * 
    * @return Vertical Slab {@link ItemStack} default instance.

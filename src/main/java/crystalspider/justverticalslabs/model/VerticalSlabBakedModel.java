@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 
@@ -172,12 +171,11 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     if (referredSlabState != null) {
       VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referredSlabState);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
-        // TODO: Improve VerticalSlabUtils#getReferredBlockState and similars.
-        // TODO: BlockState referredState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+        BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
         ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
         for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
           Direction orientation = jsonBakedQuad.getDirection();
-          for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredSlabState, orientation, rand, modelData)) {
+          for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredBlockState != null && VerticalSlabUtils.isTranslucent(referredSlabState) ? referredBlockState : referredSlabState, orientation, rand, modelData)) {
             bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), referredBakedQuad.getTintIndex(), orientation));
           }
         }
@@ -259,9 +257,13 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
     int[] updatedVertices = vertices.clone();
     for (int vertexIndex = 0; vertexIndex < DefaultVertexFormat.BLOCK.getVertexSize(); vertexIndex += DefaultVertexFormat.BLOCK.getIntegerSize()) {
       float y = Float.intBitsToFloat(referredVertices[vertexIndex + 1]);
-      // Lower only top face since RenderType CutoutMipped will remove extra transparent texture bits that go out of the shape. 
-      if (faceUp && y > 0 && y < 0.5) {
-        updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y + 0.5F);
+      // Lower only top face since RenderType CutoutMipped will remove extra transparent texture bits that go out of the shape.
+      if (faceUp && y > 0 && y < 1 && y != 0.5) {
+        if (y < 0.5) {
+          updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y + 0.5F);
+        } else {
+          updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y);
+        }
       }
       updatedVertices[vertexIndex + 4] = changeUVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 4]);
       updatedVertices[vertexIndex + 5] = changeVVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 5]);
