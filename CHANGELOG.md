@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Forge Semantic Versioning](https://mcforge.readthedocs.io/en/1.18.x/gettingstarted/versioning/#versioning).
 
 ## [Unreleased]
+- Nothing new.
+
+## [1.18.2-3.0.0.0] - 2022/05/16
 - Fixed dynamic colors, like for grass and foliage.
 - Fixed overlayed textures.
 - Improved drops.
@@ -16,9 +19,6 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Improved dynamic models.
 - Now, when possible, most properties refer to the block rather than the slab to improve coherence.
 - Fixed broken textures when using external shaders.
-
-## [1.18.2-3.0.0.0] - 2022/05/gg
-- TBR.
 
 ## [1.18.2-2.0.0.0] - 2022/05/10
 - Refractored code to base Vertical Slabs on Slabs rather than Blocks.
