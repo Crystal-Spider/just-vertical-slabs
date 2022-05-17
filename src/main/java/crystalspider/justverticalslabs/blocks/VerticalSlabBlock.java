@@ -54,6 +54,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
   public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
+  public static final BooleanProperty OCCLUSION = BooleanProperty.create("occlusion");
   private static final VoxelShape[] SHAPES = makeShapes();
   private static final int[] SHAPE_BY_STATE = new int[]{
     0,  // 0  Straight    - South
@@ -269,7 +270,13 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(placeContext.getItemInHand());
     if (referredSlabState != null) {
-      blockstate = blockstate.setValue(LEVEL, getReferredProperty((Level getter, BlockPos blockPos, Object o) -> referredSlabState.getLightEmission(getter, blockPos), referredSlabState::getLightEmission, level, pos, null));
+      blockstate = blockstate.setValue(LEVEL, getReferredProperty(referredSlabState::getLightEmission, referredSlabState::getLightEmission, level, pos));
+      BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+      if (referredBlockState != null) {
+        blockstate = blockstate.setValue(OCCLUSION, referredBlockState.useShapeForLightOcclusion());
+      } else {
+        blockstate = blockstate.setValue(OCCLUSION, referredSlabState.useShapeForLightOcclusion());
+      }
     }
     return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos));
   }

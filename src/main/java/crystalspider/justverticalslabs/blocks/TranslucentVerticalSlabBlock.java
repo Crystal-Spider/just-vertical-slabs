@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -17,20 +18,36 @@ public class TranslucentVerticalSlabBlock extends VerticalSlabBlock {
   }
 
   @Override
+  public VoxelShape getVisualShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+    return Shapes.empty();
+  }
+
+  @Override
   public VoxelShape getOcclusionShape(BlockState state, BlockGetter getter, BlockPos pos) {
     return Shapes.empty();
   }
 
-  // TODO: mimick property, how?
   @Override
   public boolean useShapeForLightOcclusion(BlockState state) {
-    return false;
+    return state.getValue(OCCLUSION);
   }
 
-  // FIXME: it's cached, will it break something?
   @Override
   public boolean propagatesSkylightDown(BlockState state, BlockGetter getter, BlockPos pos) {
-    return !isShapeFullBlock(state.getShape(getter, pos)) && state.getFluidState().isEmpty();
+    return true; // TODO: Change when adding double feature.
+  }
+
+  @Override
+  public float getShadeBrightness(BlockState state, BlockGetter getter, BlockPos pos) {
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
+    if (referredSlabState != null) {
+      BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+      if (referredBlockState != null) {
+        return getReferredProperty(referredBlockState::getShadeBrightness, () -> 1.0F, getter, pos);
+      }
+      return getReferredProperty(referredSlabState::getShadeBrightness, () -> 1.0F, getter, pos);
+    }
+    return 1.0F;
   }
 
   @Override
