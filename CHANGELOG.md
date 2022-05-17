@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Forge Semantic Versioning](https://mcforge.readthedocs.io/en/1.18.x/gettingstarted/versioning/#versioning).
 
 ## [Unreleased]
-- Nothing new.
+- Improved light for translucent vertical slabs.
 
 ## [1.18.2-3.0.0.0] - 2022/05/16
 - Fixed dynamic colors, like for grass and foliage.
