@@ -1,5 +1,6 @@
 package crystalspider.justverticalslabs.handlers;
 
+import crystalspider.justverticalslabs.utils.MapsInstantiator;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.searchtree.MutableSearchTree;
@@ -21,6 +22,10 @@ public class RecipesUpdateEventHandler {
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onRecipesUpdatedEvent(RecipesUpdatedEvent event) {
+    if (VerticalSlabUtils.slabStateMap == null) {
+      MapsInstantiator.instantiateMaps(event.getRecipeManager());
+    }
+
     MutableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
     for(BlockState referredSlabState : VerticalSlabUtils.slabStateMap.values()) {
       creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));

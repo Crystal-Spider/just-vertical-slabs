@@ -57,14 +57,9 @@ public class JustVerticalSlabsLoader {
    */
   public static final String PROTOCOL_VERSION = "1";
   /**
-   * 
+   * {@link SimpleChannel} instance for compatibility client-server.
    */
-  public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-    VerticalSlabUtils.getResourceLocation("main"),
-    () -> PROTOCOL_VERSION,
-    PROTOCOL_VERSION::equals,
-    PROTOCOL_VERSION::equals
-  );
+  public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(VerticalSlabUtils.getResourceLocation("main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
   /**
    * JustVerticalSlab mod ID.
