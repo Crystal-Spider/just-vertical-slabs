@@ -10,7 +10,7 @@ import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.FMLClientSetupEventHandler;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
-import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
+import crystalspider.justverticalslabs.handlers.RecipesUpdateEventHandler;
 import crystalspider.justverticalslabs.handlers.RightClickBlockHandler;
 import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
 import crystalspider.justverticalslabs.items.CutoutVerticalSlabBlockItem;
@@ -36,6 +36,8 @@ import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -49,6 +51,20 @@ public class JustVerticalSlabsLoader {
    * Logger.
    */
   public static final Logger LOGGER = LogUtils.getLogger();
+
+  /**
+   * Network channel protocol version.
+   */
+  public static final String PROTOCOL_VERSION = "1";
+  /**
+   * 
+   */
+  public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+    VerticalSlabUtils.getResourceLocation("main"),
+    () -> PROTOCOL_VERSION,
+    PROTOCOL_VERSION::equals,
+    PROTOCOL_VERSION::equals
+  );
 
   /**
    * JustVerticalSlab mod ID.
@@ -145,7 +161,7 @@ public class JustVerticalSlabsLoader {
   public JustVerticalSlabsLoader() {
     IEventBus minecraftEventBus = MinecraftForge.EVENT_BUS;
     minecraftEventBus.register(new ServerAboutToStartEventHandler());
-    minecraftEventBus.register(new RecipeUpdateEventHandler());
+    minecraftEventBus.register(new RecipesUpdateEventHandler());
     minecraftEventBus.register(new RightClickBlockHandler());
     IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     BLOCKS.register(modEventBus);

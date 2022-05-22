@@ -13,7 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 /**
  * {@link RecipesUpdatedEvent} handler.
  */
-public class RecipeUpdateEventHandler {
+public class RecipesUpdateEventHandler {
   /**
    * Handles the event {@link RecipesUpdatedEvent} to add each existing Vertical Slab to the search tree.
    * 
