@@ -88,7 +88,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
       .lightLevel(LightBlock.LIGHT_EMISSION)
       .dynamicShape()
     );
-    this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, false).setValue(LEVEL, 0));
+    this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, false).setValue(LEVEL, 0).setValue(OCCLUSION, false));
   }
 
   /**
@@ -488,7 +488,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
 
   @Override
   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
-    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL);
+    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL, OCCLUSION);
   }
 
   /**
