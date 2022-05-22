@@ -8,7 +8,6 @@ import crystalspider.justverticalslabs.blocks.CutoutVerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.TranslucentVerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
-import crystalspider.justverticalslabs.handlers.ColorHandlerEventHandler;
 import crystalspider.justverticalslabs.handlers.FMLClientSetupEventHandler;
 import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
 import crystalspider.justverticalslabs.handlers.RecipeUpdateEventHandler;
@@ -156,6 +155,5 @@ public class JustVerticalSlabsLoader {
     RECIPES.register(modEventBus);
     modEventBus.register(new ModelRegistryEventHandler());
     modEventBus.register(new FMLClientSetupEventHandler());
-    modEventBus.register(new ColorHandlerEventHandler());
   }
 }

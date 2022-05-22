@@ -2,6 +2,7 @@ package crystalspider.justverticalslabs.handlers;
 
 import javax.annotation.Nullable;
 
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.client.color.block.BlockColor;
@@ -14,10 +15,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.api.distmarker.Dist;
 
 /**
  * {@link ColorHandlerEvent} handler.
  */
+@EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
 public class ColorHandlerEventHandler {
   /**
    * Registers the {@link BlockColor} for Vertical Slabs.
@@ -25,7 +29,7 @@ public class ColorHandlerEventHandler {
    * @param event
    */
   @SubscribeEvent
-  public void onColorHandlerEventBlock(ColorHandlerEvent.Block event) {
+  public static void onColorHandlerEventBlock(ColorHandlerEvent.Block event) {
     event.getBlockColors().register(
       new BlockColor() {
         public int getColor(BlockState state, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, int tintIndex) {
@@ -53,7 +57,7 @@ public class ColorHandlerEventHandler {
    * @param event
    */
   @SubscribeEvent
-  public void onColorHandlerEventItem(ColorHandlerEvent.Item event) {
+  public static void onColorHandlerEventItem(ColorHandlerEvent.Item event) {
     event.getItemColors().register(
       new ItemColor() {
         public int getColor(ItemStack itemStack, int tintIndex) {
