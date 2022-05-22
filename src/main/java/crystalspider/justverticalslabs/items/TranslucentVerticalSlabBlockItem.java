@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * 
+ * Translucent Vertical Slab BlockItem.
  */
 public class TranslucentVerticalSlabBlockItem extends VerticalSlabBlockItem {
   public TranslucentVerticalSlabBlockItem() {

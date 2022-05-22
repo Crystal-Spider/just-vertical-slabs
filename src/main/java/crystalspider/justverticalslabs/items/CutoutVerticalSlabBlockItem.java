@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * 
+ * Cutout Vertical Slab BlockItem.
  */
 public class CutoutVerticalSlabBlockItem extends VerticalSlabBlockItem {
   public CutoutVerticalSlabBlockItem() {

@@ -36,6 +36,7 @@ A very big thank you goes to the Forge team that allowed anyone to mod Minecraft
 In particular I want to thank diesieben07 that followed me throughout most of the development, without him none of this would have been possible.
 
 ## Technical details
+This mod is required on both server and client to work.  
 For slab items to be recognized as slabs they must have the *minecraft:slabs* tag, as they should. If they don't, there's no way to understand whether they are slabs or not, so they are assumed to be not.  
 If another mod adds slabs that are not recognized by this mod, it's most probably for this reason, so check it and ask the other mod author to fix that.
 

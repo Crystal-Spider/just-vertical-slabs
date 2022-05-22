@@ -32,7 +32,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class MapsInstantiator {
   /**
    * Searches through all {@link Item Items} with the {@link ItemTags#SLABS slabs} tag and associates them to the block they're made from.
-   * Also instantiate other utility maps.
+   * Also instantiates other utility maps.
    * 
    * @param recipeManager
    */

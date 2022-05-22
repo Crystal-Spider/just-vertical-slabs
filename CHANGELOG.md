@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Forge Semantic Versioning](https://mcforge.readthedocs.io/en/1.18.x/gettingstarted/versioning/#versioning).
 
 ## [Unreleased]
+- Nothing new.
+
+## [1.18.2-3.1.0.0] - 2022/05/22
+- Fixed crash when this mod is put only on server.
+- Fixed client-server compatibility.
 - Improved light for translucent vertical slabs.
 
 ## [1.18.2-3.0.0.0] - 2022/05/16
@@ -35,6 +40,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added creative tab with all vertical slabs.
 
 [Unreleased]: https://github.com/Nyphet/just-vertical-slabs
+[1.18.2-3.1.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.1.0.0
 [1.18.2-3.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.0.0.0
 [1.18.2-2.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-2.0.0.0
 [1.18.2-1.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-1.0.0.0
