@@ -3,6 +3,7 @@ package crystalspider.justverticalslabs.recipes.stonecutter.recipes;
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.recipes.stonecutter.VerticalSlabStonecutterRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
@@ -44,13 +45,13 @@ public class BlockToVerticalSlabStonecutterRecipe extends VerticalSlabStonecutte
 
   @Override
   public boolean matches(Container container, Level level) {
-    return VerticalSlabUtils.stonecuttingMap.containsKey(container.getItem(0).getItem());
+    return MapsManager.stonecuttingMap.containsKey(container.getItem(0).getItem());
   }
 
   @Override
   public ItemStack assemble(Container container) {
-    Item slab = VerticalSlabUtils.stonecuttingMap.get(container.getItem(0).getItem());
-    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
+    Item slab = MapsManager.stonecuttingMap.get(container.getItem(0).getItem());
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(MapsManager.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
     verticalSlab.setCount(2);
     return verticalSlab;
   }

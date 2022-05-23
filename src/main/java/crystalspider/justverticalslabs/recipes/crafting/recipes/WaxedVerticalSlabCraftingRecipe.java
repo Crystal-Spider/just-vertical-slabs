@@ -3,6 +3,7 @@ package crystalspider.justverticalslabs.recipes.crafting.recipes;
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -25,8 +26,8 @@ public class WaxedVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe 
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    Item slab = VerticalSlabUtils.waxingMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem());
-    return VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
+    Item slab = MapsManager.waxingMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem());
+    return VerticalSlabUtils.getVerticalSlabItem(MapsManager.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
   }
 
   /**
@@ -54,7 +55,7 @@ public class WaxedVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecipe 
     for (int i = 0; i < craftingContainer.getContainerSize() && correctPattern; i++) {
       ItemStack itemStack = craftingContainer.getItem(i);
       if (!itemStack.isEmpty()) {
-        if (matchIndex == null && isVerticalSlab(itemStack) && VerticalSlabUtils.waxingMap.containsKey(VerticalSlabUtils.getReferredSlabState(itemStack).getBlock().asItem())) {
+        if (matchIndex == null && isVerticalSlab(itemStack) && MapsManager.waxingMap.containsKey(VerticalSlabUtils.getReferredSlabState(itemStack).getBlock().asItem())) {
           matchIndex = i;
         } else if(!hasHoneycomb && itemStack.is(Items.HONEYCOMB)) {
           hasHoneycomb = true;

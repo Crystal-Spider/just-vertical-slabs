@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
@@ -37,10 +38,10 @@ public class ColorHandlerEventHandler {
             BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
             if (referredSlabState != null) {
               Item slab = referredSlabState.getBlock().asItem();
-              if (VerticalSlabUtils.slabMap.containsKey(slab)) {
-                return event.getBlockColors().getColor(Block.byItem(VerticalSlabUtils.slabMap.get(slab)).defaultBlockState(), getter, pos, tintIndex);
+              if (MapsManager.slabMap.containsKey(slab)) {
+                return event.getBlockColors().getColor(Block.byItem(MapsManager.slabMap.get(slab)).defaultBlockState(), getter, pos, tintIndex);
               }
-              return event.getBlockColors().getColor(VerticalSlabUtils.slabStateMap.get(slab), getter, pos, tintIndex);
+              return event.getBlockColors().getColor(MapsManager.slabStateMap.get(slab), getter, pos, tintIndex);
             }
           }
           return -1;
@@ -64,8 +65,8 @@ public class ColorHandlerEventHandler {
           BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
           if (referredSlabState != null) {
             Item slab = referredSlabState.getBlock().asItem();
-            if (VerticalSlabUtils.slabMap.containsKey(slab)) {
-              return event.getItemColors().getColor(VerticalSlabUtils.slabMap.get(slab).getDefaultInstance(), tintIndex);
+            if (MapsManager.slabMap.containsKey(slab)) {
+              return event.getItemColors().getColor(MapsManager.slabMap.get(slab).getDefaultInstance(), tintIndex);
             }
             return event.getItemColors().getColor(slab.getDefaultInstance(), tintIndex);
           }

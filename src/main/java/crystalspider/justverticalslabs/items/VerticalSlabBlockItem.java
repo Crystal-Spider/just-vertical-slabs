@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -52,7 +53,7 @@ public abstract class VerticalSlabBlockItem extends BlockItem {
   public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
     if (referredSlabState != null) {
-      return ForgeHooks.getBurnTime(VerticalSlabUtils.slabStateMap.get(referredSlabState.getBlock().asItem()).getBlock().asItem().getDefaultInstance(), recipeType);
+      return ForgeHooks.getBurnTime(MapsManager.slabStateMap.get(referredSlabState.getBlock().asItem()).getBlock().asItem().getDefaultInstance(), recipeType);
     }
     return super.getBurnTime(itemStack, recipeType);
   }

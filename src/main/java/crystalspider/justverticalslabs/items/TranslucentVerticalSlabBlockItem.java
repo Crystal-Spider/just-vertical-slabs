@@ -2,6 +2,7 @@ package crystalspider.justverticalslabs.items;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -17,8 +18,8 @@ public class TranslucentVerticalSlabBlockItem extends VerticalSlabBlockItem {
 
   @Override
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
-    if (this.allowdedIn(creativeModeTab) && VerticalSlabUtils.translucentMap != null) {
-      for(BlockState referredSlabState : VerticalSlabUtils.translucentMap.values()) {
+    if (this.allowdedIn(creativeModeTab) && MapsManager.translucentMap != null) {
+      for(BlockState referredSlabState : MapsManager.translucentMap.values()) {
         itemStacks.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, true));
       }
     }

@@ -3,6 +3,7 @@ package crystalspider.justverticalslabs.recipes.crafting.recipes;
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,7 @@ public class VerticalSlabToBlockCraftingRecipe extends VerticalSlabCraftingRecip
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    return VerticalSlabUtils.slabMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem()).getDefaultInstance();
+    return MapsManager.slabMap.get(VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem()).getDefaultInstance();
   }
 
   /**
@@ -82,7 +83,7 @@ public class VerticalSlabToBlockCraftingRecipe extends VerticalSlabCraftingRecip
    * @return whether both {@link ItemStack ItemStacks} represent the same kind of Vertical Slab.
    */
   protected boolean verticalSlabsMatch(ItemStack itemStack1, ItemStack itemStack2) {
-    return VerticalSlabUtils.getReferredSlabState(itemStack1) == VerticalSlabUtils.getReferredSlabState(itemStack2) && VerticalSlabUtils.slabMap.containsKey(VerticalSlabUtils.getReferredSlabState(itemStack1).getBlock().asItem());
+    return VerticalSlabUtils.getReferredSlabState(itemStack1) == VerticalSlabUtils.getReferredSlabState(itemStack2) && MapsManager.slabMap.containsKey(VerticalSlabUtils.getReferredSlabState(itemStack1).getBlock().asItem());
   }
 
   /**

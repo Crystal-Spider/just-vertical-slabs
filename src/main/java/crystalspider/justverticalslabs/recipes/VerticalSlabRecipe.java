@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import com.google.gson.JsonObject;
 
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -53,7 +54,7 @@ public interface VerticalSlabRecipe<C extends Container> extends Recipe<C> {
    */
   default boolean isVerticalSlab(ItemStack itemStack) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
-    return !itemStack.isEmpty() && referredSlabState != null && VerticalSlabUtils.slabStateMap.containsKey(referredSlabState.getBlock().asItem());
+    return !itemStack.isEmpty() && referredSlabState != null && MapsManager.slabStateMap.containsKey(referredSlabState.getBlock().asItem());
   }
 
   /**

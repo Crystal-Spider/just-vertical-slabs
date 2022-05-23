@@ -3,6 +3,7 @@ package crystalspider.justverticalslabs.recipes.crafting.recipes;
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -27,8 +28,8 @@ public class BlockToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecip
 
   @Override
   public ItemStack assemble(ItemStack matchedItem) {
-    Item slab = VerticalSlabUtils.blockMap.get(matchedItem.getItem());
-    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
+    Item slab = MapsManager.blockMap.get(matchedItem.getItem());
+    ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(MapsManager.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
     verticalSlab.setCount(6);
     return verticalSlab;
   }
@@ -56,7 +57,7 @@ public class BlockToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecip
         ItemStack itemStack1 = craftingContainer.getItem(index);
         if (!itemStack1.isEmpty()) {
           Item item = itemStack1.getItem();
-          if (VerticalSlabUtils.blockMap.containsKey(item)) {
+          if (MapsManager.blockMap.containsKey(item)) {
             ItemStack itemStack2 = craftingContainer.getItem(index + containerWidth);
             ItemStack itemStack3 = craftingContainer.getItem(index + containerWidth * 2);
             if (itemStack2.is(item) && itemStack3.is(item)) {

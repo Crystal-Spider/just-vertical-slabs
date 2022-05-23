@@ -1,12 +1,6 @@
 package crystalspider.justverticalslabs.handlers;
 
-import crystalspider.justverticalslabs.utils.MapsInstantiator;
-import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.searchtree.MutableSearchTree;
-import net.minecraft.client.searchtree.SearchRegistry;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,20 +10,17 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 public class RecipesUpdateEventHandler {
   /**
-   * Handles the event {@link RecipesUpdatedEvent} to add each existing Vertical Slab to the search tree.
+   * If maps are not computed yet sets {@link MapsManager#fallbackRecipeManager}, otherwise adds Vertical Slabs to the search tree.
    * 
    * @param event
    */
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onRecipesUpdatedEvent(RecipesUpdatedEvent event) {
-    if (VerticalSlabUtils.slabStateMap == null) {
-      MapsInstantiator.instantiateMaps(event.getRecipeManager());
+    if (MapsManager.slabStateMap == null) {
+      // If maps were not computed yet here it means there is no dedicated server and it's needed to computed them for the client.
+      MapsManager.setFallbackRecipeManager(event.getRecipeManager());
+    } else {
+      MapsManager.addToSearchTree();
     }
-
-    MutableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
-    for(BlockState referredSlabState : VerticalSlabUtils.slabStateMap.values()) {
-      creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));
-    }
-    creativeSearchTree.refresh();
   }
 }

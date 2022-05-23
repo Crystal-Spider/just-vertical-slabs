@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
+import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,8 +42,8 @@ public class VerticalSlabLootModifier extends LootModifier {
           LootContext.Builder builder = new LootContext.Builder(context).withOptionalParameter(LootContextParams.BLOCK_ENTITY, null).withParameter(LootContextParams.BLOCK_STATE, referredSlabState);
           for (ItemStack slabLoot : referredLootTable.getRandomItems(builder.create(LootContextParamSets.BLOCK))) {
             Item itemLoot = slabLoot.getItem();
-            if (VerticalSlabUtils.slabStateMap.containsKey(itemLoot)) {
-              loot.add(VerticalSlabUtils.getVerticalSlabItem(VerticalSlabUtils.slabStateMap.get(itemLoot), VerticalSlabUtils.isTranslucent(itemLoot)));
+            if (MapsManager.slabStateMap.containsKey(itemLoot)) {
+              loot.add(VerticalSlabUtils.getVerticalSlabItem(MapsManager.slabStateMap.get(itemLoot), VerticalSlabUtils.isTranslucent(itemLoot)));
             } else {
               loot.add(slabLoot);
             }
