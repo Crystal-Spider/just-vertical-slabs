@@ -8,6 +8,9 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new.
 
+## [1.18.2-3.1.0.1] - 2022/05/23
+- Fixed client-server interactions and small bug fix.
+
 ## [1.18.2-3.1.0.0] - 2022/05/22
 - Fixed crash when this mod is put only on server.
 - Fixed client-server compatibility.
@@ -40,6 +43,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added creative tab with all vertical slabs.
 
 [Unreleased]: https://github.com/Nyphet/just-vertical-slabs
+[1.18.2-3.1.0.1]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.1.0.1
 [1.18.2-3.1.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.1.0.0
 [1.18.2-3.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.0.0.0
 [1.18.2-2.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-2.0.0.0

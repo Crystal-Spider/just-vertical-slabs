@@ -266,6 +266,11 @@ public class VerticalSlabUtils {
     public static volatile ImmutableMap<Item, BlockState> slabStateMap;
 
     /**
+     * Contains all {@link BlockState} of Vertical Slab Items already added into the search tree to prevent adding duplicates.
+     */
+    private static final HashMap<BlockState, Boolean> inSearchTree = new HashMap<BlockState, Boolean>();
+
+    /**
      * {@link RecipeManager} to use in {@link #computeMaps()}.
      */
     @Nullable
@@ -284,11 +289,17 @@ public class VerticalSlabUtils {
      * Adds all Vertical Vlabs to the search tree if not already present.
      */
     public static void addToSearchTree() {
+      int intialSize = inSearchTree.size();
       MutableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
       for(BlockState referredSlabState : MapsManager.slabStateMap.values()) {
-        creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));
+        if (!inSearchTree.containsKey(referredSlabState)) {
+          creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));
+          inSearchTree.put(referredSlabState, true);
+        }
       }
-      creativeSearchTree.refresh();
+      if (intialSize != inSearchTree.size()) {
+        creativeSearchTree.refresh();
+      }
     }
 
     /**
