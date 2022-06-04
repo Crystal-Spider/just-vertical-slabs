@@ -15,6 +15,7 @@ import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
 import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
@@ -169,17 +170,21 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
     BlockState referredSlabState = modelData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
     if (referredSlabState != null) {
-      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referredSlabState);
+      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referredSlabState, state != null && state.getValue(VerticalSlabBlock.DOUBLE));
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
         BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
-        ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
-        for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
-          Direction orientation = jsonBakedQuad.getDirection();
-          for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredBlockState != null && VerticalSlabUtils.isTranslucent(referredSlabState) ? referredBlockState : referredSlabState, orientation, rand, modelData)) {
-            bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), referredBakedQuad.getTintIndex(), orientation));
+        if (state != null && state.getValue(VerticalSlabBlock.DOUBLE)) {
+          bakedQuadsCache.put(verticalSlabModelKey, getReferredBakedQuads(referredBlockState != null ? referredBlockState : referredSlabState, side, rand, modelData));
+        } else {
+          ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
+          for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
+            Direction orientation = jsonBakedQuad.getDirection();
+            for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredBlockState != null && VerticalSlabUtils.isTranslucent(referredSlabState) ? referredBlockState : referredSlabState, orientation, rand, modelData)) {
+              bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), referredBakedQuad.getTintIndex(), orientation));
+            }
           }
+          bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
         }
-        bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
       }
       return bakedQuadsCache.get(verticalSlabModelKey);
     }
@@ -189,11 +194,11 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   /**
    * Returns the {@link BakedModel} of the given {@link BlockState}.
    * 
-   * @param referredSlabState - {@link BlockState} from which retrieve the {@link BakedModel}.
+   * @param referredState - {@link BlockState} from which retrieve the {@link BakedModel}.
    * @return the {@link BakedModel} of the given {@link BlockState}.
    */
-  private BakedModel getReferredBakedModel(BlockState referredSlabState) {
-    return Minecraft.getInstance().getBlockRenderer().getBlockModel(referredSlabState);
+  private BakedModel getReferredBakedModel(BlockState referredState) {
+    return Minecraft.getInstance().getBlockRenderer().getBlockModel(referredState);
   }
 
   /**
@@ -210,17 +215,17 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   /**
    * Returns the {@link List} of all referred {@link BakedQuad BakedQuads} for the given {@link Direction}.
    * 
-   * @param referredSlabState - {@link BlockState} of the referred block.
+   * @param referredState - {@link BlockState} of the referred block.
    * @param side - {@link Direction side} of the block being rendered.
    * @param rand - {@link Random rand} parameter.
    * @param modelData - {@link IModelData model data} of the block being rendered.
    * @return {@link List} of all referred {@link BakedQuad BakedQuads} for the given {@link Direction}.
    */
-  private List<BakedQuad> getReferredBakedQuads(BlockState referredSlabState, Direction side, Random rand, IModelData modelData) {
-    BakedModel referredBakedModel = getReferredBakedModel(referredSlabState);
-    IModelData referredModelData = getReferredModelData(referredSlabState, modelData);
-    List<BakedQuad> referredBakedQuads = referredBakedModel.getQuads(referredSlabState, side, rand, referredModelData);
-    for (BakedQuad referredBakedQuad : referredBakedModel.getQuads(referredSlabState, null, rand, referredModelData)) {
+  private List<BakedQuad> getReferredBakedQuads(BlockState referredState, Direction side, Random rand, IModelData modelData) {
+    BakedModel referredBakedModel = getReferredBakedModel(referredState);
+    IModelData referredModelData = getReferredModelData(referredState, modelData);
+    List<BakedQuad> referredBakedQuads = referredBakedModel.getQuads(referredState, side, rand, referredModelData);
+    for (BakedQuad referredBakedQuad : referredBakedModel.getQuads(referredState, null, rand, referredModelData)) {
       if (referredBakedQuad.getDirection() == side) {
         referredBakedQuads.add(referredBakedQuad);
       }

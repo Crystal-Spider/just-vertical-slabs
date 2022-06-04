@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 
 import com.google.gson.JsonObject;
 
+import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
@@ -46,6 +47,12 @@ public class VerticalSlabLootModifier extends LootModifier {
               loot.add(VerticalSlabUtils.getVerticalSlabItem(MapsManager.slabStateMap.get(itemLoot), VerticalSlabUtils.isTranslucent(itemLoot)));
             } else {
               loot.add(slabLoot);
+            }
+            BlockState verticalSlaBlockState = context.getParamOrNull(LootContextParams.BLOCK_STATE);
+            if (verticalSlaBlockState != null && verticalSlaBlockState.getValue(VerticalSlabBlock.DOUBLE)) {
+              for (ItemStack itemStackLoot : loot) {
+                itemStackLoot.setCount(itemStackLoot.getCount() * 2);
+              }
             }
           }
         }

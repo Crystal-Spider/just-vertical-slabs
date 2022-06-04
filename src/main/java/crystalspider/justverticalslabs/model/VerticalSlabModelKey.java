@@ -21,10 +21,15 @@ public class VerticalSlabModelKey {
    * {@link BlockState} associated to the BakedQuads, indicating which block textures are taken from.
    */
   private final @Nonnull BlockState state;
+  /**
+   * Whether the Vertical Slab is double.
+   */
+  private final @Nonnull Boolean isDouble;
 
-  public VerticalSlabModelKey(@Nullable Direction side, @Nonnull BlockState stateKey) {
+  public VerticalSlabModelKey(@Nullable Direction side, @Nonnull BlockState stateKey, @Nonnull Boolean isDouble) {
     this.side = side;
     this.state = stateKey;
+    this.isDouble = isDouble;
   }
 
   @Override
@@ -36,10 +41,7 @@ public class VerticalSlabModelKey {
       return false;
     }
     VerticalSlabModelKey other = (VerticalSlabModelKey) obj;
-    if (side != other.side) {
-      return false;
-    }
-    if (!state.equals(other.state)) {
+    if (side != other.side || !state.equals(other.state) || isDouble != other.isDouble) {
       return false;
     }
     return true;

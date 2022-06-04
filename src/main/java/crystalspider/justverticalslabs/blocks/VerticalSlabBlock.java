@@ -55,7 +55,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
   public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
   public static final BooleanProperty OCCLUSION = BooleanProperty.create("occlusion");
-  private static final VoxelShape[] SHAPES = makeShapes();
+  public static final BooleanProperty DOUBLE = BooleanProperty.create("double");
+  private static final VoxelShape[] VERTICAL_SHAPES = makeVerticalShapes();
+  private static final VoxelShape[] FULL_SHAPES = makeFullShapes();
   private static final int[] SHAPE_BY_STATE = new int[]{
     0,  // 0  Straight    - South
     1,  // 1  Straight    - West
@@ -88,7 +90,15 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
       .lightLevel(LightBlock.LIGHT_EMISSION)
       .dynamicShape()
     );
-    this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, false).setValue(LEVEL, 0).setValue(OCCLUSION, false));
+    this.registerDefaultState(
+      this.defaultBlockState()
+        .setValue(FACING, Direction.NORTH)
+        .setValue(SHAPE, StairsShape.STRAIGHT)
+        .setValue(WATERLOGGED, false)
+        .setValue(LEVEL, 0)
+        .setValue(OCCLUSION, false)
+        .setValue(DOUBLE, false)
+    );
   }
 
   /**
@@ -102,13 +112,13 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   }
 
   /**
-   * Makes all the possible {@link VoxelShape shapes} a Vertical Slab can have.
+   * Makes all the possible vertical {@link VoxelShape shapes} a Vertical Slab can have.
    * 
-   * @return
+   * @return {@link VoxelShape}[]
    */
-  private static VoxelShape[] makeShapes() {
+  private static VoxelShape[] makeVerticalShapes() {
     VoxelShape[] shapes = new VoxelShape[12 * 16];
-    for (double h = 16D; h > 8; h--) {
+    for (double h = 16; h > 8; h--) {
       VoxelShape facingSouthShape = verticalBox(0, 1, 2, 2, h);
       VoxelShape facingWestShape = verticalBox(0, 0, 1, 2, h);
       VoxelShape facingNorthShape = verticalBox(0, 0, 2, 1, h);
@@ -142,6 +152,19 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   }
 
   /**
+   * Makes all the possible full block {@link VoxelShape shapes} a Double Vertical Slab can have.
+   * 
+   * @return {@link VoxelShape}[]
+   */
+  private static VoxelShape[] makeFullShapes() {
+    VoxelShape[] shapes = new VoxelShape[8];
+    for (double h = 8; h > 0; h--) {
+      shapes[(int)(8 - h)] = Block.box(0, 0, 0, 16, 8 + h, 16);
+    }
+    return shapes;
+  }
+
+  /**
    * Creates a {@link VoxelShape vertical shaped box}.
    * 
    * @param originX
@@ -151,7 +174,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
    * @return
    */
   private static VoxelShape verticalBox(double originX, double originZ, double x, double z, double height) {
-    return Block.box(originX * 8, 0.0D, originZ * 8, x * 8, height, z * 8);
+    return Block.box(originX * 8, 0, originZ * 8, x * 8, height, z * 8);
   }
 
   /**
@@ -166,7 +189,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   private static StairsShape getStairsShape(BlockState state, BlockGetter getter, BlockPos pos) {
     Direction direction = state.getValue(FACING);
     BlockState facingBlockState = getter.getBlockState(pos.relative(direction));
-    if (isVerticalSlab(facingBlockState)) {
+    if (isVerticalSlab(facingBlockState) && !facingBlockState.getValue(DOUBLE)) {
       Direction facingBlockDirection = facingBlockState.getValue(FACING);
       if (facingBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter.getBlockState(pos.relative(facingBlockDirection.getOpposite())))) {
         if (facingBlockDirection == direction.getClockWise()) {
@@ -177,7 +200,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     }
 
     BlockState oppositeBlockState = getter.getBlockState(pos.relative(direction.getOpposite()));
-    if (isVerticalSlab(oppositeBlockState)) {
+    if (isVerticalSlab(oppositeBlockState) && !oppositeBlockState.getValue(DOUBLE)) {
       Direction oppositeBlockDirection = oppositeBlockState.getValue(FACING);
       if (oppositeBlockDirection.getAxis() != direction.getAxis() && canTakeShape(state, getter.getBlockState(pos.relative(oppositeBlockDirection)))) {
         if (oppositeBlockDirection == direction.getClockWise()) {
@@ -203,7 +226,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
 
   @Override
   public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
-    return SHAPES[this.getShapeIndex(state, getter, pos, collisionContext)];
+    return state.getValue(DOUBLE) ? FULL_SHAPES[getHeightDiff(getter, pos, collisionContext)] : VERTICAL_SHAPES[this.getShapeIndex(state, getter, pos, collisionContext)];
   }
 
   @Override
@@ -212,6 +235,11 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
       accessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(accessor));
     }
     return state.setValue(SHAPE, getStairsShape(state, accessor, pos));
+  }
+
+  @Override
+  public boolean placeLiquid(LevelAccessor accessor, BlockPos pos, BlockState state, FluidState fluid) {
+    return state.getValue(DOUBLE) ? false : SimpleWaterloggedBlock.super.placeLiquid(accessor, pos, state, fluid);
   }
 
   @Override
@@ -267,18 +295,32 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public BlockState getStateForPlacement(BlockPlaceContext placeContext) {
     BlockPos pos = placeContext.getClickedPos();
     Level level = placeContext.getLevel();
-    BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(placeContext.getItemInHand());
-    if (referredSlabState != null) {
-      blockstate = blockstate.setValue(LEVEL, getReferredProperty(referredSlabState::getLightEmission, referredSlabState::getLightEmission, level, pos));
-      BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
-      if (referredBlockState != null) {
-        blockstate = blockstate.setValue(OCCLUSION, referredBlockState.useShapeForLightOcclusion());
-      } else {
-        blockstate = blockstate.setValue(OCCLUSION, referredSlabState.useShapeForLightOcclusion());
+    if (referredSlabState == VerticalSlabUtils.getReferredSlabState(level, pos)) {
+      BlockState blockstate = this.defaultBlockState().setValue(WATERLOGGED, false);
+      if (referredSlabState != null) {
+        BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+        if (referredBlockState != null) {
+          blockstate = blockstate
+            .setValue(LEVEL, getReferredProperty(referredBlockState::getLightEmission, referredBlockState::getLightEmission, level, pos))
+            .setValue(OCCLUSION, referredBlockState.useShapeForLightOcclusion());
+        } else {
+          blockstate = blockstate
+            .setValue(LEVEL, getReferredProperty(referredSlabState::getLightEmission, referredSlabState::getLightEmission, level, pos))
+            .setValue(OCCLUSION, referredSlabState.useShapeForLightOcclusion());
+        }
       }
+      return blockstate.setValue(SHAPE, StairsShape.STRAIGHT).setValue(DOUBLE, true);
+    } else {
+      BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
+      if (referredSlabState != null) {
+        BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+        blockstate = blockstate
+          .setValue(LEVEL, getReferredProperty(referredSlabState::getLightEmission, referredSlabState::getLightEmission, level, pos))
+          .setValue(OCCLUSION, (referredBlockState != null ? referredBlockState : referredSlabState).useShapeForLightOcclusion());
+      }
+      return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos)).setValue(DOUBLE, false);
     }
-    return blockstate.setValue(SHAPE, getStairsShape(blockstate, level, pos));
   }
 
   @Override
@@ -459,7 +501,18 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   }
 
   @Override
+  public boolean canPlaceLiquid(BlockGetter getter, BlockPos pos, BlockState state, Fluid fluid) {
+    return state.getValue(DOUBLE) ? false : SimpleWaterloggedBlock.super.canPlaceLiquid(getter, pos, state, fluid);
+  }
+
+  @Override
   public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+    if (!state.getValue(DOUBLE) && state.getValue(SHAPE) == StairsShape.STRAIGHT && VerticalSlabUtils.getReferredSlabState(context.getItemInHand()) == VerticalSlabUtils.getReferredSlabState(context.getLevel(), context.getClickedPos())) {
+      if (context.replacingClickedOnBlock()) {
+        return context.getClickedFace() == state.getValue(FACING).getOpposite();
+      }
+      return true;
+    }
     return false;
   }
 
@@ -488,7 +541,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
 
   @Override
   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
-    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL, OCCLUSION);
+    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL, OCCLUSION, DOUBLE);
   }
 
   /**
@@ -569,7 +622,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
    */
   private int getHeightDiff(BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
     int heightDiff = getHeightDiff(VerticalSlabUtils.getReferredBlockState(getter, pos), getter, pos, collisionContext, 1);
-    if (heightDiff == 0 || heightDiff >= 0.5) {
+    if (heightDiff == 0 || heightDiff >= 8) {
       return getHeightDiff(VerticalSlabUtils.getReferredSlabState(getter, pos), getter, pos, collisionContext, 0.5);
     }
     return heightDiff;
