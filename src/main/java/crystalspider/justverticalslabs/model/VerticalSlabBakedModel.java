@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
@@ -170,14 +171,15 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
     BlockState referredSlabState = modelData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
     if (referredSlabState != null) {
-      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referredSlabState, state != null && state.getValue(VerticalSlabBlock.DOUBLE));
+      boolean isDouble = state != null && state.getValue(VerticalSlabBlock.DOUBLE);
+      VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referredSlabState, isDouble);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
         BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
-        if (state != null && state.getValue(VerticalSlabBlock.DOUBLE)) {
-          bakedQuadsCache.put(verticalSlabModelKey, getReferredBakedQuads(referredBlockState != null ? referredBlockState : referredSlabState, side, rand, modelData));
+        if (isDouble && referredBlockState != null) {
+          bakedQuadsCache.put(verticalSlabModelKey, getReferredBakedQuads(referredBlockState, side, rand, modelData));
         } else {
-          ArrayList<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
-          for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
+          List<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
+          for (BakedQuad jsonBakedQuad : isDouble ? getReferredBakedQuads(Blocks.OAK_PLANKS.defaultBlockState(), side, rand, modelData) : jsonBakedModel.getQuads(state, side, rand, modelData)) {
             Direction orientation = jsonBakedQuad.getDirection();
             for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredBlockState != null && VerticalSlabUtils.isTranslucent(referredSlabState) ? referredBlockState : referredSlabState, orientation, rand, modelData)) {
               bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), referredBakedQuad.getTintIndex(), orientation));
@@ -264,11 +266,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
       float y = Float.intBitsToFloat(referredVertices[vertexIndex + 1]);
       // Lower only top face since RenderType CutoutMipped will remove extra transparent texture bits that go out of the shape.
       if (faceUp && y > 0 && y < 1 && y != 0.5) {
-        if (y < 0.5) {
-          updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y + 0.5F);
-        } else {
-          updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y);
-        }
+        updatedVertices[vertexIndex + 1] = Float.floatToRawIntBits(y < 0.5 ? y + 0.5F : y);
       }
       updatedVertices[vertexIndex + 4] = changeUVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 4]);
       updatedVertices[vertexIndex + 5] = changeVVertexSprite(oldSprite, newSprite, updatedVertices[vertexIndex + 5]);
