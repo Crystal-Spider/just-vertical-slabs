@@ -31,9 +31,10 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -174,12 +175,12 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
       boolean isDouble = state != null && state.getValue(VerticalSlabBlock.DOUBLE);
       VerticalSlabModelKey verticalSlabModelKey = new VerticalSlabModelKey(side, referredSlabState, isDouble);
       if (!bakedQuadsCache.containsKey(verticalSlabModelKey)) {
-        BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
-        if (isDouble && referredBlockState != null) {
-          bakedQuadsCache.put(verticalSlabModelKey, getReferredBakedQuads(referredBlockState, side, rand, modelData));
+        if (isDouble) {
+          bakedQuadsCache.put(verticalSlabModelKey, getReferredBakedQuads(referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE), side, rand, modelData));
         } else {
+          BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
           List<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
-          for (BakedQuad jsonBakedQuad : isDouble ? getReferredBakedQuads(Blocks.OAK_PLANKS.defaultBlockState(), side, rand, modelData) : jsonBakedModel.getQuads(state, side, rand, modelData)) {
+          for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
             Direction orientation = jsonBakedQuad.getDirection();
             for (BakedQuad referredBakedQuad : getReferredBakedQuads(referredBlockState != null && VerticalSlabUtils.isTranslucent(referredSlabState) ? referredBlockState : referredSlabState, orientation, rand, modelData)) {
               bakedQuads.add(getNewBakedQuad(jsonBakedQuad, referredBakedQuad.getSprite(), referredBakedQuad.getVertices(), referredBakedQuad.getTintIndex(), orientation));
