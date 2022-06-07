@@ -6,7 +6,7 @@ issueTrackerURL="https://github.com/Nyphet/just-vertical-slabs/issues" #optional
 modId="justverticalslabs"
 version="${file.jarVersion}"
 displayName="Just Vertical Slabs"
-updateJSONURL="https://raw.githubusercontent.com/Nyphet/just-vertical-slabs/master/updates.json" #optional
+updateJSONURL="https://raw.githubusercontent.com/Nyphet/just-vertical-slabs/1.18.2/main/forge/updates.json" #optional
 displayURL="https://github.com/Nyphet/just-vertical-slabs" #optional
 logoFile="just-vertical-slabs.png" #optional
 # A text field displayed in the mod UI

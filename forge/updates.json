@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/just-vertical-slabs/files",
   "1.18.2": {
+    "3.2.0.0": "https://www.curseforge.com/minecraft/mc-mods/just-vertical-slabs/files/",
     "3.2.0.0-beta1": "https://www.curseforge.com/minecraft/mc-mods/just-vertical-slabs/files/3817189",
     "3.1.0.1": "https://www.curseforge.com/minecraft/mc-mods/just-vertical-slabs/files/3802450",
     "3.1.0.0": "https://www.curseforge.com/minecraft/mc-mods/just-vertical-slabs/files/3801259",
@@ -9,7 +10,7 @@
     "1.0.0.0": "https://www.curseforge.com/minecraft/mc-mods/just-vertical-slabs/files/3785696"
   },
   "promos": {
-    "1.18.2-latest": "3.2.0.0-beta1",
-    "1.18.2-recommended": "3.1.0.1"
+    "1.18.2-latest": "3.2.0.0",
+    "1.18.2-recommended": "3.2.0.0"
   }
 }

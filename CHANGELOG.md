@@ -8,10 +8,15 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new.
 
+## [1.18.2-3.2.0.0] - 2022/06/07
+- Fixed [1.18.2-3.2.0.0-beta1] double vertical slabs bug.
+- Changed project structure to prepare a Fabric port.
+- Fixed slime and honey vertical slabs rendering.
+- Added support for falling blocks.
+
 ## [1.18.2-3.2.0.0-beta1] - 2022/06/04
 - Added double vertical slabs.
-- BUG: Double Vertical Slabs that only have a referredSlabState (so no referredBlockState) don't render correctly.  
-  POSSIBLE FIX: during render, in VerticalSlabBakedModel#getQuads, if there is no referredBlockState try to change vertices to fill up the space rather than resorting to the referredSlabState sprites.
+- BUG: Double Vertical Slabs that only have a referredSlabState (so no referredBlockState) don't render correctly.
 - BUG: (from previous versions) honey and slime vertical slabs don't render correctly.
 
 ## [1.18.2-3.1.0.1] - 2022/05/23
@@ -49,6 +54,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added creative tab with all vertical slabs.
 
 [Unreleased]: https://github.com/Nyphet/just-vertical-slabs
+[1.18.2-3.2.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.0
 [1.18.2-3.2.0.0-beta1]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.0-beta1
 [1.18.2-3.1.0.1]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.1.0.1
 [1.18.2-3.1.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.1.0.0
