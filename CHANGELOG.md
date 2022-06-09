@@ -12,6 +12,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Fixed [1.18.2-3.2.0.0-beta1] double vertical slabs bugs.
 - Changed project structure to prepare a Fabric port.
 - Fixed slime and honey vertical slabs rendering.
+- Added images to documentation.
 
 ## [1.18.2-3.2.0.0-beta1] - 2022/06/04
 - Added double vertical slabs.
