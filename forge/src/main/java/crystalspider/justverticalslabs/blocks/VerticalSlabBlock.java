@@ -297,8 +297,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     Level level = placeContext.getLevel();
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(placeContext.getItemInHand());
     if (referredSlabState == VerticalSlabUtils.getReferredSlabState(level, pos)) {
-      BlockState blockstate = this.defaultBlockState().setValue(WATERLOGGED, false);
+      BlockState blockstate = this.defaultBlockState().setValue(WATERLOGGED, false).setValue(DOUBLE, true);
       if (referredSlabState != null) {
+        // TODO: Fix light emission of double vertical slabs.
         BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
         if (referredBlockState != null) {
           blockstate = blockstate
@@ -310,7 +311,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
             .setValue(OCCLUSION, referredSlabState.useShapeForLightOcclusion());
         }
       }
-      return blockstate.setValue(SHAPE, StairsShape.STRAIGHT).setValue(DOUBLE, true);
+      return blockstate;
     } else {
       BlockState blockstate = this.defaultBlockState().setValue(FACING, placeContext.getHorizontalDirection()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
       if (referredSlabState != null) {
