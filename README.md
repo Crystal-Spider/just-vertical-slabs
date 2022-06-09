@@ -8,6 +8,8 @@
 - Vertical Slabs craftings! See next section for more details.
 - Creative Tab with all available Vertical Slabs!
 
+See some screenshots [here](https://www.curseforge.com/minecraft/mc-mods/just-vertical-slabs/screenshots)!
+
 ***Important note:***  
 *All and only blocks that already have slab variants will also get vertical slab variants, this to keep a Vanilla-like game style that nicely adapts to any eventual mod.  
 If you want more vertical slabs it's sufficient to add more slabs. Then, automatically, vertical slabs will be added to the game.*
