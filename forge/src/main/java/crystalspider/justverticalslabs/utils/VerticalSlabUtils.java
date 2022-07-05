@@ -146,6 +146,7 @@ public class VerticalSlabUtils {
 
   /**
    * Returns the {@link VerticalSlabBlockEntity} for the given {@link BlockGetter} and {@link BlockPos}.
+   * Creates a new {@link VerticalSlabBlockEntity} if the {@link Block} has one, but it has not been placed in the world yet (this can happen on world load).
    * Returns {@code null} if none could be found.
    * 
    * @param getter
@@ -162,7 +163,25 @@ public class VerticalSlabUtils {
   }
 
   /**
+   * Returns the {@link VerticalSlabBlockEntity} for the given {@link BlockGetter} and {@link BlockPos} if it exists.
+   * Returns {@code null} if none could be found.
+   * 
+   * @param getter
+   * @param pos
+   * @return {@link VerticalSlabBlockEntity} or {@code null}.
+   */
+  @Nullable
+  public static VerticalSlabBlockEntity getSafeVerticalSlabBlockEntity(BlockGetter getter, BlockPos pos) {
+    BlockEntity blockEntity = getter.getExistingBlockEntity(pos);
+    if (blockEntity != null && blockEntity instanceof VerticalSlabBlockEntity) {
+      return (VerticalSlabBlockEntity) blockEntity;
+    }
+    return null;
+  }
+
+  /**
    * Returns the {@link BlockState referredSlabState} for the given {@link BlockGetter} and {@link BlockPos}.
+   * Creates a new {@link VerticalSlabBlockEntity} if the {@link Block} has one, but it has not been placed in the world yet (this can happen on world load).
    * Returns {@code null} if none could be found.
    * 
    * @param getter
@@ -174,9 +193,25 @@ public class VerticalSlabUtils {
     VerticalSlabBlockEntity blockEntity = getVerticalSlabBlockEntity(getter, pos);
     if (blockEntity != null) {
       BlockState referredSlabState = blockEntity.getReferredSlabState();
-      if (referredSlabState != null) {
-        return referredSlabState;
-      }
+      return referredSlabState;
+    }
+    return null;
+  }
+
+  /**
+   * Returns the {@link BlockState referredSlabState} for the given {@link BlockGetter} and {@link BlockPos} if it exists.
+   * Returns {@code null} if none could be found.
+   * 
+   * @param getter
+   * @param pos
+   * @return {@link BlockState referredSlabState} or {@code null}.
+   */
+  @Nullable
+  public static BlockState getSafeReferredSlabState(BlockGetter getter, BlockPos pos) {
+    VerticalSlabBlockEntity blockEntity = getSafeVerticalSlabBlockEntity(getter, pos);
+    if (blockEntity != null) {
+      BlockState referredSlabState = blockEntity.getReferredSlabState();
+      return referredSlabState;
     }
     return null;
   }
