@@ -221,7 +221,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
    * @return
    */
   private static boolean canTakeShape(BlockState state, BlockState blockState) {
-    return !isVerticalSlab(blockState) || blockState.getValue(FACING) != state.getValue(FACING);
+    return !isVerticalSlab(blockState) || blockState.getValue(FACING) != state.getValue(FACING) || blockState.getValue(DOUBLE);
   }
 
   @Override
