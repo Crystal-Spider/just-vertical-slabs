@@ -39,6 +39,24 @@ public class VertexUtils {
   public static final int VERTEX_SIZE = DefaultVertexFormat.BLOCK.getIntegerSize();
 
   /**
+   * 
+   * 
+   * @param vertices
+   * @param referringBlock
+   * @return
+   */
+  public static final boolean isInternalFace(int[] vertices, boolean referringBlock) {
+    boolean flag = true;
+    for (int vertexIndex = 0; vertexIndex < VERTEX_COUNT && flag; vertexIndex += VERTEX_SIZE) {
+      float x = Float.intBitsToFloat(vertices[vertexIndex + X_OFFSET]);
+      float y = Float.intBitsToFloat(vertices[vertexIndex + Y_OFFSET]);
+      float z = Float.intBitsToFloat(vertices[vertexIndex + Z_OFFSET]);
+      flag = x > 0 && x < 1 && x != 0.5 && y > 0 && y < (referringBlock ? 1 : 0.5) && y != 0.5 && z > 0 && z < 1 && z != 0.5;
+    }
+    return flag;
+  }
+
+  /**
    * Returns the updated vertices.
    * Updates UV vertex elements to use the new sprite instead of the old one.
    * Updates the Y Position vertex element to make the new sprite adhere to the correct shape.

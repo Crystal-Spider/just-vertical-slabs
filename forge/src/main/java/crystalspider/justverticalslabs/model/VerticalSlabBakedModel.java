@@ -19,6 +19,7 @@ import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
 import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
 import crystalspider.justverticalslabs.model.utils.BakedQuadUtils;
 import crystalspider.justverticalslabs.model.utils.ModelUtils;
+import crystalspider.justverticalslabs.model.utils.VertexUtils;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -179,11 +180,14 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
           bakedQuadsCache.put(verticalSlabModelKey, BakedQuadUtils.getReferredBakedQuads(referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE), side, rand, modelData));
         } else {
           BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+          boolean referringBlock = referredBlockState != null && VerticalSlabUtils.isTranslucent(referredSlabState);
           List<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
           for (BakedQuad jsonBakedQuad : jsonBakedModel.getQuads(state, side, rand, modelData)) {
             Direction orientation = jsonBakedQuad.getDirection();
-            for (BakedQuad referredBakedQuad : BakedQuadUtils.getReferredBakedQuads(referredBlockState != null && VerticalSlabUtils.isTranslucent(referredSlabState) ? referredBlockState : referredSlabState, orientation, rand, modelData)) {
-              bakedQuads.add(BakedQuadUtils.getNewBakedQuad(jsonBakedQuad, referredBakedQuad, orientation));
+            for (BakedQuad referredBakedQuad : BakedQuadUtils.getReferredBakedQuads(referringBlock ? referredBlockState : referredSlabState, orientation, rand, modelData)) {
+              if (!VertexUtils.isInternalFace(referredBakedQuad.getVertices(), referringBlock)) {
+                bakedQuads.add(BakedQuadUtils.getNewBakedQuad(jsonBakedQuad, referredBakedQuad, orientation));
+              }
             }
           }
           bakedQuadsCache.put(verticalSlabModelKey, bakedQuads);
