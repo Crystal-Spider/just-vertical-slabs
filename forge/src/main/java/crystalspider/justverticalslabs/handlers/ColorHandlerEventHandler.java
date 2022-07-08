@@ -8,6 +8,7 @@ import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +35,7 @@ public class ColorHandlerEventHandler {
     event.getBlockColors().register(
       new BlockColor() {
         public int getColor(BlockState state, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, int tintIndex) {
-          if (getter != null && pos != null) {
+          if (getter != null && pos != null && !(getter instanceof ClientLevel)) {
             BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
             if (referredSlabState != null) {
               Item slab = referredSlabState.getBlock().asItem();
