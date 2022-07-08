@@ -299,17 +299,11 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     if (referredSlabState == VerticalSlabUtils.getReferredSlabState(level, pos)) {
       BlockState blockstate = this.defaultBlockState().setValue(WATERLOGGED, false).setValue(DOUBLE, true);
       if (referredSlabState != null) {
-        // TODO: Fix light emission of double vertical slabs.
         BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
-        if (referredBlockState != null) {
-          blockstate = blockstate
-            .setValue(LEVEL, getReferredProperty(referredBlockState::getLightEmission, referredBlockState::getLightEmission, level, pos))
-            .setValue(OCCLUSION, referredBlockState.useShapeForLightOcclusion());
-        } else {
-          blockstate = blockstate
-            .setValue(LEVEL, getReferredProperty(referredSlabState::getLightEmission, referredSlabState::getLightEmission, level, pos))
-            .setValue(OCCLUSION, referredSlabState.useShapeForLightOcclusion());
-        }
+        BlockState referredState = referredBlockState != null ? referredBlockState : referredSlabState;
+        blockstate = blockstate
+          .setValue(LEVEL, getReferredProperty(referredState::getLightEmission, referredState::getLightEmission, level, pos))
+          .setValue(OCCLUSION, referredState.useShapeForLightOcclusion());
       }
       return blockstate;
     } else {
@@ -397,10 +391,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     if (referredBlockState != null) {
       return getReferredProperty(referredBlockState::getFriction, () -> super.getFriction(state, level, pos, entity), level, pos, entity);
-    } else {
-      if (referredSlabState != null) {
-        return getReferredProperty(referredSlabState::getFriction, () -> super.getFriction(state, level, pos, entity), level, pos, entity);
-      }
+    }
+    if (referredSlabState != null) {
+      return getReferredProperty(referredSlabState::getFriction, () -> super.getFriction(state, level, pos, entity), level, pos, entity);
     }
     return super.getFriction(state, level, pos, entity);
   }
@@ -420,10 +413,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     if (referredBlockState != null) {
       return getReferredProperty(referredBlockState::getEnchantPowerBonus, () -> 0F, level, pos);
-    } else {
-      if (referredSlabState != null) {
-        return getReferredProperty(referredSlabState::getEnchantPowerBonus, () -> 0F, level, pos);
-      }
+    }
+    if (referredSlabState != null) {
+      return getReferredProperty(referredSlabState::getEnchantPowerBonus, () -> 0F, level, pos);
     }
     return super.getEnchantPowerBonus(state, level, pos);
   }
