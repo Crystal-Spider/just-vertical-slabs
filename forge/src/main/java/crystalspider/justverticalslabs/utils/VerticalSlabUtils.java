@@ -65,7 +65,7 @@ public class VerticalSlabUtils {
    * @param referredSlabState
    * @return Vertical Slab {@link IModelData}.
    */
-  public static IModelData buildModelData(BlockState referredSlabState) {
+  public static final IModelData buildModelData(BlockState referredSlabState) {
     return new ModelDataMap.Builder().withInitial(REFERRED_SLAB_STATE, referredSlabState).build();
   }
 
@@ -75,7 +75,7 @@ public class VerticalSlabUtils {
    * @param id - unique ID for the resource.
    * @return {@link ResourceLocation}.
    */
-  public static ResourceLocation getResourceLocation(String id) {
+  public static final ResourceLocation getResourceLocation(String id) {
     return new ResourceLocation(JustVerticalSlabsLoader.MODID, id);
   }
 
@@ -85,7 +85,7 @@ public class VerticalSlabUtils {
    * @param referredSlabState
    * @return check value.
    */
-  public static boolean isTranslucent(BlockState referredSlabState) {
+  public static final boolean isTranslucent(BlockState referredSlabState) {
     return isTranslucent(referredSlabState.getBlock().asItem());
   }
 
@@ -95,7 +95,7 @@ public class VerticalSlabUtils {
    * @param slab
    * @return check value.
    */
-  public static boolean isTranslucent(Item slab) {
+  public static final boolean isTranslucent(Item slab) {
     return MapsManager.translucentMap.containsKey(slab);
   }
 
@@ -104,7 +104,7 @@ public class VerticalSlabUtils {
    * 
    * @return Vertical Slab {@link ItemStack} default instance.
    */
-  public static ItemStack getDefaultInstance() {
+  public static final ItemStack getDefaultInstance() {
     return getVerticalSlabItem(Blocks.OAK_SLAB.defaultBlockState(), false);
   }
 
@@ -115,7 +115,7 @@ public class VerticalSlabUtils {
    * @param translucent - whether a Translucent or Cutout VerticalSlabBlock is to be used to generate the {@link ItemStack}.
    * @return Vertical Slab {@link ItemStack}.
    */
-  public static ItemStack getVerticalSlabItem(BlockState referredSlabState, boolean translucent) {
+  public static final ItemStack getVerticalSlabItem(BlockState referredSlabState, boolean translucent) {
     return translucent ? getItemStackWithState(JustVerticalSlabsLoader.TRANSLUCENT_VERTICAL_SLAB_BLOCK.get(), referredSlabState) : getItemStackWithState(JustVerticalSlabsLoader.CUTOUT_VERTICAL_SLAB_BLOCK.get(), referredSlabState);
   }
 
@@ -126,7 +126,7 @@ public class VerticalSlabUtils {
    * @param referredSlabState - {@link BlockState} to save in the {@link ItemStack} NBTs.
    * @return {@link ItemStack} with {@code referredSlabState} in its NBTs.
    */
-  public static ItemStack getItemStackWithState(ItemLike itemLike, BlockState referredSlabState) {
+  public static final ItemStack getItemStackWithState(ItemLike itemLike, BlockState referredSlabState) {
     ItemStack itemStack = new ItemStack(itemLike);
     BlockItem.setBlockEntityData(itemStack, JustVerticalSlabsLoader.VERTICAL_SLAB_BLOCK_ENTITY.get(), putReferredSlabState(new CompoundTag(), referredSlabState));
     return itemStack;
@@ -139,13 +139,14 @@ public class VerticalSlabUtils {
    * @param referredSlabState
    * @return modified {@link CompoundTag}.
    */
-  public static CompoundTag putReferredSlabState(CompoundTag compoundTag, BlockState referredSlabState) {
+  public static final CompoundTag putReferredSlabState(CompoundTag compoundTag, BlockState referredSlabState) {
     compoundTag.put(VerticalSlabUtils.NBT_ID, NbtUtils.writeBlockState(referredSlabState));
     return compoundTag;
   }
 
   /**
    * Returns the {@link VerticalSlabBlockEntity} for the given {@link BlockGetter} and {@link BlockPos}.
+   * Creates a new {@link VerticalSlabBlockEntity} if the {@link Block} has one, but it has not been placed in the world yet (this can happen on world load).
    * Returns {@code null} if none could be found.
    * 
    * @param getter
@@ -153,7 +154,7 @@ public class VerticalSlabUtils {
    * @return {@link VerticalSlabBlockEntity} or {@code null}.
    */
   @Nullable
-  public static VerticalSlabBlockEntity getVerticalSlabBlockEntity(BlockGetter getter, BlockPos pos) {
+  public static final VerticalSlabBlockEntity getVerticalSlabBlockEntity(BlockGetter getter, BlockPos pos) {
     BlockEntity blockEntity = getter.getBlockEntity(pos);
     if (blockEntity != null && blockEntity instanceof VerticalSlabBlockEntity) {
       return (VerticalSlabBlockEntity) blockEntity;
@@ -162,7 +163,25 @@ public class VerticalSlabUtils {
   }
 
   /**
+   * Returns the {@link VerticalSlabBlockEntity} for the given {@link BlockGetter} and {@link BlockPos} if it exists.
+   * Returns {@code null} if none could be found.
+   * 
+   * @param getter
+   * @param pos
+   * @return {@link VerticalSlabBlockEntity} or {@code null}.
+   */
+  @Nullable
+  public static final VerticalSlabBlockEntity getSafeVerticalSlabBlockEntity(BlockGetter getter, BlockPos pos) {
+    BlockEntity blockEntity = getter.getExistingBlockEntity(pos);
+    if (blockEntity != null && blockEntity instanceof VerticalSlabBlockEntity) {
+      return (VerticalSlabBlockEntity) blockEntity;
+    }
+    return null;
+  }
+
+  /**
    * Returns the {@link BlockState referredSlabState} for the given {@link BlockGetter} and {@link BlockPos}.
+   * Creates a new {@link VerticalSlabBlockEntity} if the {@link Block} has one, but it has not been placed in the world yet (this can happen on world load).
    * Returns {@code null} if none could be found.
    * 
    * @param getter
@@ -170,13 +189,29 @@ public class VerticalSlabUtils {
    * @return {@link BlockState referredSlabState} or {@code null}.
    */
   @Nullable
-  public static BlockState getReferredSlabState(BlockGetter getter, BlockPos pos) {
+  public static final BlockState getReferredSlabState(BlockGetter getter, BlockPos pos) {
     VerticalSlabBlockEntity blockEntity = getVerticalSlabBlockEntity(getter, pos);
     if (blockEntity != null) {
       BlockState referredSlabState = blockEntity.getReferredSlabState();
-      if (referredSlabState != null) {
-        return referredSlabState;
-      }
+      return referredSlabState;
+    }
+    return null;
+  }
+
+  /**
+   * Returns the {@link BlockState referredSlabState} for the given {@link BlockGetter} and {@link BlockPos} if it exists.
+   * Returns {@code null} if none could be found.
+   * 
+   * @param getter
+   * @param pos
+   * @return {@link BlockState referredSlabState} or {@code null}.
+   */
+  @Nullable
+  public static final BlockState getSafeReferredSlabState(BlockGetter getter, BlockPos pos) {
+    VerticalSlabBlockEntity blockEntity = getSafeVerticalSlabBlockEntity(getter, pos);
+    if (blockEntity != null) {
+      BlockState referredSlabState = blockEntity.getReferredSlabState();
+      return referredSlabState;
     }
     return null;
   }
@@ -189,7 +224,7 @@ public class VerticalSlabUtils {
    * @return {@link BlockState referredSlabState} or {@code null}.
    */
   @Nullable
-  public static BlockState getReferredSlabState(ItemStack itemStack) {
+  public static final BlockState getReferredSlabState(ItemStack itemStack) {
     if (itemStack.getItem() instanceof VerticalSlabBlockItem) {
       CompoundTag compoundTag = itemStack.getTagElement("BlockEntityTag");
       if (compoundTag != null) {
@@ -211,7 +246,7 @@ public class VerticalSlabUtils {
    * @return {@link BlockState referredBlockState} or {@code null}.
    */
   @Nullable
-  public static BlockState getReferredBlockState(BlockGetter getter, BlockPos pos) {
+  public static final BlockState getReferredBlockState(BlockGetter getter, BlockPos pos) {
     return getReferredBlockState(getReferredSlabState(getter, pos));
   }
 
@@ -223,7 +258,7 @@ public class VerticalSlabUtils {
    * @return {@link BlockState referredBlockState} or {@code null}.
    */
   @Nullable
-  public static BlockState getReferredBlockState(BlockState referredSlabState) {
+  public static final BlockState getReferredBlockState(BlockState referredSlabState) {
     if (referredSlabState != null && MapsManager.slabMap.containsKey(referredSlabState.getBlock().asItem())) {
       return Block.byItem(MapsManager.slabMap.get(referredSlabState.getBlock().asItem())).defaultBlockState();
     }
@@ -281,14 +316,14 @@ public class VerticalSlabUtils {
      * 
      * @param recipeManager
      */
-    public static void setFallbackRecipeManager(RecipeManager recipeManager) {
+    public static final void setFallbackRecipeManager(RecipeManager recipeManager) {
       fallbackRecipeManager = recipeManager;
     }
 
     /**
      * Adds all Vertical Vlabs to the search tree if not already present.
      */
-    public static void addToSearchTree() {
+    public static final void addToSearchTree() {
       int intialSize = inSearchTree.size();
       MutableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
       for(BlockState referredSlabState : MapsManager.slabStateMap.values()) {
@@ -305,7 +340,7 @@ public class VerticalSlabUtils {
     /**
      * Same as {@link #computeMaps(RecipeManager)}, but tries to use {@link #fallbackRecipeManager} instead of a given one.
      */
-    public static void computeMaps() {
+    public static final void computeMaps() {
       if (fallbackRecipeManager != null) {
         computeMaps(fallbackRecipeManager);
       } else {
@@ -325,7 +360,7 @@ public class VerticalSlabUtils {
      * 
      * @param recipeManager
      */
-    public static void computeMaps(RecipeManager recipeManager) {
+    public static final void computeMaps(RecipeManager recipeManager) {
       JustVerticalSlabsLoader.LOGGER.debug("Computing " + JustVerticalSlabsLoader.MODID + " mod maps.");
       Map<Item, BlockState> slabStateMap = new LinkedHashMap<Item, BlockState>(), translucentMap = new LinkedHashMap<Item, BlockState>();
       Map<Item, Item> slabMap = new HashMap<Item, Item>(), blockMap = new HashMap<Item, Item>(), waxingMap = new HashMap<Item, Item>(), stonecuttingMap = new HashMap<Item, Item>();
@@ -396,7 +431,7 @@ public class VerticalSlabUtils {
      * @param recipe
      * @return whether the {@code recipe} uses only items that are blocks and not slabs.
      */
-    private static List<Ingredient> getBlockIngredients(NonNullList<Ingredient> ingredients) {
+    private static final List<Ingredient> getBlockIngredients(NonNullList<Ingredient> ingredients) {
       return ingredients.stream().filter(ingredient -> Arrays.stream(ingredient.getItems()).allMatch(itemStack -> !itemStack.is(ItemTags.SLABS) && itemStack.getItem() instanceof BlockItem)).toList();
     }
 
@@ -406,7 +441,7 @@ public class VerticalSlabUtils {
      * @param ingredients
      * @return whether all ingredients match, false if no ingredient is present.
      */
-    private static boolean sameIngredients(List<Ingredient> ingredients) {
+    private static final boolean sameIngredients(List<Ingredient> ingredients) {
       if (ingredients.size() > 0) {
         boolean same = true;
         Ingredient firstIngredient = ingredients.get(0);
@@ -427,7 +462,7 @@ public class VerticalSlabUtils {
      * @param itemStackName
      * @return whether the given {@link ItemStack} name represents a plain block.
      */
-    private static boolean isPlain(String itemStackName) {
+    private static final boolean isPlain(String itemStackName) {
       return !(
         itemStackName.contains("chiseled") ||
         itemStackName.contains("pillar") ||
@@ -442,7 +477,7 @@ public class VerticalSlabUtils {
      * @param itemStackName
      * @return whether the given {@link ItemStack} name represents a translucent block.
      */
-    private static boolean isTranslucent(String itemStackName) {
+    private static final boolean isTranslucent(String itemStackName) {
       return (
         itemStackName.contains("spawner") ||
         itemStackName.contains("glass") ||

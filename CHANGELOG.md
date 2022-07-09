@@ -8,6 +8,21 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new.
 
+## [1.18.2-3.2.0.0] - 2022/07/08
+- Fixed [1.18.2-3.2.0.0-beta1] double vertical slabs bugs.
+- Changed project structure to prepare a Fabric port.
+- Improved translucent vertical slabs rendering.
+- Added images to documentation.
+- Fixed tinted glass light down propagation.
+- Fixed a combining bug that would prevent vertical slabs facing north from creating certain angles when side by side with double vertical slabs.
+- Fixed tint of grass vertical slabs particles.
+
+## [1.18.2-3.2.0.0-beta1] - 2022/06/04
+- Added double vertical slabs.
+- BUG: Double Vertical Slabs that only have a referredSlabState (so no referredBlockState) don't render correctly.
+- BUG: Double Vertical Slabs that should emit light don't emit it.
+- BUG: (from previous versions) honey and slime vertical slabs don't render correctly.
+
 ## [1.18.2-3.1.0.1] - 2022/05/23
 - Fixed client-server interactions and small bug fix.
 
@@ -43,6 +58,8 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added creative tab with all vertical slabs.
 
 [Unreleased]: https://github.com/Nyphet/just-vertical-slabs
+[1.18.2-3.2.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.0
+[1.18.2-3.2.0.0-beta1]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.0-beta1
 [1.18.2-3.1.0.1]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.1.0.1
 [1.18.2-3.1.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.1.0.0
 [1.18.2-3.0.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.0.0.0

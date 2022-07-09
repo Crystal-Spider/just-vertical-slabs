@@ -35,7 +35,7 @@ public class VerticalSlabPerspectiveTransformer {
    * @param scale - scale {@link Vector3f}.
    * @return a new {@link Transformation}.
    */
-  private static Transformation getTransformation(Vector3f translation, Vector3f rotation, Vector3f scale) {
+  private static final Transformation getTransformation(Vector3f translation, Vector3f rotation, Vector3f scale) {
     return new Transformation(translation, TransformationHelper.quatFromXYZ(rotation, true), scale, null);
   }
 
@@ -45,7 +45,7 @@ public class VerticalSlabPerspectiveTransformer {
    * @param transformType - {@link TransformType}.
    * @return one of {@link #TRANSFORMATIONS Vertical Slab Item Transformations}.
    */
-  public static Transformation getTransformation(TransformType transformType) {
+  public static final Transformation getTransformation(TransformType transformType) {
     return TRANSFORMATIONS.getOrDefault(transformType, Transformation.identity());
   }
 }

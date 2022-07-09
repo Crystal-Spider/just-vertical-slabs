@@ -1,12 +1,12 @@
 buildscript {
-    repositories {
-      // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-      maven { url = 'https://maven.minecraftforge.net' }
-      mavenCentral()
-    }
-    dependencies {
-      classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
+  repositories {
+    // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+    maven { url = 'https://maven.minecraftforge.net' }
+    mavenCentral()
+  }
+  dependencies {
+    classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+  }
 }
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 plugins {
@@ -15,7 +15,7 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.18.2-3.1.0.1'
+version = '1.18.2-3.2.0.0-forge'
 group = 'crystalspider.justverticalslabs'
 archivesBaseName = 'justverticalslabs'
 
