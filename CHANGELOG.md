@@ -8,7 +8,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new.
 
-## [1.18.2-3.2.0.0] - 2022/07/08
+## [1.18.2-3.2.0.0] - 2022/07/11
 - Fixed [1.18.2-3.2.0.0-beta1] double vertical slabs bugs.
 - Changed project structure to prepare a Fabric port.
 - Improved translucent vertical slabs rendering.
