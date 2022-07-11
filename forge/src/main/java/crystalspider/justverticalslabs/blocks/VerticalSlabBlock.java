@@ -10,6 +10,8 @@ import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -35,6 +38,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -230,6 +234,18 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   }
 
   @Override
+  @SuppressWarnings("deprecation")
+  public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
+    if (state.getValue(DOUBLE)) {
+      BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(getter, pos);
+      if (referredBlockState != null) {
+        return referredBlockState.getCollisionShape(getter, pos, collisionContext);
+      }
+    }
+    return super.getCollisionShape(state, getter, pos, collisionContext);
+  }
+
+  @Override
   public BlockState updateShape(BlockState state, Direction direction, BlockState blockState, LevelAccessor accessor, BlockPos pos, BlockPos blockPos) {
     if (state.getValue(WATERLOGGED)) {
       accessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(accessor));
@@ -244,48 +260,50 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
 
   @Override
   public BlockState rotate(BlockState state, Rotation rotation) {
-    return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    return state.getValue(DOUBLE) ? state : state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
   }
 
   @Override
   @SuppressWarnings("deprecation")
   public BlockState mirror(BlockState state, Mirror mirror) {
-    Direction direction = state.getValue(FACING);
-    StairsShape stairsshape = state.getValue(SHAPE);
-    switch(mirror) {
-      case LEFT_RIGHT:
-        if (direction.getAxis() == Direction.Axis.Z) {
-          switch(stairsshape) {
-            case INNER_LEFT:
-              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
-            case INNER_RIGHT:
-              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
-            case OUTER_LEFT:
-              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
-            case OUTER_RIGHT:
-              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
-            default:
-              return state.rotate(Rotation.CLOCKWISE_180);
+    if (!state.getValue(DOUBLE)) {
+      Direction direction = state.getValue(FACING);
+      StairsShape stairsshape = state.getValue(SHAPE);
+      switch(mirror) {
+        case LEFT_RIGHT:
+          if (direction.getAxis() == Direction.Axis.Z) {
+            switch(stairsshape) {
+              case INNER_LEFT:
+                return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
+              case INNER_RIGHT:
+                return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
+              case OUTER_LEFT:
+                return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
+              case OUTER_RIGHT:
+                return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
+              default:
+                return state.rotate(Rotation.CLOCKWISE_180);
+            }
           }
-        }
-        break;
-      case FRONT_BACK:
-        if (direction.getAxis() == Direction.Axis.X) {
-          switch(stairsshape) {
-            case INNER_LEFT:
-              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
-            case INNER_RIGHT:
-              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
-            case OUTER_LEFT:
-              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
-            case OUTER_RIGHT:
-              return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
-            case STRAIGHT:
-              return state.rotate(Rotation.CLOCKWISE_180);
+          break;
+        case FRONT_BACK:
+          if (direction.getAxis() == Direction.Axis.X) {
+            switch(stairsshape) {
+              case INNER_LEFT:
+                return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
+              case INNER_RIGHT:
+                return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
+              case OUTER_LEFT:
+                return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
+              case OUTER_RIGHT:
+                return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
+              case STRAIGHT:
+                return state.rotate(Rotation.CLOCKWISE_180);
+            }
           }
-        }
-        break;
-      default: break;
+          break;
+        default: break;
+      }
     }
     return super.mirror(state, mirror);
   }
@@ -386,6 +404,23 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   }
 
   @Override
+  public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
+    if (referredSlabState != null) {
+      BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+      try {
+        if (referredBlockState != null) {
+          referredBlockState.entityInside(level, pos, entity);
+        } else {
+          referredSlabState.entityInside(level, pos, entity);
+        }
+      } catch (Exception e) {
+        logDataWarning(e, pos);
+      }
+    } 
+  }
+
+  @Override
   public float getFriction(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
@@ -402,6 +437,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public float getExplosionResistance(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::getExplosionResistance, () -> super.getExplosionResistance(state, getter, pos, explosion), getter, pos, explosion);
     }
     return super.getExplosionResistance(state, getter, pos, explosion);
@@ -412,9 +450,12 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     if (referredBlockState != null) {
-      return getReferredProperty(referredBlockState::getEnchantPowerBonus, () -> 0F, level, pos);
+      return getReferredProperty(referredBlockState::getEnchantPowerBonus, () -> 0F, level, pos) / (state.getValue(DOUBLE) ? 1 : 2);
     }
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::getEnchantPowerBonus, () -> 0F, level, pos);
     }
     return super.getEnchantPowerBonus(state, level, pos);
@@ -424,6 +465,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::getSoundType, referredSlabState::getSoundType, level, pos, entity);
     }
     return super.getSoundType(state, level, pos, entity);
@@ -433,6 +477,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public int getFlammability(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::getFlammability, () -> super.getFlammability(state, getter, pos, direction), getter, pos, direction);
     }
     return super.getFlammability(state, getter, pos, direction);
@@ -442,6 +489,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public int getFireSpreadSpeed(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::getFireSpreadSpeed, () -> super.getFireSpreadSpeed(state, getter, pos, direction), getter, pos, direction);
     }
     return super.getFireSpreadSpeed(state, getter, pos, direction);
@@ -451,15 +501,51 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::isFireSource, () -> super.isFireSource(state, level, pos, direction), level, pos, direction);
     }
     return super.isFireSource(state, level, pos, direction);
   }
 
   @Override
+  public boolean isValidSpawn(BlockState state, BlockGetter getter, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
+    if (state.getValue(DOUBLE)) {
+      BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
+      if (referredSlabState != null) {
+        BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+        if (referredBlockState != null) {
+          return getReferredProperty(referredBlockState::isValidSpawn, () -> false, getter, pos, entityType);
+        }
+        return getReferredProperty(referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE)::isValidSpawn, () -> false, getter, pos, entityType);
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean shouldCheckWeakPower(BlockState state, LevelReader level, BlockPos pos, Direction side) {
+    if (state.getValue(DOUBLE)) {
+      BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(level, pos);
+      if (referredSlabState != null) {
+        BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+        if (referredBlockState != null) {
+          return getReferredProperty(referredBlockState::shouldCheckWeakPower, () -> false, level, pos, side);
+        }
+        return getReferredProperty(referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE)::shouldCheckWeakPower, () -> false, level, pos, side);
+      }
+    }
+    return false;
+  }
+
+  @Override
   public boolean canEntityDestroy(BlockState state, BlockGetter getter, BlockPos pos, Entity entity) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::canEntityDestroy, () -> super.canEntityDestroy(state, getter, pos, entity), getter, pos, entity);
     }
     return super.canEntityDestroy(state, getter, pos, entity);
@@ -469,6 +555,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public boolean canDropFromExplosion(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::canDropFromExplosion, () -> true, getter, pos, explosion);
     }
     return super.canDropFromExplosion(state, getter, pos, explosion);
@@ -478,6 +567,9 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   public boolean canHarvestBlock(BlockState state, BlockGetter getter, BlockPos pos, Player player) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
     if (referredSlabState != null) {
+      if (state.getValue(DOUBLE)) {
+        referredSlabState = referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
+      }
       return getReferredProperty(referredSlabState::canHarvestBlock, () -> super.canHarvestBlock(state, getter, pos, player), getter, pos, player);
     }
     return super.canHarvestBlock(state, getter, pos, player);
@@ -515,7 +607,22 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   }
 
   @Override
-  public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
+  public boolean canSustainPlant(BlockState state, BlockGetter getter, BlockPos pos, Direction facing, IPlantable plantable) {
+    if (state.getValue(DOUBLE)) {
+      BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
+      if (referredSlabState != null) {
+        BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
+        try {
+          if (referredBlockState != null) {
+            return referredBlockState.canSustainPlant(getter, pos, facing, plantable);
+          }
+          return referredSlabState.setValue(SlabBlock.TYPE, SlabType.DOUBLE).canSustainPlant(getter, pos, facing, plantable);
+        } catch (Exception e) {
+          logDataWarning(e, pos);
+          return false;
+        }
+      }
+    }
     return false;
   }
 
