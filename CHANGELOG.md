@@ -16,6 +16,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Fixed tinted glass light down propagation.
 - Fixed a combining bug that would prevent vertical slabs facing north from creating certain angles when side by side with double vertical slabs.
 - Fixed tint of grass vertical slabs particles.
+- Improved double vertical slabs.
 
 ## [1.18.2-3.2.0.0-beta1] - 2022/06/04
 - Added double vertical slabs.

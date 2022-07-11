@@ -36,14 +36,14 @@ public class TranslucentVerticalSlabBlock extends VerticalSlabBlock {
 
   @Override
   public boolean useShapeForLightOcclusion(BlockState state) {
-    return state.getValue(OCCLUSION);
+    return state.getValue(OCCLUSION) && super.useShapeForLightOcclusion(state);
   }
 
   @Override
   public boolean propagatesSkylightDown(BlockState state, BlockGetter getter, BlockPos pos) {
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(getter, pos);
     if (referredBlockState != null) {
-      return getReferredProperty(referredBlockState::propagatesSkylightDown, () -> true, getter, pos);
+      return Behaviour.getReferredProperty(referredBlockState::propagatesSkylightDown, () -> true, getter, pos);
     }
     return true;
   }
@@ -54,9 +54,9 @@ public class TranslucentVerticalSlabBlock extends VerticalSlabBlock {
     if (referredSlabState != null) {
       BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
       if (referredBlockState != null) {
-        return getReferredProperty(referredBlockState::getShadeBrightness, () -> 1.0F, getter, pos);
+        return Behaviour.getReferredProperty(referredBlockState::getShadeBrightness, () -> 1.0F, getter, pos);
       }
-      return getReferredProperty(referredSlabState::getShadeBrightness, () -> 1.0F, getter, pos);
+      return Behaviour.getReferredProperty(referredSlabState::getShadeBrightness, () -> 1.0F, getter, pos);
     }
     return 1.0F;
   }
@@ -67,10 +67,10 @@ public class TranslucentVerticalSlabBlock extends VerticalSlabBlock {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(getter, pos);
     BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
     if (referredBlockState != null) {
-      return getReferredProperty(referredBlockState::getLightBlock, () -> super.getLightBlock(state, getter, pos), getter, pos);
+      return Behaviour.getReferredProperty(referredBlockState::getLightBlock, () -> super.getLightBlock(state, getter, pos), getter, pos);
     } else {
       if (referredSlabState != null) {
-        return getReferredProperty(referredSlabState::getLightBlock, () -> super.getLightBlock(state, getter, pos), getter, pos);
+        return Behaviour.getReferredProperty(referredSlabState::getLightBlock, () -> super.getLightBlock(state, getter, pos), getter, pos);
       }
     }
     return super.getLightBlock(state, getter, pos);
