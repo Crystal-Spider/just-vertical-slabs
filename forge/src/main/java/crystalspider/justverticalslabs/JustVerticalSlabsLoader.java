@@ -1,8 +1,8 @@
 package crystalspider.justverticalslabs;
 
-import com.mojang.logging.LogUtils;
-
 import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
 
 import crystalspider.justverticalslabs.blocks.CutoutVerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.TranslucentVerticalSlabBlock;

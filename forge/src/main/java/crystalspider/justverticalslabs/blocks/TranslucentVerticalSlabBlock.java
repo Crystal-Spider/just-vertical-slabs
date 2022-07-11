@@ -36,7 +36,7 @@ public class TranslucentVerticalSlabBlock extends VerticalSlabBlock {
 
   @Override
   public boolean useShapeForLightOcclusion(BlockState state) {
-    return state.getValue(OCCLUSION);
+    return state.getValue(OCCLUSION) && super.useShapeForLightOcclusion(state);
   }
 
   @Override

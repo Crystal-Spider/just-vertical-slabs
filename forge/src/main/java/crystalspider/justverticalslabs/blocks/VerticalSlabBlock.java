@@ -73,7 +73,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
    */
   public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
   /**
-   * {@link BlockState} Property indicating the light occlusion.
+   * {@link BlockState} Property indicating whether the referred Block/Slab uses light occlusion.
    */
   public static final BooleanProperty OCCLUSION = BooleanProperty.create("occlusion");
   /**
@@ -108,10 +108,15 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
    * Checks if the given blockState holds a block that's a Vertical Slab.
    * 
    * @param blockState
-   * @return
+   * @return value of the check.
    */
   public static boolean isVerticalSlab(BlockState blockState) {
     return blockState.getBlock() instanceof VerticalSlabBlock;
+  }
+
+  @Override
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
+    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL, OCCLUSION, DOUBLE);
   }
 
   @Override
@@ -137,6 +142,11 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
       accessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(accessor));
     }
     return state.setValue(SHAPE, Behaviour.getStairsShape(state, accessor, pos));
+  }
+
+  @Override
+  public boolean useShapeForLightOcclusion(BlockState state) {
+    return state.getValue(LEVEL) == 0;
   }
 
   @Override
@@ -201,7 +211,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
     Level level = placeContext.getLevel();
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(placeContext.getItemInHand());
     if (referredSlabState == VerticalSlabUtils.getReferredSlabState(level, pos)) {
-      BlockState blockstate = this.defaultBlockState().setValue(WATERLOGGED, false).setValue(DOUBLE, true);
+      BlockState blockstate = this.defaultBlockState().setValue(DOUBLE, true);
       if (referredSlabState != null) {
         BlockState referredBlockState = VerticalSlabUtils.getReferredBlockState(referredSlabState);
         BlockState referredState = referredBlockState != null ? referredBlockState : referredSlabState;
@@ -218,7 +228,7 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
           .setValue(LEVEL, Behaviour.getReferredProperty(referredSlabState::getLightEmission, referredSlabState::getLightEmission, level, pos))
           .setValue(OCCLUSION, (referredBlockState != null ? referredBlockState : referredSlabState).useShapeForLightOcclusion());
       }
-      return blockstate.setValue(SHAPE, Behaviour.getStairsShape(blockstate, level, pos)).setValue(DOUBLE, false);
+      return blockstate.setValue(SHAPE, Behaviour.getStairsShape(blockstate, level, pos));
     }
   }
 
@@ -499,14 +509,6 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
   @Override
   public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
     return new VerticalSlabBlockEntity(pos, state);
-  }
-
-  @Override
-  public abstract boolean useShapeForLightOcclusion(BlockState state);
-
-  @Override
-  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateDefinition) {
-    stateDefinition.add(FACING, SHAPE, WATERLOGGED, LEVEL, OCCLUSION, DOUBLE);
   }
 
   /**
