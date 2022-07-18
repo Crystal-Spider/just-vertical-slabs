@@ -100,6 +100,7 @@ public class TranslucentVerticalSlabBlock extends VerticalSlabBlock {
      * TODO:
      * - Apply a mixin on Block#shouldRenderFace to hide Vertical Slab faces when against mimicked blocks.
      * - Hide mimicked blocks faces.
+     * - Currently not working with Optifine.
      */
     return false;
   }
