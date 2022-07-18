@@ -1,5 +1,6 @@
 package crystalspider.justverticalslabs.model.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -26,7 +27,7 @@ public class BakedQuadUtils {
   public static final List<BakedQuad> getReferredBakedQuads(BlockState referredState, Direction side, Random rand, IModelData modelData) {
     BakedModel referredBakedModel = ModelUtils.getReferredBakedModel(referredState);
     IModelData referredModelData = ModelUtils.getReferredModelData(referredState, modelData);
-    List<BakedQuad> referredBakedQuads = referredBakedModel.getQuads(referredState, side, rand, referredModelData);
+    List<BakedQuad> referredBakedQuads = new ArrayList<BakedQuad>(referredBakedModel.getQuads(referredState, side, rand, referredModelData));
     for (BakedQuad referredBakedQuad : referredBakedModel.getQuads(referredState, null, rand, referredModelData)) {
       if (referredBakedQuad.getDirection() == side) {
         referredBakedQuads.add(referredBakedQuad);
