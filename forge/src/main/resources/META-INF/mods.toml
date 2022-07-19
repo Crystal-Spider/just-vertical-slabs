@@ -4,7 +4,7 @@ license="GNU AGPLv3"
 issueTrackerURL="https://github.com/Nyphet/just-vertical-slabs/issues" #optional
 [[mods]]
 modId="justverticalslabs"
-version="${file.jarVersion}"
+version="3.2.0.2"
 displayName="Just Vertical Slabs"
 updateJSONURL="https://raw.githubusercontent.com/Nyphet/just-vertical-slabs/1.18.2/main/forge/updates.json" #optional
 displayURL="https://github.com/Nyphet/just-vertical-slabs" #optional

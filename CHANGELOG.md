@@ -8,6 +8,11 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new.
 
+## [1.18.2-3.2.0.2] - 2022/07/19
+- Fixed a bug that would cause game crashes with Mekanism.
+- Fixed Transparent Vertical Slabs for Mekanism.
+- Fixed a bug that would make the in-game mod manager show this mod needed always to be updated.
+
 ## [1.18.2-3.2.0.1] - 2022/07/18
 - Fixed a rare bug that could cause game crash.
 - Updated in game mod image.
@@ -63,6 +68,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added creative tab with all vertical slabs.
 
 [Unreleased]: https://github.com/Nyphet/just-vertical-slabs
+[1.18.2-3.2.0.2]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.2
 [1.18.2-3.2.0.1]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.1
 [1.18.2-3.2.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.0
 [1.18.2-3.2.0.0-beta1]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.0-beta1
