@@ -15,16 +15,15 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.18.2-3.2.0.1-forge'
-group = 'crystalspider.justverticalslabs'
-archivesBaseName = 'justverticalslabs'
+version = "${mcVersion}-${modVersion}-forge"
+group = "crystalspider.${modid}"
+archivesBaseName = "${modid}"
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-  mappings channel: 'official', version: '1.18.2'
+  mappings channel: 'official', version: "${mcVersion}"
   // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
   runs {
     client {
@@ -32,9 +31,9 @@ minecraft {
       property 'forge.logging.markers', 'REGISTRIES'
 			// https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
       property 'forge.logging.console.level', 'debug'
-      property 'forge.enabledGameTestNamespaces', 'justverticalslabs'
+      property 'forge.enabledGameTestNamespaces', "${modid}"
       mods {
-        justverticalslabs {
+        "${modid}" {
           source sourceSets.main
         }
       }
@@ -44,9 +43,9 @@ minecraft {
       property 'forge.logging.markers', 'REGISTRIES'
 			// https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
       property 'forge.logging.console.level', 'debug'
-      property 'forge.enabledGameTestNamespaces', 'justverticalslabs'
+      property 'forge.enabledGameTestNamespaces', "${modid}"
       mods {
-        justverticalslabs {
+        "${modid}" {
           source sourceSets.main
         }
       }
@@ -56,9 +55,9 @@ minecraft {
       property 'forge.logging.markers', 'REGISTRIES'
       // https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
       property 'forge.logging.console.level', 'debug'
-      property 'forge.enabledGameTestNamespaces', 'justverticalslabs'
+      property 'forge.enabledGameTestNamespaces', "${modid}"
       mods {
-        justverticalslabs {
+        "${modid}" {
           source sourceSets.main
         }
       }
@@ -68,9 +67,9 @@ minecraft {
       property 'forge.logging.markers', 'REGISTRIES'
       // https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
       property 'forge.logging.console.level', 'debug'
-      args '--mod', 'justverticalslabs', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+      args '--mod', "${modid}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
       mods {
-        justverticalslabs {
+        "${modid}" {
           source sourceSets.main
         }
       }
@@ -83,38 +82,24 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {}
 
 dependencies {
-  minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
+  minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
 jar {
   manifest {
     attributes([
-      "Specification-Title"     : "justverticalslabs",
-      "Specification-Vendor"    : "justverticalslabs",
-      "Specification-Version"   : "1", // We are version 1 of ourselves
-      "Implementation-Title"    : project.name,
-      "Implementation-Version"  : project.jar.archiveVersion,
-      "Implementation-Vendor"   : "justverticalslabs",
+      "Specification-Title"     : project.modTitle,
+      "Specification-Vendor"    : project.author,
+      "Specification-Version"   : "1",
+      "Implementation-Title"    : project.modTitle,
+      "Implementation-Version"  : project.modVersion,
+      "Implementation-Vendor"   : project.author,
       "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
     ])
   }
 }
 
 jar.finalizedBy('reobfJar')
-
-publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      artifact jar
-    }
-  }
-  repositories {
-    maven {
-      url "file://${project.projectDir}/mcmodsrepo"
-    }
-  }
-}
 
 tasks.withType(JavaCompile).configureEach {
   options.encoding = 'UTF-8'

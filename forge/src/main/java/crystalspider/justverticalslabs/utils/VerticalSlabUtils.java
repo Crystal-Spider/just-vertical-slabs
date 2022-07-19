@@ -377,21 +377,23 @@ public class VerticalSlabUtils {
             List<Ingredient> blockIngredients = getBlockIngredients(ingredients);
             if (sameIngredients(blockIngredients)) {
               blockIngredients.stream().findFirst().ifPresent(ingredient -> {
-                for (ItemStack itemStack : ingredient.getItems()) {
+                ItemStack[] items = ingredient.getItems();
+                for (ItemStack itemStack : items) {
                   if (isPlain(itemStack.toString())) {
                     slabMap.put(slab, itemStack.getItem());
                   }
                   blockMap.putIfAbsent(itemStack.getItem(), slab);
                 }
                 // If no plain block is connected to this slab that means the slab is not plain either, so add the first (and theoretically only) block item.
-                if (!slabMap.containsKey(slab)) {
-                  slabMap.put(slab, ingredient.getItems()[0].getItem());
+                if (!slabMap.containsKey(slab) && items.length > 0) {
+                  slabMap.put(slab, items[0].getItem());
                 }
               });
             } else if (ingredients.stream().anyMatch(ingredient -> ingredient.test(Items.HONEYCOMB.getDefaultInstance()))) {
               List<Ingredient> notHoneyIngredients = ingredients.stream().filter(ingredient -> !ingredient.test(Items.HONEYCOMB.getDefaultInstance())).toList();
-              if (notHoneyIngredients.size() == 1) {
-                ItemStack oxidizableSlab = notHoneyIngredients.get(0).getItems()[0];
+                ItemStack[] items = notHoneyIngredients.get(0).getItems();
+                if (notHoneyIngredients.size() == 1 && items.length > 0) {
+                ItemStack oxidizableSlab = items[0];
                 if (oxidizableSlab.is(ItemTags.SLABS)) {
                   waxingMap.put(oxidizableSlab.getItem(), slab);
                 }
@@ -479,6 +481,7 @@ public class VerticalSlabUtils {
      */
     private static final boolean isTranslucent(String itemStackName) {
       return (
+        itemStackName.contains("transparent") ||
         itemStackName.contains("spawner") ||
         itemStackName.contains("glass") ||
         itemStackName.contains("slime") ||
