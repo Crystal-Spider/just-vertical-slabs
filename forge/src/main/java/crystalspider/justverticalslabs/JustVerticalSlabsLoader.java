@@ -55,7 +55,7 @@ public class JustVerticalSlabsLoader {
   /**
    * Network channel protocol version.
    */
-  public static final String PROTOCOL_VERSION = "1";
+  public static final String PROTOCOL_VERSION = "4.0";
   /**
    * {@link SimpleChannel} instance for compatibility client-server.
    */
