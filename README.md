@@ -50,4 +50,4 @@ If you think you are interested in becoming a co-author, help improve this mod a
 
 ## License and right of use
 Feel free to use this mod for any modpack or video, just be sure to give credit and possibly link [here](https://github.com/Nyphet/just-vertical-slabs#readme).  
-This project is published under the [GNU General Public License v3.0](https://github.com/Nyphet/just-vertical-slabs/blob/1.18.2/main/LICENSE).
+This project is published under the [GNU General Public License v3.0](https://github.com/Nyphet/just-vertical-slabs/blob/master/LICENSE).
