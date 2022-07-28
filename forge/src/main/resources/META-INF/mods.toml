@@ -9,7 +9,6 @@ displayName="${modTitle}"
 updateJSONURL="https://raw.githubusercontent.com/Nyphet/just-vertical-slabs/master/forge/updates.json" #optional
 displayURL="https://github.com/Nyphet/just-vertical-slabs/${mcVersion}" #optional
 logoFile="just-vertical-slabs.gif" #optional
-# A text field displayed in the mod UI
 credits="A very big thank you goes to the Forge team that allowed anyone to mod Minecraft for free and their support in the Forge Forums.\nIn particular I want to thank diesieben07 that followed me throughtout most of the development, without him none of this would have been possible." #optional
 authors="${author}" #optional
 # Display Test controls the display for your mod in the server connection screen
