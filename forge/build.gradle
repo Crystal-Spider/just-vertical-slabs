@@ -85,6 +85,38 @@ dependencies {
   minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
 }
 
+def resourceTargets = ['META-INF/mods.toml']
+def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
+def replaceProperties = [
+  modTitle: modTitle,
+  mcVersion: mcVersion,
+  modVersion: modVersion,
+  forgeVersion: forgeVersion,
+  author: author
+]
+
+processResources {
+  inputs.properties replaceProperties
+  replaceProperties.put 'project', project
+
+  filesMatching(resourceTargets) {
+    expand replaceProperties
+  }
+
+  intoTargets.each { target ->
+    if (file(target).exists()) {
+      copy {
+        from(sourceSets.main.resources) {
+          include resourceTargets
+          expand replaceProperties
+        }
+        into target
+      }
+      file("${target}/${resourceTargets[0]}").text = file("${target}/${resourceTargets[0]}").text.replaceAll('modid', project.modid)
+    }
+  }
+}
+
 jar {
   manifest {
     attributes([

@@ -3,26 +3,33 @@ loaderVersion="[40,)"
 license="GNU AGPLv3"
 issueTrackerURL="https://github.com/Nyphet/just-vertical-slabs/issues" #optional
 [[mods]]
-modId="justverticalslabs"
-version="3.2.0.3"
-displayName="Just Vertical Slabs"
+modId="modid"
+version="${modVersion}"
+displayName="${modTitle}"
 updateJSONURL="https://raw.githubusercontent.com/Nyphet/just-vertical-slabs/master/forge/updates.json" #optional
-displayURL="https://github.com/Nyphet/just-vertical-slabs" #optional
+displayURL="https://github.com/Nyphet/just-vertical-slabs/${mcVersion}" #optional
 logoFile="just-vertical-slabs.gif" #optional
 # A text field displayed in the mod UI
 credits="A very big thank you goes to the Forge team that allowed anyone to mod Minecraft for free and their support in the Forge Forums.\nIn particular I want to thank diesieben07 that followed me throughtout most of the development, without him none of this would have been possible." #optional
-authors="Crystal Spider" #optional
+authors="${author}" #optional
+# Display Test controls the display for your mod in the server connection screen
+# MATCH_VERSION means that your mod will cause a red X if the versions on client and server differ. This is the default behaviour and should be what you choose if you have server and client elements to your mod.
+# IGNORE_SERVER_VERSION means that your mod will not cause a red X if it's present on the server but not on the client. This is what you should use if you're a server only mod.
+# IGNORE_ALL_VERSION means that your mod will not cause a red X if it's present on the client or the server. This is a special case and should only be used if your mod has no server component.
+# NONE means that no display test is set on your mod. You need to do this yourself, see IExtensionPoint.DisplayTest for more information. You can define any scheme you wish with this value.
+# IMPORTANT NOTE: this is NOT an instruction as to which environments (CLIENT or DEDICATED SERVER) your mod loads on. Your mod should load (and maybe do nothing!) whereever it finds itself.
+#displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified #optional
 description="Finally build with Vertical Slabs in Vanilla or with any mod you've installed!"
-[[dependencies.justverticalslabs]]
+[[dependencies.modid]]
     modId="forge"
     mandatory=true
-    versionRange="[40.1,)"
+    versionRange="[${forgeVersion},)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.justverticalslabs]]
+[[dependencies.modid]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.2,1.19)"
+    versionRange="[${mcVersion},)"
     ordering="NONE"
     side="BOTH"
 #optional
