@@ -8,6 +8,9 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new.
 
+## [1.18.2-3.2.0.3] - 2022/07/28
+- Updated repository structure and server/client compatibility.
+
 ## [1.18.2-3.2.0.2] - 2022/07/19
 - Fixed a bug that would cause game crashes with Mekanism.
 - Fixed Transparent Vertical Slabs for Mekanism.
@@ -68,6 +71,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 - Added creative tab with all vertical slabs.
 
 [Unreleased]: https://github.com/Nyphet/just-vertical-slabs
+[1.18.2-3.2.0.3]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.3
 [1.18.2-3.2.0.2]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.2
 [1.18.2-3.2.0.1]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.1
 [1.18.2-3.2.0.0]: https://github.com/Nyphet/just-vertical-slabs/releases/tag/v1.18.2-3.2.0.0
