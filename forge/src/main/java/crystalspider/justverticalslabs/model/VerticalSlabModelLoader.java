@@ -8,7 +8,6 @@ import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.client.model.IModelLoader;
 
 /**
  * Vertical Slab custom Model Loader.

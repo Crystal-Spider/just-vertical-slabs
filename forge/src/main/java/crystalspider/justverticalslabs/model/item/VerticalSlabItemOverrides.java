@@ -18,9 +18,9 @@ import net.minecraft.world.level.block.state.BlockState;
 public class VerticalSlabItemOverrides extends ItemOverrides {
   /**
    * Returns a different {@link BakedModel} to use for rendering.
-   * Since no BlockEntity is associated to an item, the {@link net.minecraftforge.client.model.data.IModelData IModelData} parameter for methods
-   * {@link VerticalSlabBakedModel#getParticleIcon(net.minecraftforge.client.model.data.IModelData) VerticalSlabBakedModel.getParticleIcon(IModelData)} and
-   * {@link VerticalSlabBakedModel#getQuads(net.minecraft.world.level.block.state.BlockState, net.minecraft.core.Direction, java.util.Random, net.minecraftforge.client.model.data.IModelData) VerticalSlabBakedModel.getQuads(BlockState, Direction, Random, IModelData)}
+   * Since no BlockEntity is associated to an item, the {@link net.minecraftforge.client.model.data.ModelData ModelData} parameter for methods
+   * {@link VerticalSlabBakedModel#getParticleIcon(net.minecraftforge.client.model.data.ModelData) VerticalSlabBakedModel.getParticleIcon(ModelData)} and
+   * {@link VerticalSlabBakedModel#getQuads(net.minecraft.world.level.block.state.BlockState, net.minecraft.core.Direction, java.util.Random, net.minecraftforge.client.model.data.ModelData) VerticalSlabBakedModel.getQuads(BlockState, Direction, Random, ModelData)}
    * won't contain the correct and necessary data to render the item correctly.
    * For this reason, an instance of {@link VerticalSlabItemBakedModel} is returned with proper {@link VerticalSlabItemBakedModel#data}.
    * 

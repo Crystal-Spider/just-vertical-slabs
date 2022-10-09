@@ -17,13 +17,13 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 /**
  * Unbaked Vertical Slab Model.
  */
-public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
+public class VerticalSlabModel implements IUnbakedGeometry<VerticalSlabModel> {
   /**
    * JSON {@link BlockModel}.
    */
@@ -46,7 +46,7 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
    * @return new instance of {@link VerticalSlabBakedModel}.
    */
   @Override
-  public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
+  public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
     JustVerticalSlabsLoader.LOGGER.trace("Baking VerticalSlabModel...");
     return new VerticalSlabBakedModel(jsonBlockModel.bake(bakery, jsonBlockModel, spriteGetter, modelTransform, modelLocation, false));
   }
@@ -60,7 +60,7 @@ public class VerticalSlabModel implements IModelGeometry<VerticalSlabModel> {
    * @return {@link Collections#emptyList()}.
    */
   @Override
-  public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+  public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
     return Collections.emptyList();
   }
 }

@@ -15,25 +15,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 
 /**
- * {@link ColorHandlerEvent} handler.
+ * {@link RegisterColorHandlersEvent} handler.
  */
 @SuppressWarnings("null")
 @EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
-public class ColorHandlerEventHandler {
+public class RegisterColorHandlersEventHandler {
   /**
    * Registers the {@link BlockColor} for Vertical Slabs.
    * 
    * @param event
    */
   @SubscribeEvent
-  public static void onColorHandlerEventBlock(ColorHandlerEvent.Block event) {
-    event.getBlockColors().register(
+  public static void onRegisterColorHandlersEventBlock(RegisterColorHandlersEvent.Block event) {
+    event.register(
       new BlockColor() {
         public int getColor(BlockState state, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, int tintIndex) {
           if (getter != null && pos != null && !(getter instanceof ClientLevel)) {
@@ -60,8 +60,8 @@ public class ColorHandlerEventHandler {
    * @param event
    */
   @SubscribeEvent
-  public static void onColorHandlerEventItem(ColorHandlerEvent.Item event) {
-    event.getItemColors().register(
+  public static void onRegisterColorHandlersEventItem(RegisterColorHandlersEvent.Item event) {
+    event.register(
       new ItemColor() {
         public int getColor(ItemStack itemStack, int tintIndex) {
           BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);

@@ -19,7 +19,7 @@ public class CutoutVerticalSlabBlockItem extends VerticalSlabBlockItem {
   @Override
   @SuppressWarnings("null")
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
-    if (this.allowdedIn(creativeModeTab) && MapsManager.slabStateMap != null) {
+    if (this.allowedIn(creativeModeTab) && MapsManager.slabStateMap != null) {
       for(BlockState referredSlabState : MapsManager.slabStateMap.values()) {
         if (!VerticalSlabUtils.isTranslucent(referredSlabState)) {
           itemStacks.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, false));

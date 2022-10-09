@@ -1,8 +1,6 @@
 package crystalspider.justverticalslabs.handlers;
 
 import crystalspider.justverticalslabs.model.VerticalSlabModelLoader;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**

@@ -19,7 +19,7 @@ public class TranslucentVerticalSlabBlockItem extends VerticalSlabBlockItem {
   @Override
   @SuppressWarnings("null")
   public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> itemStacks) {
-    if (this.allowdedIn(creativeModeTab) && MapsManager.translucentMap != null) {
+    if (this.allowedIn(creativeModeTab) && MapsManager.translucentMap != null) {
       for(BlockState referredSlabState : MapsManager.translucentMap.values()) {
         itemStacks.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, true));
       }

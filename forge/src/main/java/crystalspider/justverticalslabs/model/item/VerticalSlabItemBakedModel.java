@@ -9,19 +9,20 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import crystalspider.justverticalslabs.model.VerticalSlabBakedModel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
 
 /**
- * Simply wraps all methods from {@link VerticalSlabBakedModel} and passes them the right {@link IModelData}.
- * See {@link #handlePerspective(TransformType, PoseStack)}, {@link #getParticleIcon(IModelData)} and {@link #getQuads(BlockState, Direction, Random, IModelData)} for more details.
+ * Simply wraps all methods from {@link VerticalSlabBakedModel} and passes them the right {@link ModelData}.
+ * See {@link #handlePerspective(TransformType, PoseStack)}, {@link #getParticleIcon(ModelData)} and {@link #getQuads(BlockState, Direction, Random, ModelData)} for more details.
  */
 public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
   /**
@@ -29,11 +30,11 @@ public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
    */
   private final VerticalSlabBakedModel verticalSlabBakedModel;
   /**
-   * Proper {@link IModelData}.
+   * Proper {@link ModelData}.
    */
-  private final @Nonnull IModelData data;
+  private final @Nonnull ModelData data;
 
-  public VerticalSlabItemBakedModel(VerticalSlabBakedModel verticalSlabBakedModel, @Nonnull IModelData data) {
+  public VerticalSlabItemBakedModel(VerticalSlabBakedModel verticalSlabBakedModel, @Nonnull ModelData data) {
     this.verticalSlabBakedModel = verticalSlabBakedModel;
     this.data = data;
   }
@@ -81,10 +82,10 @@ public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
   /**
    * See {@link VerticalSlabBakedModel#doesHandlePerspectives()}.
    */
-  @Override
-  public boolean doesHandlePerspectives() {
-    return verticalSlabBakedModel.doesHandlePerspectives();
-  }
+  // @Override
+  // public boolean doesHandlePerspectives() {
+  //   return verticalSlabBakedModel.doesHandlePerspectives();
+  // }
 
   /**
    * Wraps {@link VerticalSlabBakedModel#handlePerspective(TransformType, PoseStack)} and delegates to it the logic.
@@ -94,11 +95,11 @@ public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
    * @param poseStack - {@link PoseStack} to render.
    * @return this model.
    */
-  @Override
-  public BakedModel handlePerspective(TransformType transformType, PoseStack poseStack) {
-    verticalSlabBakedModel.handlePerspective(transformType, poseStack);
-    return this;
-  }
+  // @Override
+  // public BakedModel handlePerspective(TransformType transformType, PoseStack poseStack) {
+  //   verticalSlabBakedModel.handlePerspective(transformType, poseStack);
+  //   return this;
+  // }
 
   /**
    * See {@link VerticalSlabBakedModel#getParticleIcon()}.
@@ -109,33 +110,34 @@ public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
   }
 
   /**
-   * Wraps and returns {@link VerticalSlabBakedModel#getParticleIcon(IModelData)}, passing to it the proper {@link IModelData} to use to render.
-   * Since no BlockEntity is associated to an item, the {@link IModelData} parameter won't contain the correct and necessary data to render the item correctly.
+   * Wraps and returns {@link VerticalSlabBakedModel#getParticleIcon(ModelData)}, passing to it the proper {@link ModelData} to use to render.
+   * Since no BlockEntity is associated to an item, the {@link ModelData} parameter won't contain the correct and necessary data to render the item correctly.
    * For this reason, extraData is ignored and {@link #data} is used instead.
    * 
-   * @param extraData - {@link IModelData}.
-   * @return {@link VerticalSlabBakedModel#getParticleIcon(IModelData)}.
+   * @param extraData - {@link ModelData}.
+   * @return {@link VerticalSlabBakedModel#getParticleIcon(ModelData)}.
    */
   @Override
-  public TextureAtlasSprite getParticleIcon(@Nonnull IModelData extraData) {
+  public TextureAtlasSprite getParticleIcon(ModelData extraData) {
     return verticalSlabBakedModel.getParticleIcon(data);
   }
 
   /**
-   * Wraps and returns {@link VerticalSlabBakedModel#getQuads(BlockState, Direction, Random, IModelData)}, passing to it the proper {@link IModelData} to use to render.
-   * Since no BlockEntity is associated to an item, the {@link IModelData} parameter won't contain the correct and necessary data to render the item correctly.
+   * Wraps and returns {@link VerticalSlabBakedModel#getQuads(BlockState, Direction, RandomSource, ModelData)}, passing to it the proper {@link ModelData} to use to render.
+   * Since no BlockEntity is associated to an item, the {@link ModelData} parameter won't contain the correct and necessary data to render the item correctly.
    * For this reason, extraData is ignored and {@link #data} is used instead.
    * 
    * @param state - {@link BlockState} of the block being rendered, null if an item is being rendered.
    * @param side - indicates to which culling {@link Direction face} the {@link BakedQuad baked quads} are associated to.
    *               If null, no culling {@link Direction face} is associated and the {@link BakedQuad baked quads} will always be rendered.
-   * @param rand - {@link Random} instance.
-   * @param modelData - {@link IModelData}.
-   * @return {@link VerticalSlabBakedModel#getQuads(BlockState, Direction, Random, IModelData)}.
+   * @param rand - {@link RandomSource} instance.
+   * @param modelData - {@link ModelData}.
+   * @param renderType - {@link RenderType}.
+   * @return {@link VerticalSlabBakedModel#getQuads(BlockState, Direction, RandomSource, ModelData)}.
    */
   @Nonnull
   @Override
-  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
-    return verticalSlabBakedModel.getQuads(state, side, rand, data);
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
+    return verticalSlabBakedModel.getQuads(state, side, rand, data, renderType);
   }
 }

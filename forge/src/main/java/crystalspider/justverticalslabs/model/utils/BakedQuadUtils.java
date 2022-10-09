@@ -2,16 +2,18 @@ package crystalspider.justverticalslabs.model.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 /**
  * Utilities to handle BakedQuads.
@@ -22,15 +24,16 @@ public class BakedQuadUtils {
    * 
    * @param referredState - {@link BlockState} of the referred block.
    * @param side - {@link Direction side} of the block being rendered.
-   * @param rand - {@link Random rand} parameter.
-   * @param modelData - {@link IModelData model data} of the block being rendered.
+   * @param rand - {@link RandomSource rand} parameter.
+   * @param modelData - {@link ModelData model data} of the block being rendered.
+   * @param renderType - {@link RenderType}.
    * @return {@link List} of all referred {@link BakedQuad BakedQuads} for the given {@link Direction}.
    */
-  public static final List<BakedQuad> getReferredBakedQuads(BlockState referredState, Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
+  public static final List<BakedQuad> getReferredBakedQuads(BlockState referredState, Direction side, @Nonnull RandomSource rand, @Nonnull ModelData modelData, @Nullable RenderType renderType) {
     BakedModel referredBakedModel = ModelUtils.getReferredBakedModel(referredState);
-    IModelData referredModelData = ModelUtils.getReferredModelData(referredState, modelData);
-    List<BakedQuad> referredBakedQuads = new ArrayList<BakedQuad>(referredBakedModel.getQuads(referredState, side, rand, referredModelData));
-    for (BakedQuad referredBakedQuad : referredBakedModel.getQuads(referredState, null, rand, referredModelData)) {
+    ModelData referredModelData = ModelUtils.getReferredModelData(referredState, modelData);
+    List<BakedQuad> referredBakedQuads = new ArrayList<BakedQuad>(referredBakedModel.getQuads(referredState, side, rand, referredModelData, renderType));
+    for (BakedQuad referredBakedQuad : referredBakedModel.getQuads(referredState, null, rand, referredModelData, renderType)) {
       if (referredBakedQuad.getDirection() == side) {
         referredBakedQuads.add(referredBakedQuad);
       }

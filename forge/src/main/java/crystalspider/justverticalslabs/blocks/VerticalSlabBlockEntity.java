@@ -13,7 +13,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 public class VerticalSlabBlockEntity extends BlockEntity {
   /**
@@ -53,7 +53,7 @@ public class VerticalSlabBlockEntity extends BlockEntity {
 
   @Nonnull
   @Override
-  public IModelData getModelData() {
+  public ModelData getModelData() {
     return VerticalSlabUtils.buildModelData(referredSlabState);
   }
 

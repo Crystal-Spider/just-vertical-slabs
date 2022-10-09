@@ -27,9 +27,9 @@ public class RightClickBlockHandler {
    */
   @SubscribeEvent
   public void onRightClickBlock(RightClickBlock event) {
-    Player player = event.getPlayer();
+    Player player = event.getEntity();
     if (!player.isSpectator()) {
-      InteractionResult interactionResult = wax(event.getWorld(), event.getPos(), player, event.getItemStack());
+      InteractionResult interactionResult = wax(event.getLevel(), event.getPos(), player, event.getItemStack());
       if (interactionResult != InteractionResult.PASS) {
         event.setCancellationResult(interactionResult);
         event.setCanceled(true);

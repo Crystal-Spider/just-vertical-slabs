@@ -8,7 +8,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 /**
  * Utilities to handle Models.
@@ -25,14 +25,14 @@ public class ModelUtils {
   }
 
   /**
-   * Returns the {@link IModelData model data} of the given {@link BlockState}, or the default model data provided if no model data could be retrieved from the given {@link BlockState}.
+   * Returns the {@link ModelData model data} of the given {@link BlockState}, or the default model data provided if no model data could be retrieved from the given {@link BlockState}.
    * 
-   * @param blockState - {@link BlockState} from which retrieve the {@link IModelData model data}.
-   * @param defaultData - {@link IModelData default model data} to return if no model data can be retrieved from the given {@link BlockState}.
-   * @return {@link IModelData model data} of the given {@link BlockState} or the {@link IModelData default model data}.
+   * @param blockState - {@link BlockState} from which retrieve the {@link ModelData model data}.
+   * @param defaultData - {@link ModelData default model data} to return if no model data can be retrieved from the given {@link BlockState}.
+   * @return {@link ModelData model data} of the given {@link BlockState} or the {@link ModelData default model data}.
    */
   @SuppressWarnings("null")
-  public static final @Nonnull IModelData getReferredModelData(BlockState blockState, @Nonnull IModelData defaultData) {
+  public static final @Nonnull ModelData getReferredModelData(BlockState blockState, @Nonnull ModelData defaultData) {
     if (blockState.hasBlockEntity()) {
       try {
         return ((EntityBlock) blockState.getBlock()).newBlockEntity(new BlockPos(0, 0, 0), blockState).getModelData();

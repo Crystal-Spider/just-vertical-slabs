@@ -32,7 +32,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.common.data.GlobalLootModifierProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -55,7 +55,7 @@ public class JustVerticalSlabsLoader {
   /**
    * Network channel protocol version.
    */
-  public static final String PROTOCOL_VERSION = "3.2";
+  public static final String PROTOCOL_VERSION = "1.19-4.0";
   /**
    * {@link SimpleChannel} instance for compatibility client-server.
    */
@@ -86,15 +86,15 @@ public class JustVerticalSlabsLoader {
   /**
    * Block Entities {@link DeferredRegister deferred register}.
    */
-  public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+  public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
   /**
    * {@link Item Items} {@link DeferredRegister deferred register}.
    */
   public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
   /**
-   * {@link GlobalLootModifierSerializer} {@link DeferredRegister deferred register}.
+   * {@link } {@link DeferredRegister deferred register}.
    */
-  public static final DeferredRegister<GlobalLootModifierSerializer<?>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, MODID);
+  public static final DeferredRegister<> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
   /**
    * {@link RecipeSerializer Recipe Serializer} {@link DeferredRegister deferred register}.
    */

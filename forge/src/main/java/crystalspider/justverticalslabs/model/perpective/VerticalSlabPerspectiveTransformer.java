@@ -8,7 +8,7 @@ import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraftforge.common.model.TransformationHelper;
+import net.minecraftforge.common.util.TransformationHelper;
 
 /**
  * Holder of {@link Transformation perspective transformations} for Vertical Slab Items.

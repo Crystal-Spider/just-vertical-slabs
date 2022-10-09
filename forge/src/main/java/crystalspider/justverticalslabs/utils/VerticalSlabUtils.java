@@ -17,7 +17,7 @@ import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.stonecutter.VerticalSlabStonecutterRecipe;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.searchtree.MutableSearchTree;
+import net.minecraft.client.searchtree.RefreshableSearchTree;
 import net.minecraft.client.searchtree.SearchRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -40,8 +40,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -55,20 +54,20 @@ public class VerticalSlabUtils {
   public static final String NBT_ID = "referredSlabState";
 
   /**
-   * {@link BlockState} {@link ModelProperty} to use when building and reading {@link IModelData} of a Vertical Slab.
+   * {@link BlockState} {@link ModelProperty} to use when building and reading {@link ModelData} of a Vertical Slab.
    */
   public static final ModelProperty<BlockState> REFERRED_SLAB_STATE = new ModelProperty<BlockState>();
 
   /**
-   * Builds and returns a new {@link IModelData} with {@link #REFERRED_SLAB_STATE referredSlabState property}
+   * Builds and returns a new {@link ModelData} with {@link #REFERRED_SLAB_STATE referredSlabState property}
    * holding the value of the given {@code referredSlabState}.
    * 
    * @param referredSlabState
-   * @return Vertical Slab {@link IModelData}.
+   * @return Vertical Slab {@link ModelData}.
    */
   @Nonnull
   @SuppressWarnings("null")
-  public static final IModelData buildModelData(BlockState referredSlabState) {
+  public static final ModelData buildModelData(BlockState referredSlabState) {
     return new ModelDataMap.Builder().withInitial(REFERRED_SLAB_STATE, referredSlabState).build();
   }
 
@@ -331,7 +330,7 @@ public class VerticalSlabUtils {
     @SuppressWarnings("null")
     public static final void addToSearchTree() {
       int intialSize = inSearchTree.size();
-      MutableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
+      RefreshableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
       for(BlockState referredSlabState : MapsManager.slabStateMap.values()) {
         if (!inSearchTree.containsKey(referredSlabState)) {
           creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));
