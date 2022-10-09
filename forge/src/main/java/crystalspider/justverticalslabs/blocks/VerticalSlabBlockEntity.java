@@ -1,5 +1,6 @@
 package crystalspider.justverticalslabs.blocks;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
@@ -50,6 +51,7 @@ public class VerticalSlabBlockEntity extends BlockEntity {
     return ClientboundBlockEntityDataPacket.create(this);
   }
 
+  @Nonnull
   @Override
   public IModelData getModelData() {
     return VerticalSlabUtils.buildModelData(referredSlabState);

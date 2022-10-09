@@ -1,15 +1,15 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[${loader_version},)"
 license="GNU AGPLv3"
-issueTrackerURL="https://github.com/Nyphet/just-vertical-slabs/issues" #optional
+issueTrackerURL="https://github.com/${github_user}/${modid_kebab}/issues" #optional
 [[mods]]
-modId="modid"
-version="${modVersion}"
-displayName="${modTitle}"
-updateJSONURL="https://raw.githubusercontent.com/Nyphet/just-vertical-slabs/master/forge/updates.json" #optional
-displayURL="https://github.com/Nyphet/just-vertical-slabs/tree/${mcVersion}" #optional
-logoFile="just-vertical-slabs.gif" #optional
-credits="A very big thank you goes to the Forge team that allowed anyone to mod Minecraft for free and their support in the Forge Forums.\nIn particular I want to thank diesieben07 that followed me throughtout most of the development, without him none of this would have been possible." #optional
+modId="${modid}"
+version="${mod_version}"
+displayName="${mod_title}"
+updateJSONURL="https://raw.githubusercontent.com/${github_user}/${modid_kebab}/master/forge/updates.json" #optional
+displayURL="https://github.com/${github_user}/${modid_kebab}/tree/${minecraft_version}" #optional
+logoFile="${modid_kebab}.gif" #optional
+# credits="Thank who deserves it." #optional
 authors="${author}" #optional
 # Display Test controls the display for your mod in the server connection screen
 # MATCH_VERSION means that your mod will cause a red X if the versions on client and server differ. This is the default behaviour and should be what you choose if you have server and client elements to your mod.
@@ -18,17 +18,16 @@ authors="${author}" #optional
 # NONE means that no display test is set on your mod. You need to do this yourself, see IExtensionPoint.DisplayTest for more information. You can define any scheme you wish with this value.
 # IMPORTANT NOTE: this is NOT an instruction as to which environments (CLIENT or DEDICATED SERVER) your mod loads on. Your mod should load (and maybe do nothing!) whereever it finds itself.
 #displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified #optional
-description="Finally build with Vertical Slabs in Vanilla or with any mod you've installed!"
-[[dependencies.modid]]
+description="Let Soul Fire burn!"
+[[dependencies.${modid}]]
     modId="forge"
     mandatory=true
-    versionRange="[${forgeVersion},)"
+    versionRange="[${loader_version}${forge_subversion},)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.modid]]
+[[dependencies.${modid}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[${mcVersion},)"
+    versionRange="[${minecraft_version},)"
     ordering="NONE"
     side="BOTH"
-#optional

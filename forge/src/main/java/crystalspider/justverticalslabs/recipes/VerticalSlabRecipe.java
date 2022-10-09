@@ -52,6 +52,7 @@ public interface VerticalSlabRecipe<C extends Container> extends Recipe<C> {
    * @param itemStack
    * @return whether the {@link ItemStack} is a Vertical Slab.
    */
+  @SuppressWarnings("null")
   default boolean isVerticalSlab(ItemStack itemStack) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
     return !itemStack.isEmpty() && referredSlabState != null && MapsManager.slabStateMap.containsKey(referredSlabState.getBlock().asItem());

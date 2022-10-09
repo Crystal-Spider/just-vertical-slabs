@@ -50,6 +50,7 @@ public abstract class VerticalSlabBlockItem extends BlockItem {
    * Returns the correct burn time for the given Vertical Slab {@link ItemStack}.
    */
   @Override
+  @SuppressWarnings("null")
   public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
     BlockState referredSlabState = VerticalSlabUtils.getReferredSlabState(itemStack);
     if (referredSlabState != null) {
