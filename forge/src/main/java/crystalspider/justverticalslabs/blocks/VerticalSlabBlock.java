@@ -472,7 +472,8 @@ public abstract class VerticalSlabBlock extends Block implements SimpleWaterlogg
 
   @Override
   public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-    if (!state.getValue(DOUBLE) && state.getValue(SHAPE) == StairsShape.STRAIGHT && VerticalSlabUtils.getReferredSlabState(context.getItemInHand()) == VerticalSlabUtils.getReferredSlabState(context.getLevel(), context.getClickedPos())) {
+    BlockState blockState = VerticalSlabUtils.getReferredSlabState(context.getItemInHand());
+    if (!state.getValue(DOUBLE) && state.getValue(SHAPE) == StairsShape.STRAIGHT && blockState != null && blockState == VerticalSlabUtils.getReferredSlabState(context.getLevel(), context.getClickedPos())) {
       if (context.replacingClickedOnBlock()) {
         return context.getClickedFace() == state.getValue(FACING).getOpposite();
       }
