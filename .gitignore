@@ -5,6 +5,7 @@ bin
 .metadata
 .classpath
 .project
+eclipse
 
 # idea
 out
@@ -26,11 +27,12 @@ classes
 .gradle
 
 # other
-eclipse
 run
+.fabric
+.forge
 
 # macos
 *.DS_Store
 
-# Files from Forge MDK
-forge*changelog.txt
+# api keys
+api-keys.properties
