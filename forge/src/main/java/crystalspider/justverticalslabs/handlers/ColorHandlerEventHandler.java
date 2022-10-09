@@ -23,6 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 /**
  * {@link ColorHandlerEvent} handler.
  */
+@SuppressWarnings("null")
 @EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
 public class ColorHandlerEventHandler {
   /**

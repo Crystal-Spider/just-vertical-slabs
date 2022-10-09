@@ -46,6 +46,7 @@ public class RightClickBlockHandler {
    * @param itemStack - {@link ItemStack} held in the interaction hand.
    * @return {@link InteractionResult}.
    */
+  @SuppressWarnings("null")
   private InteractionResult wax(Level level, BlockPos blockPos, Player player, ItemStack itemStack) {
     BlockState slabState = VerticalSlabUtils.getReferredSlabState(level, blockPos);
     if (slabState != null && itemStack.is(Items.HONEYCOMB)) {

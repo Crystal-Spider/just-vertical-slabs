@@ -1,5 +1,7 @@
 package crystalspider.justverticalslabs.recipes.crafting.recipes;
 
+import javax.annotation.Nonnull;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
@@ -26,8 +28,10 @@ public class BlockToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecip
     super(1, 3);
   }
 
+  @Nonnull
   @Override
-  public ItemStack assemble(ItemStack matchedItem) {
+  @SuppressWarnings("null")
+  public ItemStack assemble(@Nonnull ItemStack matchedItem) {
     Item slab = MapsManager.blockMap.get(matchedItem.getItem());
     ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(MapsManager.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
     verticalSlab.setCount(6);
@@ -48,6 +52,7 @@ public class BlockToVerticalSlabCraftingRecipe extends VerticalSlabCraftingRecip
   }
 
   @Override
+  @SuppressWarnings("null")
   protected Integer getMatchIndex(CraftingContainer craftingContainer) {
     boolean correctPattern = true;
     Integer matchIndex = null, containerWidth = craftingContainer.getWidth();

@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
@@ -65,6 +66,8 @@ public class VerticalSlabUtils {
    * @param referredSlabState
    * @return Vertical Slab {@link IModelData}.
    */
+  @Nonnull
+  @SuppressWarnings("null")
   public static final IModelData buildModelData(BlockState referredSlabState) {
     return new ModelDataMap.Builder().withInitial(REFERRED_SLAB_STATE, referredSlabState).build();
   }
@@ -95,6 +98,7 @@ public class VerticalSlabUtils {
    * @param slab
    * @return check value.
    */
+  @SuppressWarnings("null")
   public static final boolean isTranslucent(Item slab) {
     return MapsManager.translucentMap.containsKey(slab);
   }
@@ -258,6 +262,7 @@ public class VerticalSlabUtils {
    * @return {@link BlockState referredBlockState} or {@code null}.
    */
   @Nullable
+  @SuppressWarnings("null")
   public static final BlockState getReferredBlockState(BlockState referredSlabState) {
     if (referredSlabState != null && MapsManager.slabMap.containsKey(referredSlabState.getBlock().asItem())) {
       return Block.byItem(MapsManager.slabMap.get(referredSlabState.getBlock().asItem())).defaultBlockState();
@@ -323,6 +328,7 @@ public class VerticalSlabUtils {
     /**
      * Adds all Vertical Vlabs to the search tree if not already present.
      */
+    @SuppressWarnings("null")
     public static final void addToSearchTree() {
       int intialSize = inSearchTree.size();
       MutableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);

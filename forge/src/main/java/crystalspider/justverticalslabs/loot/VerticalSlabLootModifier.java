@@ -33,6 +33,7 @@ public class VerticalSlabLootModifier extends LootModifier {
 
   @Nonnull
   @Override
+  @SuppressWarnings("null")
   public List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
     if (context.getParamOrNull(LootContextParams.BLOCK_ENTITY) instanceof VerticalSlabBlockEntity) {
       List<ItemStack> loot = new ArrayList<ItemStack>();

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -24,7 +26,7 @@ public class BakedQuadUtils {
    * @param modelData - {@link IModelData model data} of the block being rendered.
    * @return {@link List} of all referred {@link BakedQuad BakedQuads} for the given {@link Direction}.
    */
-  public static final List<BakedQuad> getReferredBakedQuads(BlockState referredState, Direction side, Random rand, IModelData modelData) {
+  public static final List<BakedQuad> getReferredBakedQuads(BlockState referredState, Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
     BakedModel referredBakedModel = ModelUtils.getReferredBakedModel(referredState);
     IModelData referredModelData = ModelUtils.getReferredModelData(referredState, modelData);
     List<BakedQuad> referredBakedQuads = new ArrayList<BakedQuad>(referredBakedModel.getQuads(referredState, side, rand, referredModelData));

@@ -148,7 +148,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    * @return {@link TextureAtlasSprite particle icon} based on the given {@link IModelData data}.
    */
   @Override
-  public TextureAtlasSprite getParticleIcon(IModelData extraData) {
+  public TextureAtlasSprite getParticleIcon(@Nonnull IModelData extraData) {
     BlockState referredSlabState = extraData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
     if (referredSlabState != null) {
       return ModelUtils.getReferredBakedModel(referredSlabState).getParticleIcon(ModelUtils.getReferredModelData(referredSlabState, extraData));
@@ -169,7 +169,9 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    * @param modelData - {@link IModelData} to use to render.
    * @return {@link List} of {@link BakedQuad} based on parameters.
    */
+  @Nonnull
   @Override
+  @SuppressWarnings("null")
   public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData modelData) {
     BlockState referredSlabState = modelData.getData(VerticalSlabUtils.REFERRED_SLAB_STATE);
     if (referredSlabState != null) {

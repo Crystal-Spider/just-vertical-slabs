@@ -1,5 +1,7 @@
 package crystalspider.justverticalslabs.recipes.crafting.recipes;
 
+import javax.annotation.Nonnull;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
@@ -24,8 +26,10 @@ public class VerticalSlabToSlabCraftingRecipe extends VerticalSlabCraftingRecipe
     super(1, 1);
   }
 
+  @Nonnull
   @Override
-  public ItemStack assemble(ItemStack matchedItem) {
+  @SuppressWarnings("null")
+  public ItemStack assemble(@Nonnull ItemStack matchedItem) {
     return VerticalSlabUtils.getReferredSlabState(matchedItem).getBlock().asItem().getDefaultInstance();
   }
 

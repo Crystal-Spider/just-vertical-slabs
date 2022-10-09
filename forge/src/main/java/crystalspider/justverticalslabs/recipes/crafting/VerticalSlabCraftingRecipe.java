@@ -52,6 +52,7 @@ public abstract class VerticalSlabCraftingRecipe implements VerticalSlabRecipe<C
    * Returns the {@link ItemStack} with the result of this recipe from the given {@link CraftingContainer}.
    */
   @Override
+  @SuppressWarnings("null")
   public final ItemStack assemble(CraftingContainer craftingContainer) {
     return assemble(craftingContainer.getItem(getMatchIndex(craftingContainer)));
   }

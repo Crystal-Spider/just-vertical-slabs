@@ -3,6 +3,9 @@ package crystalspider.justverticalslabs.model.item;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import crystalspider.justverticalslabs.model.VerticalSlabBakedModel;
@@ -28,9 +31,9 @@ public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
   /**
    * Proper {@link IModelData}.
    */
-  private final IModelData data;
+  private final @Nonnull IModelData data;
 
-  public VerticalSlabItemBakedModel(VerticalSlabBakedModel verticalSlabBakedModel, IModelData data) {
+  public VerticalSlabItemBakedModel(VerticalSlabBakedModel verticalSlabBakedModel, @Nonnull IModelData data) {
     this.verticalSlabBakedModel = verticalSlabBakedModel;
     this.data = data;
   }
@@ -114,7 +117,7 @@ public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
    * @return {@link VerticalSlabBakedModel#getParticleIcon(IModelData)}.
    */
   @Override
-  public TextureAtlasSprite getParticleIcon(IModelData extraData) {
+  public TextureAtlasSprite getParticleIcon(@Nonnull IModelData extraData) {
     return verticalSlabBakedModel.getParticleIcon(data);
   }
 
@@ -130,8 +133,9 @@ public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
    * @param modelData - {@link IModelData}.
    * @return {@link VerticalSlabBakedModel#getQuads(BlockState, Direction, Random, IModelData)}.
    */
+  @Nonnull
   @Override
-  public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
     return verticalSlabBakedModel.getQuads(state, side, rand, data);
   }
 }

@@ -1,5 +1,8 @@
 package crystalspider.justverticalslabs.model.utils;
 
+import javax.annotation.Nonnull;
+
+import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -28,7 +31,16 @@ public class ModelUtils {
    * @param defaultData - {@link IModelData default model data} to return if no model data can be retrieved from the given {@link BlockState}.
    * @return {@link IModelData model data} of the given {@link BlockState} or the {@link IModelData default model data}.
    */
-  public static final IModelData getReferredModelData(BlockState blockState, IModelData defaultData) {
-    return blockState.hasBlockEntity() ? ((EntityBlock) blockState.getBlock()).newBlockEntity(new BlockPos(0, 0, 0), blockState).getModelData() : defaultData;
+  @SuppressWarnings("null")
+  public static final @Nonnull IModelData getReferredModelData(BlockState blockState, @Nonnull IModelData defaultData) {
+    if (blockState.hasBlockEntity()) {
+      try {
+        return ((EntityBlock) blockState.getBlock()).newBlockEntity(new BlockPos(0, 0, 0), blockState).getModelData();
+      } catch (Exception e) {
+        JustVerticalSlabsLoader.LOGGER.warn("Referred block + {" + blockState + "} needs a BlockEntity but returned null when trying to create one, default ModelData will be used.");
+        return defaultData;
+      }
+    }
+    return defaultData;
   }
 }

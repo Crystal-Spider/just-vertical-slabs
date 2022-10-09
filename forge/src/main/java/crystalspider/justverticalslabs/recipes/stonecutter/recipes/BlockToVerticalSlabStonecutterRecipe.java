@@ -44,11 +44,13 @@ public class BlockToVerticalSlabStonecutterRecipe extends VerticalSlabStonecutte
   }
 
   @Override
+  @SuppressWarnings("null")
   public boolean matches(Container container, Level level) {
     return MapsManager.stonecuttingMap.containsKey(container.getItem(0).getItem());
   }
 
   @Override
+  @SuppressWarnings("null")
   public ItemStack assemble(Container container) {
     Item slab = MapsManager.stonecuttingMap.get(container.getItem(0).getItem());
     ItemStack verticalSlab = VerticalSlabUtils.getVerticalSlabItem(MapsManager.slabStateMap.get(slab), VerticalSlabUtils.isTranslucent(slab));
