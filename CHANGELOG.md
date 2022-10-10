@@ -8,7 +8,7 @@ and this project adheres to [Forge Semantic Versioning](https://mcforge.readthed
 ## [Unreleased]
 - Nothing new.
 
-## [1.19.2-4.0.0.0] - 2022/10/dd
+## [1.19.2-4.0.0.0] - 2022/10/10
 - Fixed a bug that would make bed replace vertical slabs when placed.
 - Ported to 1.19.2.
 
