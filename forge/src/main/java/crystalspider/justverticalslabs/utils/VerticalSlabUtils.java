@@ -16,8 +16,6 @@ import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.stonecutter.VerticalSlabStonecutterRecipe;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.searchtree.SearchRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -304,11 +302,6 @@ public class VerticalSlabUtils {
     public static volatile ImmutableMap<Item, BlockState> slabStateMap;
 
     /**
-     * Contains all {@link BlockState} of Vertical Slab Items already added into the search tree to prevent adding duplicates.
-     */
-    private static final HashMap<BlockState, Boolean> inSearchTree = new HashMap<BlockState, Boolean>();
-
-    /**
      * {@link RecipeManager} to use in {@link #computeMaps()}.
      */
     @Nullable
@@ -321,24 +314,6 @@ public class VerticalSlabUtils {
      */
     public static final void setFallbackRecipeManager(RecipeManager recipeManager) {
       fallbackRecipeManager = recipeManager;
-    }
-
-    /**
-     * Adds all Vertical Vlabs to the search tree if not already present.
-     */
-    @SuppressWarnings("null")
-    public static final void addToSearchTree() {
-      // int intialSize = inSearchTree.size();
-      // SearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
-      // for(BlockState referredSlabState : MapsManager.slabStateMap.values()) {
-      //   if (!inSearchTree.containsKey(referredSlabState)) {
-      //     creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));
-      //     inSearchTree.put(referredSlabState, true);
-      //   }
-      // }
-      // if (intialSize != inSearchTree.size()) {
-      //   creativeSearchTree.refresh();
-      // }
     }
 
     /**

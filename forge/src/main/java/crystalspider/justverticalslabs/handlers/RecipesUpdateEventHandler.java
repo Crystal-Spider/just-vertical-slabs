@@ -19,8 +19,6 @@ public class RecipesUpdateEventHandler {
     if (MapsManager.slabStateMap == null) {
       // If maps were not computed yet here it means there is no dedicated server and it's needed to computed them for the client.
       MapsManager.setFallbackRecipeManager(event.getRecipeManager());
-    } else {
-      MapsManager.addToSearchTree();
     }
   }
 }
