@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -80,26 +81,19 @@ public class VerticalSlabItemBakedModel implements IDynamicBakedModel {
   }
 
   /**
-   * See {@link VerticalSlabBakedModel#doesHandlePerspectives()}.
-   */
-  // @Override
-  // public boolean doesHandlePerspectives() {
-  //   return verticalSlabBakedModel.doesHandlePerspectives();
-  // }
-
-  /**
-   * Wraps {@link VerticalSlabBakedModel#handlePerspective(TransformType, PoseStack)} and delegates to it the logic.
-   * Note that in order to prevent item rendering errors, this model is returned instead of the model returned by {@link VerticalSlabBakedModel#handlePerspective(TransformType, PoseStack)}.
+   * Wraps {@link VerticalSlabBakedModel#applyTransform(TransformType, PoseStack, boolean)} and delegates to it the logic.
+   * Note that in order to prevent item rendering errors, this model is returned instead of the model returned by {@link VerticalSlabBakedModel#applyTransform(TransformType, PoseStack, boolean)}.
    * 
    * @param transformType - {@link TransformType}.
    * @param poseStack - {@link PoseStack} to render.
+   * @param applyLeftHandTransform
    * @return this model.
    */
-  // @Override
-  // public BakedModel handlePerspective(TransformType transformType, PoseStack poseStack) {
-  //   verticalSlabBakedModel.handlePerspective(transformType, poseStack);
-  //   return this;
-  // }
+  @Override
+  public BakedModel applyTransform(TransformType transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
+    verticalSlabBakedModel.applyTransform(transformType, poseStack, applyLeftHandTransform);
+    return this;
+  }
 
   /**
    * See {@link VerticalSlabBakedModel#getParticleIcon()}.

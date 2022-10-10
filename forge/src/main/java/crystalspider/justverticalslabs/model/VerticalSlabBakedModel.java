@@ -11,10 +11,14 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+
 import crystalspider.justverticalslabs.JustVerticalSlabsLoader;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.model.item.VerticalSlabItemOverrides;
+import crystalspider.justverticalslabs.model.perpective.VerticalSlabPerspectiveTransformer;
 import crystalspider.justverticalslabs.model.utils.BakedQuadUtils;
 import crystalspider.justverticalslabs.model.utils.ModelUtils;
 import crystalspider.justverticalslabs.model.utils.VertexUtils;
@@ -23,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -102,29 +107,22 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
   }
 
   /**
-   * Whether {@link #handlePerspective(TransformType, PoseStack)} will be used.
-   */
-  // @Override
-  // public boolean doesHandlePerspectives() {
-  //   return true;
-  // }
-
-  /**
    * Handles item model transformations for different {@link TransformType}.
    * Which {@link Transformation} to use is decided by {@link VerticalSlabPerspectiveTransformer#getTransformation(TransformType)}.
    * 
    * @param transformType - {@link TransformType}.
    * @param poseStack - {@link PoseStack} to render.
+   * @param applyLeftHandTransform
    * @return this model.
    */
-  // @Override
-  // public BakedModel handlePerspective(TransformType transformType, PoseStack poseStack) {
-  //   Transformation transformation = VerticalSlabPerspectiveTransformer.getTransformation(transformType);
-  //   if (!transformation.isIdentity()) {
-  //     transformation.push(poseStack);
-  //   }
-  //   return this;
-  // }
+  @Override
+  public BakedModel applyTransform(TransformType transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
+    Transformation transformation = VerticalSlabPerspectiveTransformer.getTransformation(transformType);
+    if (!transformation.isIdentity()) {
+      transformation.push(poseStack);
+    }
+    return this;
+  }
 
   /**
    * Returns the default {@link TextureAtlasSprite particle icon} of this model.

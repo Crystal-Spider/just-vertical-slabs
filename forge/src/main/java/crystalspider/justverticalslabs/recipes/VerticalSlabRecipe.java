@@ -14,7 +14,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistry;
 
 /**
  * Abstract implementation of a {@link Recipe} involving a Vertical Slab.
@@ -61,7 +60,7 @@ public interface VerticalSlabRecipe<C extends Container> extends Recipe<C> {
   /**
    * Abstract implementation of a {@link RecipeSerializer} involving a {@link VerticalSlabRecipe}.
    */
-  public static abstract class Serializer<C extends Container, T extends VerticalSlabRecipe<C>> extends ForgeRegistry<RecipeSerializer<?>> implements RecipeSerializer<T> {
+  public static abstract class Serializer<C extends Container, T extends VerticalSlabRecipe<C>> implements RecipeSerializer<T> {
     /**
      * {@link Supplier} that will be used to return a new {@link VerticalSlabRecipe} when needed.
      */

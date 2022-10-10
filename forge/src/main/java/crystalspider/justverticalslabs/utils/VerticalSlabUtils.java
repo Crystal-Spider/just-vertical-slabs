@@ -17,7 +17,6 @@ import crystalspider.justverticalslabs.items.VerticalSlabBlockItem;
 import crystalspider.justverticalslabs.recipes.crafting.VerticalSlabCraftingRecipe;
 import crystalspider.justverticalslabs.recipes.stonecutter.VerticalSlabStonecutterRecipe;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.searchtree.RefreshableSearchTree;
 import net.minecraft.client.searchtree.SearchRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -68,7 +67,7 @@ public class VerticalSlabUtils {
   @Nonnull
   @SuppressWarnings("null")
   public static final ModelData buildModelData(BlockState referredSlabState) {
-    return new ModelDataMap.Builder().withInitial(REFERRED_SLAB_STATE, referredSlabState).build();
+    return ModelData.builder().with(REFERRED_SLAB_STATE, referredSlabState).build();
   }
 
   /**
@@ -329,17 +328,17 @@ public class VerticalSlabUtils {
      */
     @SuppressWarnings("null")
     public static final void addToSearchTree() {
-      int intialSize = inSearchTree.size();
-      RefreshableSearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
-      for(BlockState referredSlabState : MapsManager.slabStateMap.values()) {
-        if (!inSearchTree.containsKey(referredSlabState)) {
-          creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));
-          inSearchTree.put(referredSlabState, true);
-        }
-      }
-      if (intialSize != inSearchTree.size()) {
-        creativeSearchTree.refresh();
-      }
+      // int intialSize = inSearchTree.size();
+      // SearchTree<ItemStack> creativeSearchTree = Minecraft.getInstance().getSearchTree(SearchRegistry.CREATIVE_NAMES);
+      // for(BlockState referredSlabState : MapsManager.slabStateMap.values()) {
+      //   if (!inSearchTree.containsKey(referredSlabState)) {
+      //     creativeSearchTree.add(VerticalSlabUtils.getVerticalSlabItem(referredSlabState, VerticalSlabUtils.isTranslucent(referredSlabState)));
+      //     inSearchTree.put(referredSlabState, true);
+      //   }
+      // }
+      // if (intialSize != inSearchTree.size()) {
+      //   creativeSearchTree.refresh();
+      // }
     }
 
     /**

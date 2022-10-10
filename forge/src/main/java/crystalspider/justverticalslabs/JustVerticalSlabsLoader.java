@@ -3,13 +3,14 @@ package crystalspider.justverticalslabs;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 
 import crystalspider.justverticalslabs.blocks.CutoutVerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.TranslucentVerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.handlers.FMLClientSetupEventHandler;
-import crystalspider.justverticalslabs.handlers.ModelRegistryEventHandler;
+import crystalspider.justverticalslabs.handlers.ModelEventHandler;
 import crystalspider.justverticalslabs.handlers.RecipesUpdateEventHandler;
 import crystalspider.justverticalslabs.handlers.RightClickBlockHandler;
 import crystalspider.justverticalslabs.handlers.ServerAboutToStartEventHandler;
@@ -32,7 +33,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.data.GlobalLootModifierProvider;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -92,9 +93,9 @@ public class JustVerticalSlabsLoader {
    */
   public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
   /**
-   * {@link } {@link DeferredRegister deferred register}.
+   * {@link Codec<? extends IGlobalLootModifier>} {@link DeferredRegister deferred register}.
    */
-  public static final DeferredRegister<> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
+  public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
   /**
    * {@link RecipeSerializer Recipe Serializer} {@link DeferredRegister deferred register}.
    */
@@ -123,7 +124,7 @@ public class JustVerticalSlabsLoader {
   /**
    * {@link RegistryObject} for {@link VerticalSlabLootModifier} {@link VerticalSlabLootModifier.Serializer Serializer}.
    */
-  public static final RegistryObject<VerticalSlabLootModifier.Serializer> VERTICAL_SLAB_LOOT_MODIFIER = LOOT_MODIFIERS.register(VERTICAL_SLAB_ID + "_loot_modifier", VerticalSlabLootModifier.Serializer::new);
+  public static final RegistryObject<Codec<VerticalSlabLootModifier>> VERTICAL_SLAB_LOOT_MODIFIER = LOOT_MODIFIERS.register(VERTICAL_SLAB_ID + "_loot_modifier", VerticalSlabLootModifier.CODEC);
   /**
    * {@link RegistryObject} for {@link VerticalSlabToBlockCraftingRecipe} {@link VerticalSlabToBlockCraftingRecipe.Serializer Serializer}.
    */
@@ -164,7 +165,7 @@ public class JustVerticalSlabsLoader {
     ITEMS.register(modEventBus);
     LOOT_MODIFIERS.register(modEventBus);
     RECIPES.register(modEventBus);
-    modEventBus.register(new ModelRegistryEventHandler());
+    modEventBus.register(new ModelEventHandler());
     modEventBus.register(new FMLClientSetupEventHandler());
   }
 }

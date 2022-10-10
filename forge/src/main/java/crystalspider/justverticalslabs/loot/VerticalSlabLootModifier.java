@@ -1,19 +1,18 @@
 package crystalspider.justverticalslabs.loot;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
-import com.google.gson.JsonObject;
+import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlock;
 import crystalspider.justverticalslabs.blocks.VerticalSlabBlockEntity;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils;
 import crystalspider.justverticalslabs.utils.VerticalSlabUtils.MapsManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,6 +28,8 @@ import net.minecraftforge.common.loot.LootModifier;
  * Vertical Slabs Loot Modifier.
  */
 public class VerticalSlabLootModifier extends LootModifier {
+  public static final Supplier<Codec<VerticalSlabLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst).apply(inst, VerticalSlabLootModifier::new)));
+
   public VerticalSlabLootModifier(LootItemCondition[] conditionsIn) {
     super(conditionsIn);
   }
@@ -68,21 +69,20 @@ public class VerticalSlabLootModifier extends LootModifier {
   /**
    * {@link VerticalSlabLootModifier} Serializer.
    */
-  public static class Serializer extends GlobalLootModifierSerializer<VerticalSlabLootModifier> {
-    @Override
-    public VerticalSlabLootModifier read(ResourceLocation name, JsonObject json, LootItemCondition[] conditionsIn) {
-      return new VerticalSlabLootModifier(conditionsIn);
-    }
+  // public static class Serializer extends GlobalLootModifierSerializer<VerticalSlabLootModifier> {
+  //   @Override
+  //   public VerticalSlabLootModifier read(ResourceLocation name, JsonObject json, LootItemCondition[] conditionsIn) {
+  //     return new VerticalSlabLootModifier(conditionsIn);
+  //   }
 
-    @Override
-    public JsonObject write(VerticalSlabLootModifier instance) {
-      return makeConditions(instance.conditions);
-    }
-  }
+  //   @Override
+  //   public JsonObject write(VerticalSlabLootModifier instance) {
+  //     return makeConditions(instance.conditions);
+  //   }
+  // }
 
   @Override
   public Codec<? extends IGlobalLootModifier> codec() {
-    // TODO Auto-generated method stub
-    return null;
+    return CODEC.get();
   }
 }
