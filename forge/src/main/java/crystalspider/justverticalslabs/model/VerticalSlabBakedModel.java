@@ -27,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -108,7 +109,7 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
 
   /**
    * Handles item model transformations for different {@link TransformType}.
-   * Which {@link Transformation} to use is decided by {@link VerticalSlabPerspectiveTransformer#getTransformation(TransformType)}.
+   * Which {@link Transformation} to use is decided by {@link VerticalSlabPerspectiveTransformer#getTransform(TransformType)}.
    * 
    * @param transformType - {@link TransformType}.
    * @param poseStack - {@link PoseStack} to render.
@@ -117,9 +118,9 @@ public class VerticalSlabBakedModel implements IDynamicBakedModel {
    */
   @Override
   public BakedModel applyTransform(TransformType transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
-    Transformation transformation = VerticalSlabPerspectiveTransformer.getTransformation(transformType);
-    if (!transformation.isIdentity()) {
-      transformation.push(poseStack);
+    ItemTransform transform = VerticalSlabPerspectiveTransformer.getTransform(transformType);
+    if (transform != ItemTransform.NO_TRANSFORM) {
+      transform.apply(applyLeftHandTransform, poseStack);
     }
     return this;
   }
