@@ -10,6 +10,10 @@
 ![Issues](https://raw.githubusercontent.com/Nyphet/mod-fancy-assets/main/github/issues.svg)[![GitHub](https://raw.githubusercontent.com/Nyphet/mod-fancy-assets/main/github/github.svg)](https://github.com/Nyphet/just-vertical-slabs/issues)
 
 ---
+## **Important note!!!**
+This mod is currently on hold, it won't receive updates or bug fixes for quite some time.  
+Thank you for your patience!
+
 ## **Description**
 Minecraft has always been lacking something important: vertical slabs.  
 Because of this most mods adding new slabs do not include vertical slabs and you'd have to download addon mods to add them, in the rare case they even exist.  
